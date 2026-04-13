@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-darkest: #FF5900;
+  --color-dark: #FF8237;
+  --color-mid: #FFAA6E;
+  --color-light: #FFD3A5;
+  --color-pale: #FFFBDC;
+  
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-pale);
+    color: var(--color-darkest);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Base utility for hiding scrollbars but keeping functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

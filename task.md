@@ -1,0 +1,6 @@
+- [x] Refactor `useAuthStore` to support Email/Password login
+- [x] Remove OTP verification logic from `useAuthStore`
+- [x] Update `LoginScreen.tsx` UI to use Email/Password fields
+- [x] Implement Login/Signup state toggle in `LoginScreen.tsx`
+- [x] Ensure `completeOnboarding` handles email-based users
+- [x] Verify build and session persistence

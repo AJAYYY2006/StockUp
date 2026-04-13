@@ -1,0 +1,857 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { useCartStore } from '../store/cart';
+import { useToastStore } from '../store/toast';
+import { useCustomersStore } from '../store/customers';
+import { useInventoryStore, type InventoryItem } from '../store/inventory';
+import { PageTransition } from '../components/layout/PageTransition';
+import { Input } from '../components/ui/Input';
+import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
+import { Modal } from '../components/ui/Modal';
+import { Search, Mic, Plus, Minus, CheckCircle2, UserPlus, Users, ArrowRight, Zap } from 'lucide-react';
+import { cn } from '../lib/utils';
+import { supabase } from '../lib/supabase';
+
+const CATEGORIES = ['All', 'Dairy', 'Grains', 'Snacks', 'Beverages', 'Personal Care', 'Other'];
+
+// Temporary helper to map InventoryItem to Product expected by CartStore
+const toProduct = (item: InventoryItem) => ({
+  id: item.id,
+  name: item.name,
+  price: item.sellPrice,
+  category: item.category,
+  emoji: '📦' // Default emoji for database items
+});
+
+export default function BillingScreen() {
+  const { t } = useTranslation();
+  const { items: cartItems, addItem, updateQuantity, getTotal, clearCart } = useCartStore();
+  const addToast = useToastStore((state) => state.addToast);
+  const { items: customers, updateBalance, fetchCustomers } = useCustomersStore();
+  const { items: inventory, fetchItems: fetchInventory, updateItem } = useInventoryStore();
+
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [flyingDots, setFlyingDots] = useState<{ id: string; x: number; y: number }[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Quick Bill Modal States
+  const [isQuickBillOpen, setIsQuickBillOpen] = useState(false);
+  const [quickBillItems, setQuickBillItems] = useState<Array<{ product: any; quantity: number }>>([]);
+  const [quickBillSearch, setQuickBillSearch] = useState('');
+  const [quickBillCategory, setQuickBillCategory] = useState('All');
+  // Quick Bill Udhar States
+  const [qbView, setQbView] = useState<'products' | 'udhar'>('products');
+  const [qbCustomerMode, setQbCustomerMode] = useState<'existing' | 'new'>('existing');
+  const [qbCustomerSearch, setQbCustomerSearch] = useState('');
+  const [qbNewCustomer, setQbNewCustomer] = useState({ name: '', phone: '' });
+  const [qbPartialPayment, setQbPartialPayment] = useState('0');
+
+  // Udhar Selection Modal States
+  const [isUdharModalOpen, setIsUdharModalOpen] = useState(false);
+  const [customerMode, setCustomerMode] = useState<'existing' | 'new'>('existing');
+  const [customerSearch, setCustomerSearch] = useState('');
+  const [newCustomer, setNewCustomer] = useState({ name: '', phone: '' });
+  const [partialPayment, setPartialPayment] = useState('0');
+
+  // Ref for the cart target position
+  const cartIconRef = useRef<HTMLDivElement>(null);
+  const [cartTargetPos, setCartTargetPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight - 100 });
+
+  useEffect(() => {
+    fetchInventory();
+    fetchCustomers();
+  }, []);
+
+  useEffect(() => {
+    if (cartIconRef.current) {
+      const rect = cartIconRef.current.getBoundingClientRect();
+      setCartTargetPos({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+    }
+  }, [cartItems.length]);
+
+  const filteredProducts = inventory.filter(p => {
+    const matchesCat = activeCategory === 'All' || p.category === activeCategory;
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCat && matchesSearch;
+  });
+
+  const filteredCustomers = customers.filter(c =>
+    c.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+    c.phone.includes(customerSearch)
+  );
+
+  const qbFilteredCustomers = customers.filter(c =>
+    c.name.toLowerCase().includes(qbCustomerSearch.toLowerCase()) ||
+    c.phone.includes(qbCustomerSearch)
+  );
+
+  const handleAddWithAnimation = (e: React.MouseEvent, product: any) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const dotId = Math.random().toString();
+    setFlyingDots((prev) => [...prev, { id: dotId, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }]);
+    addItem(product);
+    setTimeout(() => {
+      setFlyingDots((prev) => prev.filter(dot => dot.id !== dotId));
+    }, 600);
+  };
+
+  const quickBillAddItem = (product: any) => {
+    setQuickBillItems(prev => {
+      const existing = prev.find(i => i.product.id === product.id);
+      if (existing) return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
+      return [...prev, { product, quantity: 1 }];
+    });
+  };
+
+  const quickBillUpdateQty = (productId: string, qty: number) => {
+    if (qty <= 0) {
+      setQuickBillItems(prev => prev.filter(i => i.product.id !== productId));
+    } else {
+      setQuickBillItems(prev => prev.map(i => i.product.id === productId ? { ...i, quantity: qty } : i));
+    }
+  };
+
+  const quickBillGetTotal = () => quickBillItems.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+
+  const resetQuickBill = () => {
+    setIsQuickBillOpen(false);
+    setQuickBillItems([]);
+    setQuickBillSearch('');
+    setQuickBillCategory('All');
+    setQbView('products');
+    setQbCustomerMode('existing');
+    setQbCustomerSearch('');
+    setQbNewCustomer({ name: '', phone: '' });
+    setQbPartialPayment('0');
+  };
+
+  // COMPLETE REAL CHECKOUT LOGIC
+  const completeTransaction = async ({ 
+    items, 
+    total, 
+    paid, 
+    udhar, 
+    customerId,
+    newCustomerData
+  }: { 
+    items: Array<{ product: any; quantity: number }>, 
+    total: number, 
+    paid: number, 
+    udhar: number,
+    customerId?: string,
+    newCustomerData?: { name: string, phone: string }
+  }) => {
+    setIsProcessing(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
+
+      let finalCustomerId = customerId;
+
+      // 1. If new customer, create it
+      if (newCustomerData) {
+        const { data: custData, error: custError } = await supabase
+          .from('customers')
+          .insert({
+            user_id: user.id,
+            name: newCustomerData.name,
+            phone: newCustomerData.phone,
+            balance: udhar,
+            last_transaction_date: new Date().toISOString()
+          })
+          .select()
+          .single();
+        
+        if (custError) throw custError;
+        finalCustomerId = custData.id;
+        // Refresh local store
+        fetchCustomers();
+      } else if (finalCustomerId && udhar > 0) {
+        // 2. If existing customer with udhar, update balance
+        const customer = customers.find(c => c.id === finalCustomerId);
+        if (customer) {
+          await updateBalance(finalCustomerId, customer.balance + udhar, udhar, 'debit', `Bill ₹${total} (Paid ₹${paid})`);
+        }
+      }
+
+      // 3. Create Sale Record
+      const { data: saleData, error: saleError } = await supabase
+        .from('sales')
+        .insert({
+          user_id: user.id,
+          customer_id: finalCustomerId || null,
+          total_amount: total,
+          paid_amount: paid,
+          udhar_amount: udhar
+        })
+        .select()
+        .single();
+      
+      if (saleError) throw saleError;
+
+      // 4. Create Sale Items & Deduct Inventory
+      const saleItemsPayload = items.map(item => ({
+        sale_id: saleData.id,
+        inventory_id: item.product.id,
+        quantity: item.quantity,
+        unit_price: item.product.price
+      }));
+
+      const { error: itemsError } = await supabase.from('sale_items').insert(saleItemsPayload);
+      if (itemsError) throw itemsError;
+
+      // 5. Deduct Quantities
+      for (const item of items) {
+        const invItem = inventory.find(i => i.id === item.product.id);
+        if (invItem) {
+          await updateItem(invItem.id, { quantity: invItem.quantity - item.quantity });
+        }
+      }
+
+      addToast({ message: t('billing.savedSuccess', 'Transaction saved successfully!'), type: 'success' });
+      return true;
+    } catch (error: any) {
+      console.error(error);
+      addToast({ message: error.message || t('common.error'), type: 'error' });
+      return false;
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const processQuickBill = async () => {
+    const total = quickBillGetTotal();
+    if (total <= 0) return;
+    
+    const success = await completeTransaction({
+      items: quickBillItems,
+      total,
+      paid: total,
+      udhar: 0
+    });
+
+    if (success) resetQuickBill();
+  };
+
+  const processQuickBillUdhar = async (customerId: string) => {
+    const total = quickBillGetTotal();
+    const paid = parseFloat(qbPartialPayment) || 0;
+    const udharAmount = total - paid;
+    
+    const success = await completeTransaction({
+      items: quickBillItems,
+      total,
+      paid,
+      udhar: udharAmount,
+      customerId
+    });
+
+    if (success) resetQuickBill();
+  };
+
+  const handleQbCreateAndCheckout = async () => {
+    if (!qbNewCustomer.name || !qbNewCustomer.phone) {
+      addToast({ message: 'Name and Phone are mandatory!', type: 'error' });
+      return;
+    }
+    const total = quickBillGetTotal();
+    const paid = parseFloat(qbPartialPayment) || 0;
+    const udharAmount = total - paid;
+
+    const success = await completeTransaction({
+      items: quickBillItems,
+      total,
+      paid,
+      udhar: udharAmount,
+      newCustomerData: qbNewCustomer
+    });
+
+    if (success) resetQuickBill();
+  };
+
+  const processPaidCheckout = async () => {
+    const total = getTotal();
+    
+    const success = await completeTransaction({
+      items: cartItems.map(i => ({ product: i, quantity: i.quantity })),
+      total,
+      paid: total, // For the "Paid" button, we assume 100% paid
+      udhar: 0
+    });
+
+    if (success) {
+      clearCart();
+      setPartialPayment('0');
+    }
+  };
+
+  const processUdharCheckout = async (customerId: string) => {
+    const total = getTotal();
+    const paid = parseFloat(partialPayment) || 0;
+    const udharAmount = total - paid;
+
+    const success = await completeTransaction({
+      items: cartItems.map(i => ({ product: i, quantity: i.quantity })),
+      total,
+      paid,
+      udhar: udharAmount,
+      customerId
+    });
+
+    if (success) {
+      clearCart();
+      setIsUdharModalOpen(false);
+      setPartialPayment('0');
+    }
+  };
+
+  const handleCreateAndCheckout = async () => {
+    if (!newCustomer.name || !newCustomer.phone) {
+      addToast({ message: 'Name and Phone are mandatory!', type: 'error' });
+      return;
+    }
+    const total = getTotal();
+    const paid = parseFloat(partialPayment) || 0;
+    const udharAmount = total - paid;
+
+    const success = await completeTransaction({
+      items: cartItems.map(i => ({ product: i, quantity: i.quantity })),
+      total,
+      paid,
+      udhar: udharAmount,
+      newCustomerData: newCustomer
+    });
+
+    if (success) {
+      clearCart();
+      setIsUdharModalOpen(false);
+      setPartialPayment('0');
+      setNewCustomer({ name: '', phone: '' });
+    }
+  };
+
+  return (
+    <PageTransition className="flex flex-col h-[calc(100vh-80px)] md:h-[calc(100vh-40px)]">
+      
+      {/* Top Header & Search */}
+      <div className="bg-[#FF5900] rounded-b-3xl p-4 md:p-6 shadow-xl z-20 shrink-0 sticky top-0 md:relative">
+        <div className="flex items-center gap-3 w-full relative">
+          <Input
+            placeholder={t('billing.searchPlaceholder')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            leftIcon={<Search size={20} className="text-[#FF8237]" />}
+            className="w-full bg-[#FFFBDC] text-[#FF5900] border-transparent focus-visible:border-[#FFD3A5] pl-11 pr-12 rounded-xl"
+          />
+          <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-[#FFD3A5]/20 rounded-lg text-[#FF8237] hover:bg-[#FFD3A5]/40 transition-colors">
+            <Mic size={18} />
+          </button>
+        </div>
+        <div className="flex justify-end mt-3 gap-3">
+          <button
+            onClick={() => setIsQuickBillOpen(true)}
+            className="flex items-center gap-1.5 bg-[#FFFBDC]/20 hover:bg-[#FFFBDC]/30 text-[#FFFBDC] px-3 py-1.5 rounded-lg text-xs font-black transition-all active:scale-95"
+          >
+            <Zap size={14} /> {t('billing.quickBill')}
+          </button>
+          <button
+            onClick={() => addToast({ message: "Voice Billing coming soon!", type: 'info' })}
+            className="flex items-center gap-1.5 bg-[#FFFBDC]/20 hover:bg-[#FFFBDC]/30 text-[#FFFBDC] px-3 py-1.5 rounded-lg text-xs font-black transition-all active:scale-95"
+          >
+            <Mic size={14} /> Voice Bill
+          </button>
+        </div>
+      </div>
+
+      {/* Category Horizontal Scroll */}
+      <div className="shrink-0 mt-4 px-4 overflow-x-auto no-scrollbar">
+        <div className="flex gap-2 pb-2">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={cn(
+                "px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-colors border",
+                activeCategory === cat 
+                  ? "bg-[#FF8237] text-[#FFFBDC] border-[#FF8237]" 
+                  : "bg-white text-[#FFAA6E] border-[#FFD3A5]/50 hover:bg-[#FFFBDC]"
+              )}
+            >
+              {t(`expenses.categories.${cat.toLowerCase()}`, cat)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Product Grid - HIGH DENSITY */}
+      <div className="flex-1 overflow-y-auto no-scrollbar p-4 relative z-10 pb-[200px]">
+        <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+          <AnimatePresence>
+            {filteredProducts.map(p => {
+              const product = toProduct(p);
+              const cartItem = cartItems.find(i => i.id === product.id);
+              return (
+              <motion.div 
+                key={product.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Card 
+                  onClick={(e) => !cartItem && handleAddWithAnimation(e, product)}
+                  className={cn(
+                    "flex flex-col h-full border-[#FFD3A5] p-2 shadow-sm hover:shadow-md transition-all rounded-xl cursor-pointer active:scale-95 relative",
+                    cartItem ? "ring-2 ring-[#FF8237] bg-[#FFFBDC]/30" : "bg-white"
+                  )}
+                >
+                  <div className="w-full aspect-square bg-[#FFFBDC] rounded-lg flex items-center justify-center mb-2 text-2xl">
+                    {product.name.charAt(0)}
+                  </div>
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <p className="text-[9px] font-black text-[#FFAA6E] uppercase tracking-tighter truncate opacity-70">{product.category}</p>
+                    <h3 className="text-[11px] font-bold text-[#FF5900] line-clamp-2 leading-tight mt-0.5">{product.name}</h3>
+                    <div className="flex items-center justify-between mt-auto pt-2">
+                       <p className="text-sm font-black text-[#FF5900]">₹{product.price}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Persistent Add/Remove Controls */}
+                  <div className="absolute top-1 right-1 flex flex-col gap-1 z-30 pointer-events-auto">
+                    {cartItem ? (
+                      <>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, cartItem.quantity + 1); }}
+                          className="w-7 h-7 bg-[#FF8237] text-white rounded-lg flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+                        >
+                          <Plus size={16} strokeWidth={3} />
+                        </button>
+                        <div className="bg-white border border-[#FF8237]/30 rounded-lg h-7 flex items-center justify-center shadow-sm">
+                          <span className="text-[11px] font-black text-[#FF5900]">{cartItem.quantity}</span>
+                        </div>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, cartItem.quantity - 1); }}
+                          className="w-7 h-7 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-lg flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+                        >
+                          <Minus size={16} strokeWidth={3} />
+                        </button>
+                      </>
+                    ) : (
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleAddWithAnimation(e, product); }}
+                        className="w-7 h-7 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-lg flex items-center justify-center hover:bg-[#FF8237] hover:text-white transition-all active:scale-90 shadow-sm"
+                      >
+                        <Plus size={16} strokeWidth={3} />
+                      </button>
+                    )}
+                  </div>
+                </Card>
+              </motion.div>
+            )})}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Quick Bill Modal */}
+      <Modal
+        isOpen={isQuickBillOpen}
+        onClose={resetQuickBill}
+        title={qbView === 'products' ? t('billing.quickBill') : t('billing.quickBillUdhar')}
+      >
+        {qbView === 'products' ? (
+          <div className="flex flex-col gap-3">
+            {/* Search */}
+            <Input
+              placeholder={t('billing.searchPlaceholder')}
+              value={quickBillSearch}
+              onChange={(e) => setQuickBillSearch(e.target.value)}
+              leftIcon={<Search size={18} className="text-[#FF8237]" />}
+              className="bg-[#FFFBDC] border-transparent"
+            />
+
+            {/* Categories */}
+            <div className="overflow-x-auto no-scrollbar">
+              <div className="flex gap-2 pb-1">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setQuickBillCategory(cat)}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full font-bold text-xs whitespace-nowrap transition-colors border",
+                      quickBillCategory === cat
+                        ? "bg-[#FF8237] text-[#FFFBDC] border-[#FF8237]"
+                        : "bg-white text-[#FFAA6E] border-[#FFD3A5]/50 hover:bg-[#FFFBDC]"
+                    )}
+                  >
+                    {t(`expenses.categories.${cat.toLowerCase()}`, cat)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Product Grid */}
+            <div className="overflow-y-auto no-scrollbar max-h-[40vh]">
+              <div className="grid grid-cols-3 gap-2">
+                {inventory.filter(p => {
+                  const matchesCat = quickBillCategory === 'All' || p.category === quickBillCategory;
+                  const matchesSearch = p.name.toLowerCase().includes(quickBillSearch.toLowerCase());
+                  return matchesCat && matchesSearch;
+                }).map(p => {
+                  const product = toProduct(p);
+                  const qbItem = quickBillItems.find(i => i.product.id === product.id);
+                  return (
+                    <div
+                      key={product.id}
+                      onClick={() => !qbItem && quickBillAddItem(product)}
+                      className={cn(
+                        "relative flex flex-col rounded-xl border p-2 cursor-pointer active:scale-95 transition-all",
+                        qbItem ? "ring-2 ring-[#FF8237] bg-[#FFFBDC]/30 border-[#FF8237]" : "bg-white border-[#FFD3A5]"
+                      )}
+                    >
+                      <div className="w-full aspect-square bg-[#FFFBDC] rounded-lg flex items-center justify-center mb-1 text-xl">
+                        {product.name.charAt(0)}
+                      </div>
+                      <h3 className="text-[10px] font-bold text-[#FF5900] line-clamp-2 leading-tight">{product.name}</h3>
+                      <p className="text-xs font-black text-[#FF5900] mt-0.5">₹{product.price}</p>
+                      <div className="absolute top-1 right-1 flex flex-col gap-1 z-10">
+                        {qbItem ? (
+                          <>
+                            <button onClick={(e) => { e.stopPropagation(); quickBillUpdateQty(product.id, qbItem.quantity + 1); }} className="w-6 h-6 bg-[#FF8237] text-white rounded-md flex items-center justify-center active:scale-90 transition-transform">
+                              <Plus size={12} strokeWidth={3} />
+                            </button>
+                            <div className="bg-white border border-[#FF8237]/30 rounded-md h-6 flex items-center justify-center">
+                              <span className="text-[10px] font-black text-[#FF5900]">{qbItem.quantity}</span>
+                            </div>
+                            <button onClick={(e) => { e.stopPropagation(); quickBillUpdateQty(product.id, qbItem.quantity - 1); }} className="w-6 h-6 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-md flex items-center justify-center active:scale-90 transition-transform">
+                              <Minus size={12} strokeWidth={3} />
+                            </button>
+                          </>
+                        ) : (
+                          <button onClick={(e) => { e.stopPropagation(); quickBillAddItem(product); }} className="w-6 h-6 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-md flex items-center justify-center hover:bg-[#FF8237] hover:text-white transition-all active:scale-90">
+                            <Plus size={12} strokeWidth={3} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Cart Summary — PAID + UDHAR */}
+            <div className="flex flex-col gap-2 pt-3 border-t border-[#FFD3A5]/40">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-[#FFAA6E]">{quickBillItems.reduce((s, i) => s + i.quantity, 0)} {t('billing.items')}</p>
+                  <p className="text-2xl font-black text-[#FF5900]">₹{quickBillGetTotal()}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => setQbView('udhar')}
+                    disabled={quickBillItems.length === 0 || isProcessing}
+                    className="bg-orange-600 hover:bg-orange-700 text-white rounded-xl h-12 px-4 font-black"
+                  >
+                    {t('billing.udhar')}
+                  </Button>
+                  <Button
+                    onClick={processQuickBill}
+                    disabled={quickBillItems.length === 0 || isProcessing}
+                    className="bg-[#FF8237] hover:bg-[#FF5900] text-white rounded-xl h-12 px-4 font-black"
+                  >
+                    {isProcessing ? '...' : t('billing.paid')}
+                  </Button>
+                </div>
+              </div>
+              <p className="text-[10px] text-center text-[#FFAA6E] font-bold">{t('billing.quickBillNote')}</p>
+            </div>
+          </div>
+        ) : (
+          /* Udhar View */
+          <div className="flex flex-col gap-4">
+            <button
+              onClick={() => setQbView('products')}
+              className="flex items-center gap-1 text-[#FF8237] text-sm font-bold hover:opacity-70 transition-opacity self-start"
+            >
+              {t('billing.backToProducts')}
+            </button>
+
+            {/* Existing / New tabs */}
+            <div className="flex p-1 bg-[#FFFBDC] rounded-xl">
+              <button
+                onClick={() => setQbCustomerMode('existing')}
+                className={cn("flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-black text-sm transition-all",
+                  qbCustomerMode === 'existing' ? "bg-white text-[#FF8237] shadow-sm" : "text-[#FFAA6E]")}
+              >
+                <Users size={16} /> {t('common.existing')}
+              </button>
+              <button
+                onClick={() => setQbCustomerMode('new')}
+                className={cn("flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-black text-sm transition-all",
+                  qbCustomerMode === 'new' ? "bg-white text-[#FF8237] shadow-sm" : "text-[#FFAA6E]")}
+              >
+                <UserPlus size={16} /> {t('common.new')}
+              </button>
+            </div>
+
+            {/* Partial payment */}
+            <div className="bg-[#FFFBDC]/50 p-4 rounded-2xl border border-[#FFD3A5]/30">
+              <h5 className="text-[10px] font-black text-[#FF8237] uppercase tracking-[0.2em] mb-3">{t('billing.partialPaymentInfo')}</h5>
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-between items-center bg-white px-4 py-3 rounded-xl border border-[#FFD3A5]/30">
+                  <span className="text-xs font-bold text-[#FFAA6E]">{t('billing.billAmount')}</span>
+                  <span className="text-sm font-black text-[#FF5900]">₹{quickBillGetTotal()}</span>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[9px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.amountReceived')}</label>
+                  <Input
+                    type="number"
+                    placeholder="0.00"
+                    value={qbPartialPayment}
+                    onChange={(e) => setQbPartialPayment(e.target.value)}
+                    className="bg-white border-2 border-[#FF8237]/20 focus:border-[#FF8237]"
+                  />
+                </div>
+                <div className="flex justify-between items-center bg-[#FF5900] px-4 py-3 rounded-xl shadow-lg">
+                  <span className="text-xs font-bold text-[#FFD3A5]">{t('billing.remainingUdhar')}</span>
+                  <span className="text-lg font-black text-white">₹{Math.max(quickBillGetTotal() - (parseFloat(qbPartialPayment) || 0), 0)}</span>
+                </div>
+              </div>
+            </div>
+
+            {qbCustomerMode === 'existing' ? (
+              <div className="flex flex-col gap-4">
+                <Input
+                  placeholder={t('billing.searchCustomer')}
+                  value={qbCustomerSearch}
+                  onChange={(e) => setQbCustomerSearch(e.target.value)}
+                  leftIcon={<Search size={18} />}
+                  className="bg-white"
+                />
+                <div className="max-h-[240px] overflow-y-auto no-scrollbar flex flex-col gap-2">
+                  {qbFilteredCustomers.map(c => (
+                    <button
+                      key={c.id}
+                      onClick={() => processQuickBillUdhar(c.id)}
+                      disabled={isProcessing}
+                      className="flex items-center justify-between p-4 bg-white border border-[#FFD3A5]/30 rounded-2xl hover:bg-[#FFFBDC]/30 transition-all text-left"
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-black text-[#FF5900]">{c.name}</span>
+                        <span className="text-[10px] font-bold text-[#FFAA6E] tracking-widest">{c.phone}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-right">
+                          <span className="text-[9px] font-black text-[#FFAA6E] uppercase block">{t('common.balance')}</span>
+                          <span className="font-black text-orange-600">₹{c.balance}</span>
+                        </div>
+                        <ArrowRight size={18} className="text-[#FFD3A5]" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.customerName')}</label>
+                  <Input
+                    placeholder="e.g. Ramesh Kumar"
+                    value={qbNewCustomer.name}
+                    onChange={(e) => setQbNewCustomer(prev => ({ ...prev, name: e.target.value }))}
+                    className="bg-white"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.phoneNumber')}</label>
+                  <Input
+                    placeholder="+91 00000 00000"
+                    value={qbNewCustomer.phone}
+                    onChange={(e) => setQbNewCustomer(prev => ({ ...prev, phone: e.target.value }))}
+                    className="bg-white"
+                  />
+                </div>
+                <Button
+                  onClick={handleQbCreateAndCheckout}
+                  disabled={isProcessing}
+                  className="mt-2 bg-[#FF8237] hover:bg-[#FF5900] text-white rounded-xl h-14 font-black"
+                >
+                  {isProcessing ? 'Processing...' : t('billing.createAndAddUdhar')}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Checkout Selection Modal */}
+      <Modal
+        isOpen={isUdharModalOpen}
+        onClose={() => setIsUdharModalOpen(false)}
+        title={t('billing.udharSelection')}
+      >
+        <div className="flex flex-col gap-6">
+          <div className="flex p-1 bg-[#FFFBDC] rounded-xl">
+            <button
+              onClick={() => setCustomerMode('existing')}
+              className={cn("flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-black text-sm transition-all",
+                customerMode === 'existing' ? "bg-white text-[#FF8237] shadow-sm" : "text-[#FFAA6E]")}
+            >
+              <Users size={16} /> {t('common.existing')}
+            </button>
+            <button
+              onClick={() => setCustomerMode('new')}
+              className={cn("flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-black text-sm transition-all",
+                customerMode === 'new' ? "bg-white text-[#FF8237] shadow-sm" : "text-[#FFAA6E]")}
+            >
+              <UserPlus size={16} /> {t('common.new')}
+            </button>
+          </div>
+
+          <div className="bg-[#FFFBDC]/50 p-4 rounded-2xl border border-[#FFD3A5]/30">
+            <h5 className="text-[10px] font-black text-[#FF8237] uppercase tracking-[0.2em] mb-3">{t('billing.partialPaymentInfo')}</h5>
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between items-center bg-white px-4 py-3 rounded-xl border border-[#FFD3A5]/30">
+                <span className="text-xs font-bold text-[#FFAA6E]">{t('billing.billAmount')}</span>
+                <span className="text-sm font-black text-[#FF5900]">₹{getTotal()}</span>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[9px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.amountReceived')}</label>
+                <Input
+                  type="number"
+                  placeholder="0.00"
+                  value={partialPayment}
+                  onChange={(e) => setPartialPayment(e.target.value)}
+                  className="bg-white border-2 border-[#FF8237]/20 focus:border-[#FF8237]"
+                />
+              </div>
+              <div className="flex justify-between items-center bg-[#FF5900] px-4 py-3 rounded-xl shadow-lg">
+                <span className="text-xs font-bold text-[#FFD3A5]">{t('billing.remainingUdhar')}</span>
+                <span className="text-lg font-black text-white">₹{Math.max(getTotal() - (parseFloat(partialPayment) || 0), 0)}</span>
+              </div>
+            </div>
+          </div>
+
+          {customerMode === 'existing' ? (
+            <div className="flex flex-col gap-4">
+              <Input
+                placeholder={t('billing.searchCustomer')}
+                value={customerSearch}
+                onChange={(e) => setCustomerSearch(e.target.value)}
+                leftIcon={<Search size={18} />}
+                className="bg-white"
+              />
+              <div className="max-h-[300px] overflow-y-auto no-scrollbar flex flex-col gap-2">
+                {filteredCustomers.map(c => (
+                  <button
+                    key={c.id}
+                    onClick={() => processUdharCheckout(c.id)}
+                    disabled={isProcessing}
+                    className="flex items-center justify-between p-4 bg-white border border-[#FFD3A5]/30 rounded-2xl hover:bg-[#FFFBDC]/30 transition-all text-left"
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-black text-[#FF5900]">{c.name}</span>
+                      <span className="text-[10px] font-bold text-[#FFAA6E] tracking-widest">{c.phone}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-right">
+                        <span className="text-[9px] font-black text-[#FFAA6E] uppercase block">{t('common.balance')}</span>
+                        <span className="font-black text-orange-600">₹{c.balance}</span>
+                      </div>
+                      <ArrowRight size={18} className="text-[#FFD3A5]" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.customerName')}</label>
+                <Input
+                  placeholder={t('onboarding.ownerPlaceholder', "Enter full name")}
+                  value={newCustomer.name}
+                  onChange={(e) => setNewCustomer(prev => ({ ...prev, name: e.target.value }))}
+                  className="bg-white"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.phoneNumber')}</label>
+                <Input
+                  placeholder={t('common.phonePlaceholder', "+91 00000 00000")}
+                  value={newCustomer.phone}
+                  onChange={(e) => setNewCustomer(prev => ({ ...prev, phone: e.target.value }))}
+                  className="bg-white"
+                />
+              </div>
+              <Button
+                onClick={handleCreateAndCheckout}
+                disabled={isProcessing}
+                className="mt-4 bg-[#FF8237] hover:bg-[#FF5900] text-white rounded-xl h-14 font-black"
+              >
+                {t('billing.createAndAddUdhar')}
+              </Button>
+            </div>
+          )}
+        </div>
+      </Modal>
+
+      {/* Fly-to-cart dots animation fallback */}
+      <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+        {flyingDots.map(dot => (
+          <motion.div
+            key={dot.id}
+            initial={{ x: dot.x, y: dot.y, scale: 1 }}
+            animate={{ x: cartTargetPos.x, y: cartTargetPos.y, scale: 0.2, opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute w-8 h-8 rounded-full bg-[#FF8237] z-50"
+          />
+        ))}
+      </div>
+
+      {/* Sticky Bottom Bill Sheet */}
+      <div className="absolute md:fixed bottom-24 md:bottom-6 left-4 right-4 md:left-auto md:right-8 md:w-[400px] bg-white rounded-3xl shadow-[0_-10px_40px_rgba(15,42,29,0.1)] border-2 border-[#FFD3A5] p-4 z-40 flex flex-col gap-3">
+        <div className="flex items-center justify-between px-2">
+          <div ref={cartIconRef} className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-[#FFFBDC] rounded-full flex items-center justify-center relative shadow-inner">
+              <CheckCircle2 size={20} className="text-[#FF8237]" />
+              {cartItems.length > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                  {cartItems.reduce((acc, i) => acc + i.quantity, 0)}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-[#FF5900]">{t('billing.totalBill')}</span>
+              <span className="text-[11px] font-semibold text-[#FFAA6E]">{cartItems.length} {t('billing.items')}</span>
+            </div>
+          </div>
+          <p className="text-2xl font-black text-[#FF5900]">₹{getTotal()}</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mt-1">
+          <Button 
+            variant="primary" 
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-xl h-12"
+            onClick={() => setIsUdharModalOpen(true)}
+            disabled={cartItems.length === 0 || isProcessing}
+          >
+            {t('billing.udhar')}
+          </Button>
+          <Button
+            variant="primary"
+            className="w-full bg-[#FF8237] hover:bg-[#FF5900] text-[#FFFBDC] rounded-xl h-12"
+            onClick={processPaidCheckout}
+            disabled={cartItems.length === 0 || isProcessing}
+          >
+            {isProcessing ? 'Processing...' : t('billing.paid')}
+          </Button>
+        </div>
+      </div>
+      
+    </PageTransition>
+  );
+}
