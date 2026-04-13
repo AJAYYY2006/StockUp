@@ -6,18 +6,20 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Switch } from '../components/ui/Switch';
 import { motion } from 'framer-motion';
-import { 
-  LogOut, 
-  Globe, 
-  Store, 
-  User, 
-  Sparkles, 
-  Bell, 
-  PackageSearch, 
+import {
+  LogOut,
+  Globe,
+  Store,
+  User,
+  Sparkles,
+  Bell,
+  PackageSearch,
   Download,
   Edit2
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+
+type SettingsTab = 'profile' | 'plan' | 'notifications' | 'data';
 
 const LANGUAGES = [
   { code: 'ta', label: 'தமிழ்' },
@@ -34,6 +36,7 @@ export default function SettingsScreen() {
   const [lowStockAlerts, setLowStockAlerts] = useState(true);
   const [udharReminders, setUdharReminders] = useState(false);
   const [threshold, setThreshold] = useState('10');
+  const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
 
   const isPro = user?.plan === 'pro';
 
@@ -47,218 +50,257 @@ export default function SettingsScreen() {
     }));
   };
 
-  return (
-    <PageTransition className="flex flex-col h-full min-h-screen bg-[#FFFBDC] text-[#FF5900] p-4 md:p-12 lg:p-16 gap-8 pb-32 font-plus-jakarta overflow-x-hidden">
-      
-      <div className="max-w-4xl mx-auto w-full flex flex-col gap-8">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-          <div className="flex flex-col">
-            <h1 className="text-3xl md:text-5xl font-black text-[#FF5900] tracking-tighter">{user?.storeName || t('settings.store', "Store")}</h1>
-            <p className="text-sm md:text-base font-bold text-[#FFAA6E] mt-1 uppercase tracking-widest opacity-80">{t('settings.storeControlCenter', "Store Control Center")}</p>
-          </div>
-          <div className="flex items-center gap-3 self-end md:self-auto bg-white/50 px-4 py-2 rounded-2xl border border-[#FFD3A5]/30">
-            <div className="text-right">
-              <p className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest leading-none mb-1">{t('common.owner', 'Owner')}</p>
-              <p className="text-sm font-black text-[#FF5900]">{user?.ownerName || user?.email?.split('@')[0] || t('common.user', 'User')}</p>
-            </div>
-            <div className="w-10 h-10 bg-[#FF8237] rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
-              <User size={20} />
-            </div>
-          </div>
-        </div>
+  const TABS: { id: SettingsTab; label: string; icon: React.ElementType }[] = [
+    { id: 'profile', label: t('settings.storeProfile', 'Store Profile'), icon: Store },
+    { id: 'plan', label: t('settings.planDetails', 'Plan & Language'), icon: Sparkles },
+    { id: 'notifications', label: t('settings.notificationAlerts', 'Notifications'), icon: Bell },
+    { id: 'data', label: t('settings.inventory', 'Data & Inventory'), icon: PackageSearch },
+  ];
 
-        <div className="flex flex-col gap-6 md:gap-8">
-          
-          {/* Store Profile Section - 2 columns on desktop */}
-          <Card className="p-6 md:p-10 border-none shadow-[0_8px_40px_rgba(15,42,29,0.04)] bg-white rounded-[32px] flex flex-col gap-8">
+  const TabContent = () => {
+    switch (activeTab) {
+      case 'profile':
+        return (
+          <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
-               <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#FFFBDC]/50 rounded-2xl flex items-center justify-center">
-                    <Store size={20} className="text-[#FF8237]" />
-                  </div>
-                  <h2 className="text-xs font-black text-[#FF5900] uppercase tracking-[0.2em]">{t('settings.storeProfile', "Store Profile")}</h2>
-               </div>
-               <button className="hidden md:flex items-center gap-2 px-4 py-2 bg-[#FFFBDC]/50 hover:bg-[#FF8237] hover:text-white text-[#FF8237] text-[10px] font-black uppercase tracking-widest rounded-xl transition-all" onClick={handleSave}>
-                  {t('settings.saveChanges', "Save Changes")}
-               </button>
+              <h2 className="text-lg font-black text-[#FF5900]">{t('settings.storeProfile', 'Store Profile')}</h2>
+              <button onClick={handleSave} className="px-4 py-2 bg-[#FF8237] text-white text-xs font-black rounded-xl hover:bg-[#FF5900] transition-all">
+                {t('settings.saveChanges', 'Save Changes')}
+              </button>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="group space-y-3">
-                <label className="text-[10px] font-black text-[#FF8237] uppercase tracking-widest ml-1 block">{t('settings.storeName', "Store Name")}</label>
+                <label className="text-[10px] font-black text-[#FF8237] uppercase tracking-widest ml-1 block">{t('settings.storeName', 'Store Name')}</label>
                 <div className="flex items-center gap-4 bg-[#FFFBDC]/30 p-4 rounded-2xl border-2 border-transparent group-focus-within:border-[#FFD3A5]/50 transition-all">
-                  <input 
-                    value={storeName}
-                    onChange={(e) => setStoreName(e.target.value)}
-                    onBlur={handleSave}
-                    className="bg-transparent border-none outline-none text-base font-black text-[#FF5900] w-full"
-                  />
+                  <input value={storeName} onChange={(e) => setStoreName(e.target.value)} onBlur={handleSave} className="bg-transparent border-none outline-none text-base font-black text-[#FF5900] w-full" />
                   <Edit2 size={16} className="text-[#FF8237]/30" />
                 </div>
               </div>
-
               <div className="group space-y-3">
-                <label className="text-[10px] font-black text-[#FF8237] uppercase tracking-widest ml-1 block">{t('settings.ownerName', "Owner Name")}</label>
+                <label className="text-[10px] font-black text-[#FF8237] uppercase tracking-widest ml-1 block">{t('settings.ownerName', 'Owner Name')}</label>
                 <div className="flex items-center gap-4 bg-[#FFFBDC]/30 p-4 rounded-2xl border-2 border-transparent group-focus-within:border-[#FFD3A5]/50 transition-all">
-                  <input 
-                    value={ownerName}
-                    onChange={(e) => setOwnerName(e.target.value)}
-                    onBlur={handleSave}
-                    className="bg-transparent border-none outline-none text-base font-black text-[#FF5900] w-full"
-                  />
+                  <input value={ownerName} onChange={(e) => setOwnerName(e.target.value)} onBlur={handleSave} className="bg-transparent border-none outline-none text-base font-black text-[#FF5900] w-full" />
                   <User size={16} className="text-[#FF8237]/30" />
                 </div>
               </div>
             </div>
-          </Card>
-
-          {/* Membership & Language - Side by side or horizontal on desktop */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 md:gap-8">
-            
-            {/* Membership Section */}
-            <Card className="lg:col-span-3 p-6 md:p-8 border-none shadow-[0_8px_40px_rgba(15,42,29,0.04)] bg-white rounded-[32px] flex flex-col gap-6">
-              <h2 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.2em]">{t('settings.planDetails', "Plan Details")}</h2>
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-5 md:p-6 bg-gradient-to-br from-[#FF5900] to-[#FF8237] rounded-[24px] text-white relative overflow-hidden group">
-                <div className="absolute top-[-20%] right-[-10%] w-32 h-32 bg-white rounded-full blur-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
-                <div className="flex items-center gap-4 relative z-10">
-                   <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10">
-                     <Sparkles size={28} className="text-[#FFD3A5]" />
-                   </div>
-                   <div className="flex flex-col">
-                     <span className="text-[10px] font-black text-[#FFD3A5] uppercase tracking-widest leading-none mb-1.5">{t('settings.activePlan', "Active Plan")}</span>
-                     <span className="text-2xl font-black capitalize tracking-tighter">{user?.plan || 'PRO'} {t('settings.account', "Account")}</span>
-                   </div>
-                </div>
-                <Button className="h-12 px-8 bg-[#FFFBDC] hover:bg-white text-[#FF5900] font-black text-xs rounded-xl border-none shadow-xl relative z-10">
-                   {t('settings.upgradePlan', "UPGRADE PLAN")}
-                </Button>
+            <div className="p-4 bg-white/50 rounded-2xl border border-[#FFD3A5]/30 flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#FF8237] rounded-xl flex items-center justify-center text-white shrink-0">
+                <User size={22} />
               </div>
-            </Card>
-
-            {/* Language Selection */}
-            <Card className="lg:col-span-2 p-6 md:p-8 border-none shadow-[0_8px_40px_rgba(15,42,29,0.04)] bg-white rounded-[32px] flex flex-col justify-between">
-              <div className="flex items-center gap-2 mb-6">
+              <div>
+                <p className="text-sm font-black text-[#FF5900]">{user?.ownerName || user?.email?.split('@')[0] || 'User'}</p>
+                <p className="text-[10px] font-bold text-[#FFAA6E]">{user?.email}</p>
+              </div>
+            </div>
+          </div>
+        );
+      case 'plan':
+        return (
+          <div className="flex flex-col gap-6">
+            <h2 className="text-lg font-black text-[#FF5900]">{t('settings.planDetails', 'Plan & Language')}</h2>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 bg-gradient-to-br from-[#FF5900] to-[#FF8237] rounded-[24px] text-white relative overflow-hidden">
+              <div className="absolute top-[-20%] right-[-10%] w-32 h-32 bg-white rounded-full blur-3xl opacity-10" />
+              <div className="flex items-center gap-4 z-10">
+                <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10">
+                  <Sparkles size={28} className="text-[#FFD3A5]" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black text-[#FFD3A5] uppercase tracking-widest block mb-1">{t('settings.activePlan', 'Active Plan')}</span>
+                  <span className="text-2xl font-black capitalize">{user?.plan || 'PRO'} Account</span>
+                </div>
+              </div>
+              <Button className="h-12 px-8 bg-[#FFFBDC] hover:bg-white text-[#FF5900] font-black text-xs rounded-xl border-none shadow-xl z-10">
+                {t('settings.upgradePlan', 'UPGRADE PLAN')}
+              </Button>
+            </div>
+            <div className="p-6 bg-white rounded-2xl border border-[#FFD3A5]/30 flex flex-col gap-4">
+              <div className="flex items-center gap-2 mb-2">
                 <Globe size={16} className="text-[#FFAA6E]" />
-                <h2 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.2em]">{t('settings.displayLanguage', "Display Language")}</h2>
+                <h3 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">{t('settings.displayLanguage', 'Display Language')}</h3>
               </div>
               <div className="flex p-1.5 bg-[#FFFBDC]/30 rounded-[20px] gap-1">
                 {LANGUAGES.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => setLanguage(lang.code)}
-                    className={cn(
-                      "flex-1 py-3.5 text-xs font-black rounded-link transition-all rounded-[14px]",
-                      language === lang.code 
-                        ? "bg-[#FF8237] text-white shadow-xl shadow-[#FF8237]/30" 
-                        : "text-[#FFAA6E] hover:text-[#FF8237] hover:bg-white/50"
-                    )}
-                  >
+                  <button key={lang.code} onClick={() => setLanguage(lang.code)}
+                    className={cn("flex-1 py-3.5 text-xs font-black rounded-[14px] transition-all",
+                      language === lang.code ? "bg-[#FF8237] text-white shadow-lg" : "text-[#FFAA6E] hover:bg-white/50"
+                    )}>
                     {lang.label}
                   </button>
                 ))}
               </div>
-            </Card>
-
-          </div>
-
-          {/* Preferences Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            
-            {/* Notifications Section */}
-            <Card className="p-8 border-none shadow-[0_8px_40px_rgba(15,42,29,0.04)] bg-white rounded-[32px] flex flex-col gap-8">
-              <div className="flex items-center gap-2">
-                <Bell size={18} className="text-[#FFAA6E]" />
-                <h2 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.2em]">{t('settings.notificationAlerts', "Notification Alerts")}</h2>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-base font-black text-[#FF5900]">{t('settings.lowStockAlerts', "Low Stock Alerts")}</span>
-                    <span className="text-[10px] font-bold text-[#FFAA6E] uppercase tracking-wider">{t('settings.dynamicNotifications', "Dynamic notifications")}</span>
-                  </div>
-                  <Switch checked={lowStockAlerts} onChange={setLowStockAlerts} />
-                </div>
-                
-                <div className="h-px bg-[#FFFBDC] w-full" />
-
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-base font-black text-[#FF5900]">{t('settings.udharReminders', "Udhar Reminders")}</span>
-                    <span className="text-[10px] font-bold text-[#FFAA6E] uppercase tracking-wider">{t('settings.automaticFollowUps', "Automatic follow-ups")}</span>
-                  </div>
-                  <Switch checked={udharReminders} onChange={setUdharReminders} />
-                </div>
-              </div>
-            </Card>
-
-            {/* Inventory Defaults */}
-            <Card className="p-8 border-none shadow-[0_8px_40px_rgba(15,42,29,0.04)] bg-white rounded-[32px] flex flex-col gap-8">
-              <div className="flex items-center gap-2">
-                <PackageSearch size={18} className="text-[#FFAA6E]" />
-                <h2 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.2em]">{t('settings.inventory', "Inventory")}</h2>
-              </div>
-              
-              <div className="group space-y-4">
-                <label className="text-[10px] font-black text-[#FF8237] uppercase tracking-widest ml-1 block">{t('settings.lowStockThreshold', "Low Stock Threshold")}</label>
-                <div className="flex items-center gap-4 bg-[#FFFBDC]/30 p-4 rounded-2xl border-2 border-transparent focus-within:border-[#FFD3A5]/50 transition-all">
-                  <input 
-                    type="number"
-                    value={threshold}
-                    onChange={(e) => setThreshold(e.target.value)}
-                    className="bg-transparent border-none outline-none text-xl font-black text-[#FF5900] w-full"
-                  />
-                  <span className="text-[10px] font-black text-[#FF8237]">{t('settings.units', "UNITS")}</span>
-                </div>
-              </div>
-            </Card>
-
-          </div>
-
-          {/* Professional Actions & Footer */}
-          <div className="flex flex-col items-center gap-8 md:gap-12 mt-4">
-            
-            {/* Export Section (Pro only) */}
-            {isPro && (
-              <div className="w-full flex flex-col items-center gap-4">
-                 <h3 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.3em]">{t('settings.advancedDataTools', "Advanced Data Tools")}</h3>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                    <Button 
-                      onClick={handleExport}
-                      className="h-16 bg-white text-[#FF5900] border-2 border-[#FFD3A5]/30 hover:border-[#FF8237] rounded-2xl flex items-center justify-center gap-3 shadow-sm font-black text-sm transition-all group"
-                    >
-                      <Download size={20} className="text-[#FF8237] group-hover:scale-110 transition-transform" />
-                      {t('settings.exportCsv', "Export CSV Report")}
-                    </Button>
-                    <Button 
-                      onClick={handleExport}
-                      className="h-16 bg-white text-[#FF5900] border-2 border-[#FFD3A5]/30 hover:border-[#FF8237] rounded-2xl flex items-center justify-center gap-3 shadow-sm font-black text-sm transition-all group"
-                    >
-                      <Download size={20} className="text-[#FF8237] group-hover:scale-110 transition-transform" />
-                      {t('settings.exportJson', "Export JSON Raw Data")}
-                    </Button>
-                 </div>
-              </div>
-            )}
-
-            <button 
-              onClick={logout} 
-              className="flex items-center gap-3 px-12 py-5 text-red-600 font-black text-sm uppercase tracking-[0.2em] hover:bg-red-50 rounded-2xl transition-all"
-            >
-              <LogOut size={20} />
-              {t('settings.logout', "Logout from Store")}
-            </button>
-
-            <div className="flex flex-col items-center justify-center opacity-40">
-               <span className="text-[10px] font-black text-[#FF8237] uppercase tracking-[0.4em] mb-3">StockUp Engine v2.4.1</span>
-               <div className="flex items-center gap-2 text-xs font-bold text-[#FFAA6E]">
-                 {t('settings.craftedWith', "Crafted with")} <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 2 }}>❤️</motion.span> {t('settings.forKirana', "for the Indian Kirana owner")}
-               </div>
             </div>
           </div>
+        );
+      case 'notifications':
+        return (
+          <div className="flex flex-col gap-6">
+            <h2 className="text-lg font-black text-[#FF5900]">{t('settings.notificationAlerts', 'Notifications')}</h2>
+            <Card className="p-6 border-none shadow-sm bg-white rounded-2xl flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-base font-black text-[#FF5900] block">{t('settings.lowStockAlerts', 'Low Stock Alerts')}</span>
+                  <span className="text-[10px] font-bold text-[#FFAA6E] uppercase tracking-wider">{t('settings.dynamicNotifications', 'Dynamic notifications')}</span>
+                </div>
+                <Switch checked={lowStockAlerts} onChange={setLowStockAlerts} />
+              </div>
+              <div className="h-px bg-[#FFFBDC]" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-base font-black text-[#FF5900] block">{t('settings.udharReminders', 'Udhar Reminders')}</span>
+                  <span className="text-[10px] font-bold text-[#FFAA6E] uppercase tracking-wider">{t('settings.automaticFollowUps', 'Automatic follow-ups')}</span>
+                </div>
+                <Switch checked={udharReminders} onChange={setUdharReminders} />
+              </div>
+            </Card>
+          </div>
+        );
+      case 'data':
+        return (
+          <div className="flex flex-col gap-6">
+            <h2 className="text-lg font-black text-[#FF5900]">{t('settings.inventory', 'Data & Inventory')}</h2>
+            <Card className="p-6 border-none shadow-sm bg-white rounded-2xl flex flex-col gap-4">
+              <div className="flex items-center gap-2 mb-2">
+                <PackageSearch size={16} className="text-[#FFAA6E]" />
+                <h3 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">{t('settings.lowStockThreshold', 'Low Stock Threshold')}</h3>
+              </div>
+              <div className="flex items-center gap-4 bg-[#FFFBDC]/30 p-4 rounded-2xl border-2 border-transparent focus-within:border-[#FFD3A5]/50 transition-all">
+                <input type="number" value={threshold} onChange={(e) => setThreshold(e.target.value)} className="bg-transparent border-none outline-none text-xl font-black text-[#FF5900] w-full" />
+                <span className="text-[10px] font-black text-[#FF8237]">UNITS</span>
+              </div>
+            </Card>
+            {isPro && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button onClick={handleExport} className="h-16 bg-white text-[#FF5900] border-2 border-[#FFD3A5]/30 hover:border-[#FF8237] rounded-2xl flex items-center justify-center gap-3 shadow-sm font-black text-sm group">
+                  <Download size={20} className="text-[#FF8237] group-hover:scale-110 transition-transform" />
+                  {t('settings.exportCsv', 'Export CSV Report')}
+                </Button>
+                <Button onClick={handleExport} className="h-16 bg-white text-[#FF5900] border-2 border-[#FFD3A5]/30 hover:border-[#FF8237] rounded-2xl flex items-center justify-center gap-3 shadow-sm font-black text-sm group">
+                  <Download size={20} className="text-[#FF8237] group-hover:scale-110 transition-transform" />
+                  {t('settings.exportJson', 'Export JSON Raw Data')}
+                </Button>
+              </div>
+            )}
+          </div>
+        );
+    }
+  };
 
+  return (
+    <PageTransition className="flex flex-col h-[100dvh] bg-[#FFFBDC] text-[#FF5900] overflow-hidden">
+
+      {/* ── Mobile Layout: all sections stacked ── */}
+      <div className="md:hidden p-4 flex flex-col gap-6 pb-32 overflow-y-auto flex-1">
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-black text-[#FF5900] tracking-tighter">{user?.storeName || t('settings.store', 'Store')}</h1>
+          <p className="text-sm font-bold text-[#FFAA6E] mt-1 uppercase tracking-widest opacity-80">{t('settings.storeControlCenter', 'Store Control Center')}</p>
+        </div>
+
+        {/* Store Profile */}
+        <Card className="p-6 border-none shadow-sm bg-white rounded-2xl flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2"><Store size={16} className="text-[#FF8237]" /><h2 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">{t('settings.storeProfile', 'Store Profile')}</h2></div>
+            <button onClick={handleSave} className="text-[10px] font-black text-[#FF8237] px-3 py-1.5 bg-[#FFFBDC] rounded-lg">{t('settings.saveChanges', 'Save')}</button>
+          </div>
+          <div className="group space-y-2">
+            <label className="text-[10px] font-black text-[#FF8237] uppercase tracking-widest block">{t('settings.storeName', 'Store Name')}</label>
+            <div className="flex items-center gap-3 bg-[#FFFBDC]/30 p-3 rounded-xl border-2 border-transparent group-focus-within:border-[#FFD3A5]/50">
+              <input value={storeName} onChange={(e) => setStoreName(e.target.value)} onBlur={handleSave} className="bg-transparent border-none outline-none font-black text-[#FF5900] w-full" />
+              <Edit2 size={14} className="text-[#FF8237]/30 shrink-0" />
+            </div>
+          </div>
+          <div className="group space-y-2">
+            <label className="text-[10px] font-black text-[#FF8237] uppercase tracking-widest block">{t('settings.ownerName', 'Owner Name')}</label>
+            <div className="flex items-center gap-3 bg-[#FFFBDC]/30 p-3 rounded-xl border-2 border-transparent group-focus-within:border-[#FFD3A5]/50">
+              <input value={ownerName} onChange={(e) => setOwnerName(e.target.value)} onBlur={handleSave} className="bg-transparent border-none outline-none font-black text-[#FF5900] w-full" />
+              <User size={14} className="text-[#FF8237]/30 shrink-0" />
+            </div>
+          </div>
+        </Card>
+
+        {/* Notifications */}
+        <Card className="p-6 border-none shadow-sm bg-white rounded-2xl flex flex-col gap-5">
+          <div className="flex items-center gap-2"><Bell size={16} className="text-[#FFAA6E]" /><h2 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">{t('settings.notificationAlerts', 'Notifications')}</h2></div>
+          <div className="flex items-center justify-between">
+            <div><span className="text-sm font-black text-[#FF5900] block">{t('settings.lowStockAlerts', 'Low Stock Alerts')}</span><span className="text-[10px] font-bold text-[#FFAA6E]">{t('settings.dynamicNotifications', 'Dynamic notifications')}</span></div>
+            <Switch checked={lowStockAlerts} onChange={setLowStockAlerts} />
+          </div>
+          <div className="h-px bg-[#FFFBDC]" />
+          <div className="flex items-center justify-between">
+            <div><span className="text-sm font-black text-[#FF5900] block">{t('settings.udharReminders', 'Udhar Reminders')}</span><span className="text-[10px] font-bold text-[#FFAA6E]">{t('settings.automaticFollowUps', 'Automatic follow-ups')}</span></div>
+            <Switch checked={udharReminders} onChange={setUdharReminders} />
+          </div>
+        </Card>
+
+        {/* Language */}
+        <Card className="p-6 border-none shadow-sm bg-white rounded-2xl flex flex-col gap-4">
+          <div className="flex items-center gap-2"><Globe size={16} className="text-[#FFAA6E]" /><h3 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">{t('settings.displayLanguage', 'Language')}</h3></div>
+          <div className="flex p-1.5 bg-[#FFFBDC]/30 rounded-[20px] gap-1">
+            {LANGUAGES.map((lang) => (
+              <button key={lang.code} onClick={() => setLanguage(lang.code)} className={cn("flex-1 py-3 text-xs font-black rounded-[14px] transition-all", language === lang.code ? "bg-[#FF8237] text-white shadow-lg" : "text-[#FFAA6E] hover:bg-white/50")}>{lang.label}</button>
+            ))}
+          </div>
+        </Card>
+
+        <button onClick={logout} className="flex items-center justify-center gap-3 py-4 text-red-600 font-black text-sm uppercase tracking-widest hover:bg-red-50 rounded-2xl transition-all">
+          <LogOut size={18} /> {t('settings.logout', 'Logout from Store')}
+        </button>
+        <div className="flex flex-col items-center opacity-40 pb-4">
+          <span className="text-[10px] font-black text-[#FF8237] uppercase tracking-[0.4em] mb-2">Paisa v2.4.1</span>
+          <div className="flex items-center gap-2 text-xs font-bold text-[#FFAA6E]">
+            {t('settings.craftedWith', 'Crafted with')} <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 2 }}>❤️</motion.span> {t('settings.forKirana', 'for Kirana owners')}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Desktop Layout: sidebar tabs + content ── */}
+      <div className="hidden md:flex flex-1 overflow-hidden">
+
+        {/* Left Tab Nav */}
+        <aside className="w-[220px] shrink-0 border-r border-[#FFD3A5]/40 bg-white/40 flex flex-col p-4 gap-1 overflow-y-auto">
+          <div className="mb-6 px-2">
+            <h1 className="text-lg font-black text-[#FF5900] tracking-tight truncate">{user?.storeName || 'Store'}</h1>
+            <p className="text-[10px] font-bold text-[#FFAA6E] uppercase tracking-widest">{t('settings.storeControlCenter', 'Control Center')}</p>
+          </div>
+
+          {TABS.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all text-left",
+                  activeTab === tab.id
+                    ? "bg-[#FF8237] text-white shadow-md"
+                    : "text-[#FFAA6E] hover:bg-[#FFFBDC] hover:text-[#FF5900]"
+                )}
+              >
+                <Icon size={16} />
+                {tab.label}
+              </button>
+            );
+          })}
+
+          <div className="mt-auto pt-4 flex flex-col gap-2">
+            <button onClick={logout} className="flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all">
+              <LogOut size={16} /> {t('settings.logout', 'Logout')}
+            </button>
+            <p className="text-[9px] text-center text-[#FFD3A5] font-bold tracking-widest px-2">Paisa v2.4.1</p>
+          </div>
+        </aside>
+
+        {/* Right Content */}
+        <div className="flex-1 overflow-y-auto no-scrollbar p-8 lg:p-12">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className="max-w-2xl"
+          >
+            <TabContent />
+          </motion.div>
         </div>
       </div>
 

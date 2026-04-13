@@ -3,6 +3,7 @@ import { Sidebar } from './Sidebar';
 import { BottomNav } from './BottomNav';
 import { ToastContainer } from '../ui/Toast';
 import { Header } from './Header';
+import { MobileHeader } from './MobileHeader';
 import { useLocation } from 'react-router-dom';
 
 interface AppLayoutProps {
@@ -42,13 +43,16 @@ export function AppLayout({ children, fab }: AppLayoutProps) {
   return (
     <div className="flex min-h-screen bg-[#FFFBDC] text-[#FF5900] w-full">
       <ToastContainer />
-      
-      {/* Laptop Layout Sidebar */}
+
+      {/* Desktop Sidebar — hidden on mobile */}
       <Sidebar />
-      
+
       {/* Main Content Area */}
       <div className="flex-1 md:pl-[240px] flex flex-col min-h-screen relative overflow-hidden">
-        {/* Desktop Header */}
+        {/* Mobile Header — hidden on desktop */}
+        <MobileHeader />
+
+        {/* Desktop Header — hidden on mobile */}
         <Header title={currentTitle} />
 
         <main className="flex-1 w-full max-w-[960px] mx-auto pb-24 md:pb-8 pt-safe md:pt-2 overflow-y-auto no-scrollbar relative min-h-screen">
@@ -60,8 +64,8 @@ export function AppLayout({ children, fab }: AppLayoutProps) {
           )}
           {children}
         </main>
-        
-        {/* Floating Action Button (FAB) Slot - Mobile Only (or universal if styled) */}
+
+        {/* FAB Slot */}
         {fab && (
           <div className="fixed md:absolute bottom-[88px] md:bottom-8 right-4 md:right-8 z-30">
             {fab}
@@ -69,7 +73,7 @@ export function AppLayout({ children, fab }: AppLayoutProps) {
         )}
       </div>
 
-      {/* Mobile Layout Bottom Nav */}
+      {/* Mobile Bottom Nav — hidden on desktop */}
       <BottomNav />
     </div>
   );

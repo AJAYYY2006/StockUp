@@ -50,7 +50,7 @@ function getStats(sales: any[], expenses: any[], previousSales: any[], previousE
     profit: currentProfit,
     profitChange: calculateChange(currentProfit, prevProfit),
     profitMargin: currentRevenue > 0 ? Math.round((currentProfit / currentRevenue) * 100) : 0,
-    topProducts: [] // Derived later
+    topProducts: [] as { name: string; value: number }[] // Derived later
   };
 }
 
@@ -67,25 +67,22 @@ export default function ReportsScreen() {
   const { items: customers, fetchCustomers } = useCustomersStore();
   const { items: expenses, fetchExpenses } = useExpenseStore();
   const [sales, setSales] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true);
       await Promise.all([
         fetchItems(),
         fetchCustomers(),
         fetchExpenses()
       ]);
-      
+
       const { data: salesData } = await supabase
         .from('sales')
         .select('*, sale_items(*)');
-      
+
       if (salesData) setSales(salesData);
-      setLoading(false);
     };
-    loadData();
+    loadData().catch(console.error);
   }, []);
 
   // Filter data based on timeRange

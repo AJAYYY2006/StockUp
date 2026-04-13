@@ -334,10 +334,13 @@ export default function BillingScreen() {
   };
 
   return (
-    <PageTransition className="flex flex-col h-[calc(100vh-80px)] md:h-[calc(100vh-40px)]">
-      
+    <PageTransition className="flex flex-col md:flex-row gap-4 md:gap-6 p-2 md:p-6 h-[calc(100vh-80px)] md:h-[calc(100vh-56px)] bg-[#FFFBDC] overflow-hidden">
+
+      {/* ── LEFT COLUMN: Catalog ── */}
+      <div className="flex flex-col flex-1 min-w-0 bg-white rounded-[32px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#FFD3A5]/30">
+
       {/* Top Header & Search */}
-      <div className="bg-[#FF5900] rounded-b-3xl p-4 md:p-6 shadow-xl z-20 shrink-0 sticky top-0 md:relative">
+      <div className="bg-gradient-to-r from-[#FF5900] to-[#FF8237] p-4 md:p-5 shadow-sm z-20 shrink-0 sticky top-0 md:relative border-b border-[#FFD3A5]/20">
         <div className="flex items-center gap-3 w-full relative">
           <Input
             placeholder={t('billing.searchPlaceholder')}
@@ -375,8 +378,8 @@ export default function BillingScreen() {
               onClick={() => setActiveCategory(cat)}
               className={cn(
                 "px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-colors border",
-                activeCategory === cat 
-                  ? "bg-[#FF8237] text-[#FFFBDC] border-[#FF8237]" 
+                activeCategory === cat
+                  ? "bg-[#FF8237] text-[#FFFBDC] border-[#FF8237]"
                   : "bg-white text-[#FFAA6E] border-[#FFD3A5]/50 hover:bg-[#FFFBDC]"
               )}
             >
@@ -387,8 +390,8 @@ export default function BillingScreen() {
       </div>
 
       {/* Product Grid - HIGH DENSITY */}
-      <div className="flex-1 overflow-y-auto no-scrollbar p-4 relative z-10 pb-[200px]">
-        <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+      <div className="flex-1 overflow-y-auto no-scrollbar p-4 relative z-10 pb-[200px] md:pb-4">
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
           <AnimatePresence>
             {filteredProducts.map(p => {
               const product = toProduct(p);
@@ -812,8 +815,8 @@ export default function BillingScreen() {
         ))}
       </div>
 
-      {/* Sticky Bottom Bill Sheet */}
-      <div className="absolute md:fixed bottom-24 md:bottom-6 left-4 right-4 md:left-auto md:right-8 md:w-[400px] bg-white rounded-3xl shadow-[0_-10px_40px_rgba(15,42,29,0.1)] border-2 border-[#FFD3A5] p-4 z-40 flex flex-col gap-3">
+      {/* Mobile-only sticky bottom bill bar */}
+      <div className="md:hidden absolute bottom-24 left-4 right-4 bg-white rounded-3xl shadow-[0_-10px_40px_rgba(15,42,29,0.1)] border-2 border-[#FFD3A5] p-4 z-40 flex flex-col gap-3">
         <div className="flex items-center justify-between px-2">
           <div ref={cartIconRef} className="flex items-center gap-2">
             <div className="w-10 h-10 bg-[#FFFBDC] rounded-full flex items-center justify-center relative shadow-inner">
@@ -831,27 +834,95 @@ export default function BillingScreen() {
           </div>
           <p className="text-2xl font-black text-[#FF5900]">₹{getTotal()}</p>
         </div>
-
-        <div className="grid grid-cols-2 gap-3 mt-1">
-          <Button 
-            variant="primary" 
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-xl h-12"
-            onClick={() => setIsUdharModalOpen(true)}
-            disabled={cartItems.length === 0 || isProcessing}
+        <div className="flex gap-4">
+          <Button
+            onClick={processQuickBill}
+            disabled={quickBillItems.length === 0 || isProcessing}
+            className="flex-1 bg-[#FF8237] hover:bg-[#FF5900] text-white rounded-xl h-12 font-black"
+          >
+            {isProcessing ? '...' : t('billing.paid')}
+          </Button>
+          <Button
+            onClick={() => setQbView('udhar')}
+            disabled={quickBillItems.length === 0 || isProcessing}
+            className="flex-1 bg-orange-600 hover:bg-orange-700 text-white rounded-xl h-12 font-black"
           >
             {t('billing.udhar')}
           </Button>
-          <Button
-            variant="primary"
-            className="w-full bg-[#FF8237] hover:bg-[#FF5900] text-[#FFFBDC] rounded-xl h-12"
-            onClick={processPaidCheckout}
-            disabled={cartItems.length === 0 || isProcessing}
-          >
-            {isProcessing ? 'Processing...' : t('billing.paid')}
-          </Button>
         </div>
       </div>
-      
+
+      </div>{/* end left column */}
+
+      {/* ── RIGHT COLUMN: Active Bill (desktop only) ── */}
+      <div className="hidden md:flex flex-col w-[360px] shrink-0 bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#FFD3A5]/40 p-5 gap-4 overflow-y-auto no-scrollbar">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-black text-[#FF5900] tracking-tight">{t('billing.totalBill')}</h2>
+            <p className="text-[11px] font-bold text-[#FFAA6E] uppercase tracking-widest">
+              {cartItems.reduce((acc, i) => acc + i.quantity, 0)} {t('billing.items')}
+            </p>
+          </div>
+          <div ref={cartIconRef} className="w-10 h-10 bg-[#FFFBDC] rounded-full flex items-center justify-center relative shadow-inner">
+            <CheckCircle2 size={20} className="text-[#FF8237]" />
+            {cartItems.length > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                {cartItems.reduce((acc, i) => acc + i.quantity, 0)}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Cart Items */}
+        <div className="flex-1 flex flex-col gap-2 overflow-y-auto no-scrollbar">
+          {cartItems.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center py-16 text-center">
+              <div className="w-16 h-16 bg-[#FFFBDC] rounded-2xl flex items-center justify-center mb-3">
+                <CheckCircle2 size={28} className="text-[#FFD3A5]" />
+              </div>
+              <p className="text-sm font-black text-[#FFAA6E]">Cart is empty</p>
+              <p className="text-xs text-[#FFD3A5] font-bold mt-1">Add products from the catalog</p>
+            </div>
+          ) : (
+            cartItems.map(item => (
+              <div key={item.id} className="flex items-center justify-between p-3 bg-[#FFFBDC]/60 rounded-2xl border border-[#FFD3A5]/30">
+                <div className="flex flex-col flex-1 min-w-0 mr-2">
+                  <p className="text-sm font-black text-[#FF5900] truncate">{item.name}</p>
+                  <p className="text-xs font-bold text-[#FFAA6E]">₹{item.price} × {item.quantity}</p>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-7 h-7 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-lg flex items-center justify-center active:scale-90 transition-transform">
+                    <Minus size={14} strokeWidth={3} />
+                  </button>
+                  <span className="text-sm font-black text-[#FF5900] w-5 text-center">{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 bg-[#FF8237] text-white rounded-lg flex items-center justify-center active:scale-90 transition-transform">
+                    <Plus size={14} strokeWidth={3} />
+                  </button>
+                </div>
+                <p className="text-sm font-black text-[#FF5900] ml-3 shrink-0">₹{item.price * item.quantity}</p>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Total + Checkout */}
+        <div className="flex flex-col gap-3 pt-4 border-t border-[#FFD3A5]/40 shrink-0">
+          <div className="flex justify-between items-center px-1">
+            <span className="text-sm font-bold text-[#FFAA6E]">Total</span>
+            <span className="text-3xl font-black text-[#FF5900]">₹{getTotal()}</span>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Button variant="primary" className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-xl h-12 font-black" onClick={() => setIsUdharModalOpen(true)} disabled={cartItems.length === 0 || isProcessing}>
+              {t('billing.udhar')}
+            </Button>
+            <Button variant="primary" className="w-full bg-[#FF8237] hover:bg-[#FF5900] text-[#FFFBDC] rounded-xl h-12 font-black" onClick={processPaidCheckout} disabled={cartItems.length === 0 || isProcessing}>
+              {isProcessing ? 'Processing...' : t('billing.paid')}
+            </Button>
+          </div>
+        </div>
+      </div>
+
     </PageTransition>
   );
 }

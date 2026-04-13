@@ -55,7 +55,7 @@ const resources = {
           ai: "AI Insights"
         },
         welcomeCode: "Welcome Back",
-        loginDesc: "Log in to manage your inventory and billing.",
+        loginDesc: "Log in to manage your inventory and billing with Paisa.",
         mobileNumber: "Mobile Number",
         mobilePlaceholder: "Enter 10-digit number",
         sendOtp: "Send OTP",
@@ -384,7 +384,7 @@ const resources = {
         ThisYear: "इस साल"
       },
       auth: {
-        tagline: "हर किराना के लिए स्मार्ट स्टोर प्रबंधन।",
+        tagline: "Paisa - हर किराना के लिए स्मार्ट स्टोर प्रबंधन।",
         features: {
           free: "हमेशा के लिए 100% मुफ्त",
           offline: "ऑफ़लाइन तैयार",
@@ -726,8 +726,8 @@ const resources = {
           offline: "ஆஃப்லைன் வசதி",
           ai: "AI பகுப்பாய்வு"
         },
-        welcomeCode: "மீண்டும் வருக",
-        loginDesc: "உங்கள் இருப்பு மற்றும் பில்லிங்கை நிர்வகிக்க உள்நுழையவும்.",
+        welcomeCode: "மீண்டு வருக",
+        loginDesc: "Paisa மூலம் உங்கள் இருப்பு மற்றும் பில்லிங்கை நிர்வகிக்க உள்நுழையவும்.",
         mobileNumber: "மொபைல் எண்",
         mobilePlaceholder: "10 இலக்க எண்ணை உள்ளிடவும்",
         sendOtp: "OTP அனுப்பு",

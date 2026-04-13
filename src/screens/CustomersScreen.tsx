@@ -7,7 +7,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { PlanGate } from '../components/ui/PlanGate';
-import { Search, Users, ChevronRight, Phone, Plus, History, ArrowRightLeft, Calendar, FileText, TrendingDown } from 'lucide-react';
+import { Search, Users, ChevronRight, Phone, Plus, History, ArrowRightLeft } from 'lucide-react';
 import { useCustomersStore, type Customer } from '../store/customers';
 import { Button } from '../components/ui/Button';
 import { BottomSheet } from '../components/ui/BottomSheet';
@@ -116,11 +116,6 @@ export default function CustomersScreen() {
     }
   };
 
-  const handleViewHistory = (customer: Customer) => {
-    setSelectedCustomer(customer);
-    setIsHistoryModalOpen(true);
-  };
-
   const handleCollectPayment = async () => {
     if (!selectedCustomer || !paymentAmount) return;
     const amountNum = parseFloat(paymentAmount);
@@ -147,52 +142,137 @@ export default function CustomersScreen() {
     }
   };
 
+  // Shared customer detail panel content (used in both desktop panel and mobile modals)
+  const CustomerDetail = () => {
+    if (!selectedCustomer) return (
+      <div className="flex-1 flex flex-col items-center justify-center py-20 text-center">
+        <div className="w-20 h-20 bg-[#FFFBDC] rounded-3xl flex items-center justify-center mb-4">
+          <Users size={32} className="text-[#FFD3A5]" />
+        </div>
+        <p className="text-sm font-black text-[#FFAA6E]">Select a customer</p>
+        <p className="text-xs font-bold text-[#FFD3A5] mt-1">to view details & history</p>
+      </div>
+    );
+
+    return (
+      <div className="flex flex-col gap-4 h-full overflow-y-auto no-scrollbar">
+        {/* Customer Card */}
+        <div className="flex items-center gap-4 p-4 bg-[#FF5900] rounded-2xl text-[#FFFBDC]">
+          <div className="w-14 h-14 bg-[#FF8237] rounded-2xl flex items-center justify-center font-black text-2xl shrink-0">
+            {selectedCustomer.name.charAt(0)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-black text-lg leading-tight truncate">{selectedCustomer.name}</h3>
+            <p className="text-[11px] font-bold text-[#FFD3A5] flex items-center gap-1 mt-0.5"><Phone size={10} /> {selectedCustomer.phone}</p>
+          </div>
+          <div className="text-right shrink-0">
+            <span className={cn("font-black text-xl block", selectedCustomer.balance > 0 ? "text-yellow-200" : "text-green-300")}>
+              ₹{selectedCustomer.balance.toLocaleString('en-IN')}
+            </span>
+            <span className="text-[10px] font-bold text-[#FFD3A5] uppercase tracking-wider">
+              {selectedCustomer.balance > 0 ? 'Unpaid' : 'Settled'}
+            </span>
+          </div>
+        </div>
+
+        {/* Payment Section */}
+        <div className="p-4 bg-white rounded-2xl border border-[#FFD3A5]/30 flex flex-col gap-3">
+          <h4 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">{t('customers.collectPayment', 'Collect Payment')}</h4>
+          <div className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100">
+            <span className="text-xs font-bold text-red-400">Remaining After Payment</span>
+            <span className="text-base font-black text-red-600">
+              ₹{Math.max((selectedCustomer.balance) - (parseFloat(paymentAmount) || 0), 0).toLocaleString('en-IN')}
+            </span>
+          </div>
+          <Input
+            type="number"
+            placeholder="Amount (₹)"
+            value={paymentAmount}
+            onChange={(e) => setPaymentAmount(e.target.value)}
+            className="bg-[#FFFBDC] border-[#FFD3A5]/40"
+          />
+          <Input
+            placeholder="Note (e.g. Cash payment)"
+            value={paymentDescription}
+            onChange={(e) => setPaymentDescription(e.target.value)}
+            className="bg-[#FFFBDC] border-[#FFD3A5]/40"
+          />
+          <Button
+            className="w-full h-12 font-black bg-[#FF5900] hover:bg-[#FF8237] text-white"
+            onClick={handleCollectPayment}
+            disabled={isSaving || !paymentAmount}
+          >
+            {isSaving ? 'Processing...' : t('customers.confirmPayment', 'Confirm Payment')}
+          </Button>
+        </div>
+
+        {/* Transaction History */}
+        <div className="flex flex-col gap-3">
+          <h4 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('customers.transactions', 'Transactions')}</h4>
+          <div className="flex flex-col gap-2">
+            {selectedCustomer.transactions && selectedCustomer.transactions.length > 0 ? (
+              selectedCustomer.transactions.map((trx) => (
+                <div key={trx.id} className="p-3 bg-white border border-[#FFD3A5]/20 rounded-2xl flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center border shrink-0",
+                      trx.type === 'debit' ? "bg-red-50 border-red-100 text-red-500" : "bg-green-50 border-green-100 text-green-500"
+                    )}>
+                      {trx.type === 'debit' ? <ArrowRightLeft size={15} /> : <History size={15} />}
+                    </div>
+                    <div>
+                      <p className="text-xs font-black text-[#FF5900]">{trx.description}</p>
+                      <p className="text-[9px] font-bold text-[#FFAA6E]">{new Date(trx.date).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <span className={cn("text-sm font-black shrink-0", trx.type === 'debit' ? "text-red-500" : "text-green-500")}>
+                    {trx.type === 'debit' ? '-' : '+'} ₹{trx.amount}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="py-8 text-center text-[#FFAA6E]">
+                <History size={28} className="mx-auto mb-2 opacity-30" />
+                <p className="text-xs font-bold">{t('customers.noHistory', 'No transaction history')}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <PageTransition className="flex flex-col h-full min-h-screen bg-[#FFFBDC] text-[#FF5900]">
-      
+    <PageTransition className="flex flex-col md:flex-row gap-4 md:gap-6 p-2 md:p-6 h-full min-h-screen bg-[#FFFBDC] text-[#FF5900] overflow-hidden">
+
+      {/* ── LEFT: List Panel (now right) ── */}
+      <div className="flex flex-col flex-1 min-w-0 bg-white rounded-[32px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#FFD3A5]/30">
+
       {/* Header Area */}
-      <div className="bg-[#FF5900] rounded-b-3xl p-4 md:p-6 shadow-xl z-20 shrink-0 sticky top-0 md:relative text-[#FFFBDC]">
-        <div className="flex justify-between items-center mb-6">
+      <div className="bg-gradient-to-r from-[#FF5900] to-[#FF8237] p-4 md:p-6 shadow-md z-20 border-b border-[#FFD3A5]/20 shrink-0 sticky top-0 md:relative text-[#FFFBDC]">
+        <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold flex items-center gap-2">
             <Users size={22} /> {t('customers.udharBook', 'Udhar Book')}
           </h2>
-          <Button 
+          <Button
             onClick={() => setIsFormOpen(true)}
             className="hidden md:flex items-center gap-2 bg-[#FF8237] hover:bg-[#FFAA6E] border-none text-xs h-9 px-4"
           >
             <Plus size={16} /> {t('customers.addNew', 'Add Customer')}
           </Button>
         </div>
-        
-        <div className="bg-[#FF8237] p-4 rounded-2xl border border-[#FFD3A5]/20 shadow-inner mb-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-[10px] uppercase font-black text-[#FFD3A5] tracking-widest">{t('customers.totalReceivable', 'Total Receivable')}</p>
-              <h3 className="text-2xl font-black text-[#FFFBDC]">₹{totalUdhar.toLocaleString('en-IN')}</h3>
-            </div>
-            <div className="bg-[#FF5900] px-3 py-1.5 rounded-xl border border-[#FF8237]">
-              <p className="text-[10px] font-bold text-[#FFD3A5] text-center">{items.filter(i => i.balance > 0).length} {t('customers.customersCount', 'Customers')}</p>
-            </div>
-          </div>
 
-          <div className="mt-4 pt-3 border-t border-[#FFD3A5]/10">
-            <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[10px] font-black text-[#FFD3A5] uppercase tracking-wider">
-                {user?.plan === 'pro' ? 'Pro' : user?.plan === 'basic' ? 'Basic' : 'Free'} {t('customers.customerLimit', 'Customer Limit')}
-              </span>
-              <span className="text-[10px] font-bold text-[#FFFBDC]">{items.length} / {user?.plan === 'pro' ? '∞' : user?.plan === 'basic' ? 100 : 10}</span>
-            </div>
-            <div className="h-1.5 w-full bg-[#FF5900] rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-[#FFD3A5] rounded-full transition-all duration-500" 
-                style={{ width: `${Math.min((items.length / (user?.plan === 'pro' ? (items.length || 1) : user?.plan === 'basic' ? 100 : 10)) * 100, 100)}%` }}
-              />
-            </div>
+        <div className="bg-[#FF8237] p-3 rounded-2xl border border-[#FFD3A5]/20 shadow-inner mb-3 flex justify-between items-center">
+          <div>
+            <p className="text-[10px] uppercase font-black text-[#FFD3A5] tracking-widest">{t('customers.totalReceivable', 'Total Receivable')}</p>
+            <h3 className="text-2xl font-black text-[#FFFBDC]">₹{totalUdhar.toLocaleString('en-IN')}</h3>
+          </div>
+          <div className="bg-[#FF5900] px-3 py-1.5 rounded-xl">
+            <p className="text-[10px] font-bold text-[#FFD3A5] text-center">{items.filter(i => i.balance > 0).length} {t('customers.customersCount', 'Customers')}</p>
           </div>
         </div>
 
-        <Input 
-          placeholder={t('customers.searchCustomers', 'Search by name or phone...')} 
+        <Input
+          placeholder={t('customers.searchCustomers', 'Search by name or phone...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           leftIcon={<Search size={20} className="text-[#FF8237]" />}
@@ -201,262 +281,122 @@ export default function CustomersScreen() {
       </div>
 
       <div className="flex-1 overflow-y-auto no-scrollbar">
-        <PlanGate 
-          allowedPlans={['pro', 'basic']} 
-          currentPlan={user?.plan || 'free'} 
+        <PlanGate
+          allowedPlans={['pro', 'basic']}
+          currentPlan={user?.plan || 'free'}
           requiredFeatureMessage={t('customers.unlockUdhar', 'Unlock the Udhar Book by upgrading to Basic or Pro.')}
         >
-          <div className="p-4 md:p-6 flex flex-col gap-3 pb-24">
+          <div className="p-4 flex flex-col gap-3 pb-24 md:pb-4">
             {loading ? (
               <div className="py-20 flex justify-center">
-                 <div className="w-10 h-10 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : (
               <AnimatePresence>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-                  {filteredCustomers.map((customer) => (
-                    <motion.div
-                      key={customer.id}
-                      layout
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      onClick={() => {
-                        setSelectedCustomer(customer);
-                        setIsPaymentModalOpen(true);
-                      }}
-                    >
-                      <Card className="flex flex-col shadow-sm hover:shadow-md border-[#FFD3A5]/30 cursor-pointer group transition-all h-full bg-white overflow-hidden">
-                        <div className="p-4 flex items-center justify-between flex-1">
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-[#FFFBDC] text-[#FF8237] rounded-2xl flex items-center justify-center border border-[#FFD3A5] shrink-0 font-black text-xl">
-                              {customer.name.charAt(0)}
-                            </div>
-                            <div className="flex flex-col">
-                              <h4 className="font-black text-[#FF5900] leading-tight text-base">{customer.name}</h4>
-                              <p className="text-[11px] font-bold text-[#FFAA6E] flex items-center gap-1 mt-0.5">
-                                <Phone size={10} /> {customer.phone}
-                              </p>
-                            </div>
+                {filteredCustomers.map((customer) => (
+                  <motion.div
+                    key={customer.id}
+                    layout
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    onClick={() => {
+                      setSelectedCustomer(customer);
+                      setPaymentAmount('');
+                      // on mobile: open payment modal; on desktop: selection handles the detail panel
+                      if (window.innerWidth < 768) setIsPaymentModalOpen(true);
+                    }}
+                  >
+                    <Card className={cn(
+                      "flex flex-col shadow-sm hover:shadow-md border cursor-pointer group transition-all bg-white overflow-hidden",
+                      selectedCustomer?.id === customer.id ? "border-[#FF8237] ring-2 ring-[#FF8237]/20" : "border-[#FFD3A5]/30"
+                    )}>
+                      <div className="p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 bg-[#FFFBDC] text-[#FF8237] rounded-2xl flex items-center justify-center border border-[#FFD3A5] shrink-0 font-black text-lg">
+                            {customer.name.charAt(0)}
                           </div>
-
-                          <div className="flex items-center gap-3">
-                            <div className="text-right flex flex-col items-end">
-                              <span className={cn(
-                                "font-black tracking-tight text-lg",
-                                customer.balance > 0 ? "text-[#ef4444]" : "text-[#10b981]"
-                              )}>
-                                {customer.balance > 0 ? `₹${customer.balance.toLocaleString('en-IN')}` : t('customers.settled', 'Settled')}
-                              </span>
-                              {customer.balance > 0 && (
-                                <span className="text-[10px] uppercase font-black text-[#ef4444] tracking-wider opacity-70">{t('customers.unpaid', 'Unpaid')}</span>
-                              )}
-                            </div>
-                            <ChevronRight size={18} className="text-[#FFD3A5] group-hover:text-[#FF8237] transition-colors" />
+                          <div>
+                            <h4 className="font-black text-[#FF5900] leading-tight">{customer.name}</h4>
+                            <p className="text-[11px] font-bold text-[#FFAA6E] flex items-center gap-1 mt-0.5">
+                              <Phone size={10} /> {customer.phone}
+                            </p>
                           </div>
                         </div>
-
-                        <div 
-                          className="px-4 py-2.5 bg-[#FFFBDC]/30 border-t border-[#FFFBDC] flex justify-between items-center hover:bg-[#FFFBDC]/50 transition-colors"
-                          onClick={(e) => { e.stopPropagation(); handleViewHistory(customer); }}
-                        >
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
-                            {t('customers.lastTrx', 'Last Trx:')} {customer.lastTransactionDate ? new Date(customer.lastTransactionDate).toLocaleDateString() : 'N/A'}
-                          </p>
-                          <button className="text-[10px] font-black text-[#FF8237] flex items-center gap-1 hover:underline">
-                            <History size={12} /> {t('customers.viewHistory', 'View History →')}
-                          </button>
+                        <div className="flex items-center gap-2">
+                          <div className="text-right">
+                            <span className={cn("font-black text-base block", customer.balance > 0 ? "text-red-500" : "text-green-500")}>
+                              {customer.balance > 0 ? `₹${customer.balance.toLocaleString('en-IN')}` : t('customers.settled', 'Settled')}
+                            </span>
+                            {customer.balance > 0 && <span className="text-[9px] uppercase font-black text-red-400 tracking-wider">Unpaid</span>}
+                          </div>
+                          <ChevronRight size={18} className="text-[#FFD3A5] group-hover:text-[#FF8237] transition-colors" />
                         </div>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
+                      </div>
+                      <div
+                        className="px-4 py-2 bg-[#FFFBDC]/30 border-t border-[#FFFBDC] flex justify-between items-center hover:bg-[#FFFBDC]/60 transition-colors"
+                        onClick={(e) => { e.stopPropagation(); setSelectedCustomer(customer); setPaymentAmount(''); setIsHistoryModalOpen(true); }}
+                      >
+                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">
+                          {t('customers.lastTrx', 'Last Trx:')} {customer.lastTransactionDate ? new Date(customer.lastTransactionDate).toLocaleDateString() : 'N/A'}
+                        </p>
+                        <button className="text-[10px] font-black text-[#FF8237] flex items-center gap-1">
+                          <History size={11} /> {t('customers.viewHistory', 'History →')}
+                        </button>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
               </AnimatePresence>
             )}
 
             {!loading && filteredCustomers.length === 0 && (
-              <EmptyState 
+              <EmptyState
                 icon={Users}
                 title={t('customers.noCustomers', 'No customers found')}
-                description={t('customers.noCustomersDesc', 'No customers match your search criteria.')}
+                description={t('customers.noCustomersDesc', 'No customers match your search.')}
               />
             )}
           </div>
         </PlanGate>
       </div>
 
-      {/* FAB */}
+      {/* FAB - mobile only */}
       <div className="fixed md:hidden bottom-[88px] right-4 z-30">
         <PlanGate allowedPlans={['pro', 'basic']} currentPlan={user?.plan || 'free'} hideGate={!items.length} requiredFeatureMessage={t('customers.unlimitedNeedsBasic', 'Unlimited Customers needs Basic')}>
-          <Button 
-            onClick={() => setIsFormOpen(true)}
-            className="w-14 h-14 rounded-full shadow-[0_10px_25px_rgba(15,42,29,0.3)] bg-[#FF5900] hover:bg-[#FF8237] active:scale-95 transition-transform flex items-center justify-center p-0"
-          >
+          <Button onClick={() => setIsFormOpen(true)} className="w-14 h-14 rounded-full shadow-xl bg-[#FF5900] hover:bg-[#FF8237] active:scale-95 transition-transform flex items-center justify-center p-0">
             <Plus size={28} className="text-[#FFFBDC]" />
           </Button>
         </PlanGate>
       </div>
 
+      </div>{/* end left column */}
+
+      {/* ── RIGHT: Detail Panel (desktop only, now left) ── */}
+      <div className="hidden md:flex flex-col w-[380px] shrink-0 bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#FFD3A5]/40 p-5 overflow-y-auto no-scrollbar">
+        <CustomerDetail />
+      </div>
+
       {/* Add Customer Modal/BottomSheet */}
       <div className="hidden md:block">
         <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={t('customers.addNew', 'Add Customer')}>
-          <CustomerForm 
-            formData={formData}
-            setFormData={setFormData}
-            handleSave={handleSave}
-            isSaving={isSaving}
-            t={t}
-          />
+          <CustomerForm formData={formData} setFormData={setFormData} handleSave={handleSave} isSaving={isSaving} t={t} />
         </Modal>
       </div>
       <div className="md:hidden">
         <BottomSheet isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={t('customers.addNew', 'Add Customer')}>
-          <CustomerForm 
-            formData={formData}
-            setFormData={setFormData}
-            handleSave={handleSave}
-            isSaving={isSaving}
-            t={t}
-          />
+          <CustomerForm formData={formData} setFormData={setFormData} handleSave={handleSave} isSaving={isSaving} t={t} />
         </BottomSheet>
       </div>
 
-      {/* Payment Collection Modal */}
-      <Modal 
-        isOpen={isPaymentModalOpen} 
-        onClose={() => setIsPaymentModalOpen(false)} 
-        title={t('customers.collectPayment', 'Collect Payment')}
-      >
-        <div className="flex flex-col gap-6 p-2">
-          <div className="flex items-center justify-between p-4 bg-[#FFFBDC]/50 rounded-2xl border border-[#FFD3A5]/30">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest leading-none mb-1">{selectedCustomer?.name}</span>
-              <span className="text-xl font-black text-[#FF5900]">₹{selectedCustomer?.balance.toLocaleString('en-IN')}</span>
-            </div>
-            <div className="text-right">
-              <span className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest leading-none block mb-1">{t('customers.balance', 'Balance')}</span>
-              <span className="text-xl font-black text-[#FF5900]">₹{selectedCustomer?.balance.toLocaleString('en-IN')}</span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between p-4 bg-red-50 rounded-2xl border border-red-100 shadow-inner">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black text-red-400 uppercase tracking-widest leading-none mb-1">
-                {t('customers.unpaidAmount', 'Unpaid Amount')}
-              </span>
-              <span className="text-2xl font-black text-red-600">
-                ₹{((selectedCustomer?.balance || 0) - (parseFloat(paymentAmount) || 0)).toLocaleString('en-IN')}
-              </span>
-            </div>
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-red-500 shadow-sm">
-                <TrendingDown size={20} />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <Input 
-              label={t('customers.entryAmount', 'Amount Given by User (₹)')}
-              type="number"
-              placeholder="0.00"
-              value={paymentAmount}
-              onChange={(e) => setPaymentAmount(e.target.value)}
-              className="text-lg font-black"
-              autoFocus
-            />
-            <Input 
-              label={t('customers.note', 'Note / Description')}
-              placeholder={t('customers.notePlaceholder', 'e.g. Cash payment')}
-              value={paymentDescription}
-              onChange={(e) => setPaymentDescription(e.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-col gap-3 pt-2">
-            <Button 
-              className="w-full h-14 text-base font-black bg-[#FF5900] hover:bg-[#FF8237] shadow-xl shadow-orange-500/10"
-              onClick={handleCollectPayment}
-              disabled={isSaving || !paymentAmount}
-            >
-              {isSaving ? t('common.saving', 'Processing...') : t('customers.confirmPayment', 'Confirm Payment')}
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full h-12 border-[#FFD3A5] text-[#FFAA6E] font-bold"
-              onClick={() => setIsPaymentModalOpen(false)}
-            >
-              {t('common.cancel', 'Cancel')}
-            </Button>
-          </div>
-        </div>
+      {/* Mobile: Payment Modal */}
+      <Modal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} title={t('customers.collectPayment', 'Collect Payment')}>
+        <CustomerDetail />
       </Modal>
 
-      {/* Transaction History Modal */}
-      <Modal 
-        isOpen={isHistoryModalOpen} 
-        onClose={() => setIsHistoryModalOpen(false)} 
-        title={`${selectedCustomer?.name}`}
-      >
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-between p-4 bg-[#FF5900] rounded-2xl text-[#FFFBDC]">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest opacity-70">{t('customers.balance', 'Balance')}</p>
-              <h4 className="text-2xl font-black">₹{selectedCustomer?.balance.toLocaleString('en-IN')}</h4>
-            </div>
-            <div className="bg-[#FF8237] p-3 rounded-xl">
-              <Users size={20} />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <h5 className="text-xs font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('customers.transactions', 'Transactions')}</h5>
-            <div className="flex flex-col gap-2 max-h-[350px] overflow-y-auto no-scrollbar pr-1">
-              {selectedCustomer?.transactions && selectedCustomer.transactions.length > 0 ? (
-                selectedCustomer.transactions.map((trx) => (
-                  <div key={trx.id} className="p-4 bg-white border border-[#FFD3A5]/20 rounded-2xl flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className={cn(
-                        "w-10 h-10 rounded-xl flex items-center justify-center border",
-                        trx.type === 'debit' ? "bg-red-50 border-red-100 text-red-600" : "bg-green-50 border-green-100 text-green-600"
-                      )}>
-                        {trx.type === 'debit' ? <ArrowRightLeft size={18} /> : <History size={18} />}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-black text-[#FF5900]">{trx.description}</span>
-                        <span className="text-[10px] font-bold text-[#FFAA6E] flex items-center gap-1">
-                          <Calendar size={10} /> {new Date(trx.date).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className={cn(
-                        "font-black text-sm block",
-                        trx.type === 'debit' ? "text-red-600" : "text-green-600"
-                      )}>
-                        {trx.type === 'debit' ? '-' : '+'} ₹{trx.amount}
-                      </span>
-                      <span className="text-[9px] font-bold text-gray-400 flex items-center justify-end gap-1">
-                        {trx.type === 'credit' ? t('customers.amountGiven', 'Amount Given by User') : t('customers.taxIncl', 'Tax Incl.')}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="py-10 text-center flex flex-col items-center gap-2 text-gray-400">
-                  <History size={30} className="opacity-20" />
-                  <p className="text-sm font-bold">{t('customers.noHistory', 'No transaction history found')}</p>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          <Button 
-            variant="outline" 
-            className="w-full h-12 rounded-xl text-sm font-black border-[#FFD3A5] text-[#FFAA6E]"
-            onClick={() => setIsHistoryModalOpen(false)}
-          >
-            {t('customers.closeHistory', 'Close')}
-          </Button>
-        </div>
+      {/* Mobile: History Modal */}
+      <Modal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} title={selectedCustomer?.name || ''}>
+        <CustomerDetail />
       </Modal>
 
     </PageTransition>

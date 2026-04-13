@@ -240,7 +240,7 @@ export default function InventoryScreen() {
         
         <div className="flex justify-between items-center mb-4 text-[#FFFBDC]">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <Package size={22} /> StockUp
+            <Package size={22} /> Paisa
           </h2>
           <div className="flex-1 max-w-[160px] ml-4">
             <div className="flex justify-between items-center mb-1">
@@ -294,8 +294,8 @@ export default function InventoryScreen() {
         </div>
       </div>
 
-      {/* Product List - HIGH DENSITY */}
-      <div className="flex-1 p-4 grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 auto-rows-max">
+      {/* ── Mobile Card Grid ── */}
+      <div className="md:hidden flex-1 p-4 grid grid-cols-3 gap-3 auto-rows-max">
         {loading ? (
           <div className="col-span-full py-20 flex justify-center">
             <div className="w-10 h-10 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
@@ -304,17 +304,9 @@ export default function InventoryScreen() {
           <AnimatePresence>
             {filteredItems.map(item => {
               const isLowStock = item.quantity <= item.lowStockThreshold;
-              
               return (
-                <motion.div
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  key={item.id}
-                  className="h-full"
-                >
-                  <Card 
+                <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} key={item.id} className="h-full">
+                  <Card
                     onClick={() => handleOpenEditForm(item)}
                     className={cn(
                       "p-2.5 h-full cursor-pointer hover:shadow-md transition-all flex flex-col justify-between border-2 rounded-xl",
@@ -323,35 +315,18 @@ export default function InventoryScreen() {
                   >
                     <div>
                       <div className="flex justify-between items-start mb-1.5">
-                        <span className="text-xl" role="img" aria-label={item.category}>
-                          {CATEGORY_EMOJIS[item.category] || '📦'}
-                        </span>
-                        <div className="flex flex-col gap-0.5 items-end">
-                          {isLowStock && (
-                            <span className="px-1 py-0.5 text-[7px] bg-[#FF5900] text-[#FFFBDC] rounded-md font-black uppercase whitespace-nowrap">
-                              {t('inventory.low', 'Low')}
-                            </span>
-                          )}
-                        </div>
+                        <span className="text-xl">{CATEGORY_EMOJIS[item.category] || '📦'}</span>
+                        {isLowStock && <span className="px-1 py-0.5 text-[7px] bg-[#FF5900] text-[#FFFBDC] rounded-md font-black uppercase">{t('inventory.low', 'Low')}</span>}
                       </div>
-                      
                       <h3 className="font-bold text-[#FF5900] text-[11px] leading-tight line-clamp-2">{item.name}</h3>
-                      <p className="text-[9px] font-bold text-[#FFAA6E] mt-0.5 uppercase tracking-tighter opacity-70">{t(`expenses.categories.${item.category.toLowerCase()}`, item.category)}</p>
+                      <p className="text-[9px] font-bold text-[#FFAA6E] mt-0.5 uppercase tracking-tighter opacity-70">{item.category}</p>
                     </div>
-
                     <div className="mt-auto pt-3">
                       <div className="flex items-baseline gap-1">
-                        <span className={cn(
-                          "text-base font-black tracking-tighter",
-                          isLowStock ? "text-[#FF5900]" : "text-[#FF8237]"
-                        )}>
-                          {item.quantity}
-                        </span>
+                        <span className={cn("text-base font-black tracking-tighter", isLowStock ? "text-[#FF5900]" : "text-[#FF8237]")}>{item.quantity}</span>
                         <span className="text-[9px] font-bold text-gray-400 lowercase">{item.unit || 'pcs'}</span>
                       </div>
-                      <div className="flex justify-between items-center mt-0.5">
-                        <div className="text-[10px] font-black text-[#FF8237]">₹{item.sellPrice}</div>
-                      </div>
+                      <div className="text-[10px] font-black text-[#FF8237]">₹{item.sellPrice}</div>
                     </div>
                   </Card>
                 </motion.div>
@@ -359,17 +334,87 @@ export default function InventoryScreen() {
             })}
           </AnimatePresence>
         )}
-
         {!loading && filteredItems.length === 0 && (
           <div className="col-span-full py-10">
-            <EmptyState 
-              icon={Package}
-              title={t('inventory.noItems', "No items found")}
-              description={t('inventory.emptyDesc', "Your inventory is empty or no matches were found.")}
-              actionLabel={t('inventory.addItem', "Add Item")}
-              onAction={handleOpenAddForm}
-            />
+            <EmptyState icon={Package} title={t('inventory.noItems', "No items found")} description={t('inventory.emptyDesc', "Your inventory is empty or no matches were found.")} actionLabel={t('inventory.addItem', "Add Item")} onAction={handleOpenAddForm} />
           </div>
+        )}
+      </div>
+
+      {/* ── Desktop Table View ── */}
+      <div className="hidden md:block flex-1 px-6 pb-8 overflow-x-auto">
+        {loading ? (
+          <div className="py-20 flex justify-center">
+            <div className="w-10 h-10 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : filteredItems.length === 0 ? (
+          <div className="py-10">
+            <EmptyState icon={Package} title={t('inventory.noItems', "No items found")} description={t('inventory.emptyDesc', "Your inventory is empty.")} actionLabel={t('inventory.addItem', "Add Item")} onAction={handleOpenAddForm} />
+          </div>
+        ) : (
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="border-b-2 border-[#FFD3A5]/40">
+                <th className="text-left py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Product</th>
+                <th className="text-left py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Category</th>
+                <th className="text-right py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Stock</th>
+                <th className="text-right py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Sell ₹</th>
+                <th className="text-right py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Buy ₹</th>
+                <th className="text-center py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Status</th>
+                <th className="py-3 px-4" />
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence>
+                {filteredItems.map((item, idx) => {
+                  const isLowStock = item.quantity <= item.lowStockThreshold;
+                  return (
+                    <motion.tr
+                      key={item.id}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ delay: idx * 0.02 }}
+                      onClick={() => handleOpenEditForm(item)}
+                      className={cn(
+                        "border-b border-[#FFD3A5]/20 cursor-pointer transition-colors hover:bg-[#FFFBDC]/60 group",
+                        isLowStock && "bg-red-50/40"
+                      )}
+                    >
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-3">
+                          <span className="text-xl shrink-0">{CATEGORY_EMOJIS[item.category] || '📦'}</span>
+                          <span className="font-bold text-sm text-[#FF5900] truncate max-w-[180px]">{item.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="text-xs font-bold text-[#FFAA6E]">{item.category}</span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <span className={cn("text-sm font-black", isLowStock ? "text-red-500" : "text-[#FF5900]")}>
+                          {item.quantity} <span className="text-[10px] font-bold text-[#FFAA6E]">{item.unit || 'pcs'}</span>
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right font-black text-sm text-[#FF8237]">₹{item.sellPrice}</td>
+                      <td className="py-3.5 px-4 text-right text-sm font-bold text-[#FFAA6E]">₹{item.buyPrice || '—'}</td>
+                      <td className="py-3.5 px-4 text-center">
+                        {isLowStock ? (
+                          <span className="px-2 py-1 text-[10px] bg-red-100 text-red-600 rounded-lg font-black uppercase">Low</span>
+                        ) : (
+                          <span className="px-2 py-1 text-[10px] bg-green-50 text-green-600 rounded-lg font-black uppercase">OK</span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <button className="opacity-0 group-hover:opacity-100 transition-opacity px-3 py-1.5 bg-[#FF8237] text-white text-[10px] font-black rounded-lg">
+                          Edit
+                        </button>
+                      </td>
+                    </motion.tr>
+                  );
+                })}
+              </AnimatePresence>
+            </tbody>
+          </table>
         )}
       </div>
 

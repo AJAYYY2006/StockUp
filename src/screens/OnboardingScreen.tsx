@@ -69,7 +69,7 @@ export default function OnboardingScreen() {
         ownerName, 
         plan: selectedPlan 
       });
-      addToast({ message: t('onboarding.setupComplete', 'Setup complete! Welcome to StockUp'), type: 'success' });
+      addToast({ message: t('onboarding.setupComplete', 'Setup complete! Welcome to Paisa'), type: 'success' });
     } catch (error: any) {
       addToast({ message: error.message || 'Error saving profile', type: 'error' });
     } finally {

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'stockup-v1';
+const CACHE_NAME = 'paisa-v1';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

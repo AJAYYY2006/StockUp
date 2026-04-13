@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Store, ShieldCheck, WifiOff, Sparkles, Mail, Lock } from 'lucide-react';
 import { useToastStore } from '../store/toast';
+import paisaLogo from '../assets/paisa_logo.png';
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -70,10 +71,10 @@ export default function LoginScreen() {
           className="z-10 max-w-lg"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-[#FF8237] rounded-2xl flex items-center justify-center shadow-lg">
-              <Store size={26} className="text-[#FFFBDC]" />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden shrink-0">
+              <img src={paisaLogo} alt="Paisa Logo" className="w-full h-full object-cover" />
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-[#FFFBDC]">StockUp</h1>
+            <h1 className="text-4xl font-black tracking-tighter text-[#FFFBDC] uppercase italic">Paisa</h1>
           </div>
 
           <motion.h2 
@@ -136,7 +137,7 @@ export default function LoginScreen() {
               {authMode === 'login' ? t('auth.welcomeBack', 'Welcome Back') : t('auth.createAccount', 'Create Account')}
             </h3>
             <p className="text-[#FFAA6E] text-sm font-medium">
-              {authMode === 'login' ? t('auth.loginSubtitle', 'Sign in to manage your store') : t('auth.signupSubtitle', 'Start your digital journey with StockUp')}
+              {authMode === 'login' ? t('auth.loginSubtitle', 'Sign in to manage your store') : t('auth.signupSubtitle', 'Start your digital journey with Paisa')}
             </p>
           </div>
 

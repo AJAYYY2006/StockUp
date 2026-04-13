@@ -16,6 +16,8 @@ const NAV_ITEMS = [
 ];
 
 
+import paisaLogo from '../../assets/paisa_logo.png';
+
 export function Sidebar() {
   const user = useAuthStore((state) => state.user);
   const { t } = useTranslation();
@@ -23,12 +25,12 @@ export function Sidebar() {
   return (
     <aside className="hidden md:flex flex-col w-[240px] bg-[#FF5900] h-screen fixed top-0 left-0 text-[#FFFBDC] py-6 px-4 shrink-0 shadow-lg z-40">
       <div className="flex items-center gap-3 px-2 mb-10">
-        <div className="w-10 h-10 bg-[#FF8237] rounded-xl flex items-center justify-center">
-          <Store size={22} className="text-[#FFFBDC]" />
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden shrink-0">
+          <img src={paisaLogo} alt="Paisa Logo" className="w-full h-full object-cover" />
         </div>
         <div>
-          <h2 className="text-xl font-bold tracking-tight">StockUp</h2>
-          <p className="text-[#FFD3A5] text-xs font-medium">{t('nav.storePos')}</p>
+          <h2 className="text-xl font-bold tracking-tight text-white mb-0.5">Paisa</h2>
+          <p className="text-[#FFD3A5] text-[10px] font-black uppercase tracking-widest leading-none">{t('nav.storePos')}</p>
         </div>
       </div>
 

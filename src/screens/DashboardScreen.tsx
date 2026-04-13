@@ -26,7 +26,7 @@ export default function DashboardScreen() {
   const [sales, setSales] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { items: customers, fetchCustomers: fetchAllCustomers } = useCustomersStore();
+  const { fetchCustomers: fetchAllCustomers } = useCustomersStore();
 
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -161,7 +161,7 @@ export default function DashboardScreen() {
                         <span className={cn(
                             "text-[10px] font-black uppercase tracking-widest leading-none mb-2",
                             isProfit ? "text-[#FFD3A5]" : "text-[#FFAA6E]"
-                        )}>{metric.isDynamic ? metric.labelKey : t(metric.labelKey)}</span>
+                        )}>{'isDynamic' in metric && metric.isDynamic ? metric.labelKey : t(metric.labelKey)}</span>
                         <p className={cn(
                           "text-2xl md:text-3xl font-black tracking-tighter leading-none",
                           isProfit ? "text-[#FFFBDC]" : "text-[#FF5900]"
