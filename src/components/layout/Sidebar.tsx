@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Store, Home, Receipt, PackageSearch, BarChart2, Settings, Users, Banknote, Sparkles } from 'lucide-react';
+import { Home, Receipt, PackageSearch, BarChart2, Settings, Users, Banknote, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 import { useAuthStore } from '../../store/auth';

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../store/auth';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { Store, ShieldCheck, WifiOff, Sparkles, Mail, Lock } from 'lucide-react';
+import { ShieldCheck, WifiOff, Sparkles, Mail, Lock } from 'lucide-react';
 import { useToastStore } from '../store/toast';
 import paisaLogo from '../assets/paisa_logo.png';
 

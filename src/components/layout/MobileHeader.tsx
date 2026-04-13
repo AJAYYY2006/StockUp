@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Store, Bell, User, AlertTriangle, MessageSquare } from 'lucide-react';
+import { Bell, User, AlertTriangle, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../../store/auth';
 import { useInventoryStore } from '../../store/inventory';
