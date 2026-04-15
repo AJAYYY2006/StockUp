@@ -53,7 +53,7 @@ export default function OnboardingScreen() {
   const [errors, setErrors] = useState<{ storeName?: string; ownerName?: string }>({});
   
   // Step 3 State
-  const [selectedPlan, setSelectedPlan] = useState('pro');
+  const selectedPlan = 'pro';
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNext = () => {
