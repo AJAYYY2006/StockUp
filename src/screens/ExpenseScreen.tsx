@@ -58,9 +58,9 @@ function ExpenseForm({
   const { t } = useTranslation();
   return (
     <form onSubmit={handleSave} className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2 items-center justify-center bg-[#FFFBDC] rounded-3xl p-6 border-2 border-[#FFD3A5] border-dashed">
-        <span className="text-[#FF8237] font-bold text-sm">{t('expenses.enterAmount', 'Enter Amount')}</span>
-        <div className="flex items-center justify-center w-full text-[#FF5900]">
+      <div className="flex flex-col gap-2 items-center justify-center bg-[#F8F3E5] rounded-3xl p-6 border-2 border-[#CFC3A7] border-dashed">
+        <span className="text-[#95A07A] font-bold text-sm">{t('expenses.enterAmount', 'Enter Amount')}</span>
+        <div className="flex items-center justify-center w-full text-[#5F714B]">
           <IndianRupee size={32} className="mt-1" />
           <input 
             type="number" 
@@ -70,7 +70,7 @@ function ExpenseForm({
             required
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="bg-transparent text-5xl font-black w-full max-w-[200px] outline-none text-center placeholder-[#FFAA6E]/50"
+            className="bg-transparent text-5xl font-black w-full max-w-[200px] outline-none text-center placeholder-[#9BA88D]/50"
           />
         </div>
       </div>
@@ -85,7 +85,7 @@ function ExpenseForm({
       />
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-bold text-[#FF8237]">{t('expenses.category', 'Category *')}</label>
+        <label className="text-sm font-bold text-[#95A07A]">{t('expenses.category', 'Category *')}</label>
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
           {(Object.keys(CATEGORY_ICONS) as ExpenseCategory[]).map((cat) => {
             const Icon = CATEGORY_ICONS[cat];
@@ -98,8 +98,8 @@ function ExpenseForm({
                 className={cn(
                   "flex flex-col items-center justify-center gap-1.5 p-2 rounded-2xl transition-all border-2",
                   isActive 
-                    ? "bg-[#FF8237] border-[#FF8237] text-[#FFFBDC]" 
-                    : "bg-white border-[#FFD3A5]/40 text-[#FFAA6E] hover:bg-[#FFFBDC]"
+                    ? "bg-[#95A07A] border-[#95A07A] text-[#F8F3E5]" 
+                    : "bg-white border-[#CFC3A7]/40 text-[#9BA88D] hover:bg-[#F8F3E5]"
                 )}
               >
                 <Icon size={20} />
@@ -110,7 +110,7 @@ function ExpenseForm({
         </div>
       </div>
 
-      <Button type="submit" isSuccess={isSaving} className="w-full h-14 mt-2 text-lg shadow-xl shadow-[#FF5900]/10">
+      <Button type="submit" isSuccess={isSaving} className="w-full h-14 mt-2 text-lg shadow-xl shadow-[#5F714B]/10">
         {t('expenses.saveExpense', 'Save Expense')}
       </Button>
     </form>
@@ -201,37 +201,37 @@ export default function ExpenseScreen() {
     .reduce((sum, item) => sum + item.amount, 0);
 
   return (
-    <PageTransition className="flex flex-col h-full min-h-screen pb-24 bg-[#FFFBDC]">
+    <PageTransition className="flex flex-col h-full min-h-screen pb-24 bg-[#F8F3E5]">
       {/* Mobile-Only Sticky Header */}
-      <div className="bg-[#FF5900] rounded-b-[40px] px-6 pt-8 pb-10 shadow-2xl z-20 shrink-0 sticky top-0 text-[#FFFBDC] md:hidden">
+      <div className="bg-[#5F714B] rounded-b-[40px] px-6 pt-8 pb-10 shadow-2xl z-20 shrink-0 sticky top-0 text-[#F8F3E5] md:hidden">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <Receipt size={22} className="text-[#FFD3A5]" /> {t('expenses.tracker', 'Expense Tracker')}
+            <Receipt size={22} className="text-[#CFC3A7]" /> {t('expenses.tracker', 'Expense Tracker')}
           </h2>
-          <div className="w-10 h-10 rounded-full bg-[#FF8237] flex items-center justify-center border border-[#FFAA6E]/30">
-            <IndianRupee size={18} className="text-[#FFD3A5]" />
+          <div className="w-10 h-10 rounded-full bg-[#95A07A] flex items-center justify-center border border-[#9BA88D]/30">
+            <IndianRupee size={18} className="text-[#CFC3A7]" />
           </div>
         </div>
         
         <div className="flex flex-col gap-4">
           <div>
-            <span className="text-[#FFD3A5] text-xs font-bold uppercase tracking-[0.1em] mb-1">{t('expenses.monthlyTotal', 'Monthly Total Expense')}</span>
+            <span className="text-[#CFC3A7] text-xs font-bold uppercase tracking-[0.1em] mb-1">{t('expenses.monthlyTotal', 'Monthly Total Expense')}</span>
             <div className="flex items-baseline gap-1">
               <span className="text-4xl font-black">₹{currentMonthTotal.toLocaleString()}</span>
-              <span className="text-[#FFAA6E] text-sm font-bold">{t('expenses.thisMonth', 'this month')}</span>
+              <span className="text-[#9BA88D] text-sm font-bold">{t('expenses.thisMonth', 'this month')}</span>
             </div>
           </div>
 
           <div className="flex gap-2">
             <button 
               onClick={() => document.getElementById('bill-camera')?.click()}
-              className="flex-1 bg-[#FF8237] py-3 rounded-xl flex items-center justify-center gap-2 text-xs font-black border border-[#FFAA6E]/30 active:scale-95 transition-all"
+              className="flex-1 bg-[#95A07A] py-3 rounded-xl flex items-center justify-center gap-2 text-xs font-black border border-[#9BA88D]/30 active:scale-95 transition-all"
             >
               <Camera size={16} /> {t('expenses.scanBill', 'Scan Bill')}
             </button>
             <button
               onClick={() => document.getElementById('bill-upload')?.click()}
-              className="flex-1 bg-[#FFFBDC] text-[#FF5900] py-3 rounded-xl flex items-center justify-center gap-2 text-xs font-black active:scale-95 transition-all"
+              className="flex-1 bg-[#F8F3E5] text-[#5F714B] py-3 rounded-xl flex items-center justify-center gap-2 text-xs font-black active:scale-95 transition-all"
             >
               <Keyboard size={16} /> {t('expenses.uploadBill', 'Upload Bill')}
             </button>
@@ -241,24 +241,24 @@ export default function ExpenseScreen() {
 
       {/* Desktop Summary */}
       <div className="hidden md:flex flex-col gap-8 mb-4">
-        <div className="bg-[#FF5900] rounded-[32px] p-8 text-[#FFFBDC] shadow-2xl flex items-center justify-between overflow-hidden relative">
+        <div className="bg-[#5F714B] rounded-[32px] p-8 text-[#F8F3E5] shadow-2xl flex items-center justify-between overflow-hidden relative">
           <div className="relative z-10">
-            <p className="text-[#FFD3A5] text-sm font-bold uppercase tracking-widest mb-2">{t('expenses.monthlyTotal', 'Monthly Total Expense')}</p>
+            <p className="text-[#CFC3A7] text-sm font-bold uppercase tracking-widest mb-2">{t('expenses.monthlyTotal', 'Monthly Total Expense')}</p>
             <div className="flex items-baseline gap-2">
               <span className="text-5xl font-black">₹{currentMonthTotal.toLocaleString()}</span>
-              <span className="text-[#FFAA6E] font-bold">{t('expenses.thisMonth', 'this month')}</span>
+              <span className="text-[#9BA88D] font-bold">{t('expenses.thisMonth', 'this month')}</span>
             </div>
           </div>
           
           <div className="flex items-center gap-4 relative z-10">
             <button 
               onClick={() => setIsFormOpen(true)}
-              className="bg-[#FFFBDC] text-[#FF5900] px-6 py-3 rounded-2xl font-black flex items-center gap-2 hover:bg-white transition-all shadow-lg active:scale-95"
+              className="bg-[#F8F3E5] text-[#5F714B] px-6 py-3 rounded-2xl font-black flex items-center gap-2 hover:bg-white transition-all shadow-lg active:scale-95"
             >
               <Plus size={20} /> {t('expenses.createNew', 'Create New Expense')}
             </button>
           </div>
-          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-[#FF8237] rounded-full blur-3xl opacity-50" />
+          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-[#95A07A] rounded-full blur-3xl opacity-50" />
         </div>
 
         <div className="flex items-center gap-4">
@@ -280,26 +280,26 @@ export default function ExpenseScreen() {
           
           <button 
             onClick={() => document.getElementById('bill-camera')?.click()}
-            className="flex-1 bg-white border border-[#FFD3A5]/30 p-5 rounded-[24px] flex items-center gap-4 hover:border-[#FF8237] transition-all group shadow-sm hover:shadow-md"
+            className="flex-1 bg-white border border-[#CFC3A7]/30 p-5 rounded-[24px] flex items-center gap-4 hover:border-[#95A07A] transition-all group shadow-sm hover:shadow-md"
           >
-            <div className="w-12 h-12 bg-[#FFFBDC] rounded-2xl flex items-center justify-center text-[#FF8237] group-hover:bg-[#FF8237] group-hover:text-white transition-all shadow-inner">
+            <div className="w-12 h-12 bg-[#F8F3E5] rounded-2xl flex items-center justify-center text-[#95A07A] group-hover:bg-[#95A07A] group-hover:text-white transition-all shadow-inner">
               <Camera size={24} />
             </div>
             <div className="text-left">
-              <p className="font-black text-[#FF5900]">{t('expenses.scanBill', 'Scan Bill')}</p>
-              <p className="text-xs font-bold text-[#FFAA6E]">{t('expenses.openCamera', 'Open Camera')}</p>
+              <p className="font-black text-[#5F714B]">{t('expenses.scanBill', 'Scan Bill')}</p>
+              <p className="text-xs font-bold text-[#9BA88D]">{t('expenses.openCamera', 'Open Camera')}</p>
             </div>
           </button>
           <button 
             onClick={() => document.getElementById('bill-upload')?.click()}
-            className="flex-1 bg-white border border-[#FFD3A5]/30 p-5 rounded-[24px] flex items-center gap-4 hover:border-[#FF8237] transition-all group shadow-sm hover:shadow-md"
+            className="flex-1 bg-white border border-[#CFC3A7]/30 p-5 rounded-[24px] flex items-center gap-4 hover:border-[#95A07A] transition-all group shadow-sm hover:shadow-md"
           >
-            <div className="w-12 h-12 bg-[#FFFBDC] rounded-2xl flex items-center justify-center text-[#FF8237] group-hover:bg-[#FF8237] group-hover:text-white transition-all shadow-inner">
+            <div className="w-12 h-12 bg-[#F8F3E5] rounded-2xl flex items-center justify-center text-[#95A07A] group-hover:bg-[#95A07A] group-hover:text-white transition-all shadow-inner">
               <Keyboard size={24} />
             </div>
             <div className="text-left">
-              <p className="font-black text-[#FF5900]">{t('expenses.uploadBill', 'Upload Bill')}</p>
-              <p className="text-xs font-bold text-[#FFAA6E]">{t('expenses.importFile', 'Import PDF or Image')}</p>
+              <p className="font-black text-[#5F714B]">{t('expenses.uploadBill', 'Upload Bill')}</p>
+              <p className="text-xs font-bold text-[#9BA88D]">{t('expenses.importFile', 'Import PDF or Image')}</p>
             </div>
           </button>
         </div>
@@ -313,12 +313,12 @@ export default function ExpenseScreen() {
       <div className="flex-1 p-4 flex flex-col gap-8 mt-2">
         {loading ? (
           <div className="py-20 flex justify-center">
-             <div className="w-10 h-10 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
+             <div className="w-10 h-10 border-4 border-[#95A07A] border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
           sortedGroups.map(groupKey => (
             <div key={groupKey} className="flex flex-col gap-4">
-              <h3 className="text-xs font-black text-[#FFAA6E] uppercase tracking-widest px-2">
+              <h3 className="text-xs font-black text-[#9BA88D] uppercase tracking-widest px-2">
                 {t(`time.${groupKey}`, groupKey)}
               </h3>
               
@@ -336,23 +336,23 @@ export default function ExpenseScreen() {
                       >
                         <Card className="p-4 flex items-center justify-between shadow-[0_4px_12px_rgba(15,42,29,0.05)] border-none bg-white rounded-2xl active:scale-[0.98] transition-transform">
                           <div className="flex items-center gap-4 flex-1">
-                            <div className="w-12 h-12 bg-[#FFFBDC] rounded-2xl flex items-center justify-center border border-[#FFD3A5]/30 text-[#FF8237] shrink-0">
+                            <div className="w-12 h-12 bg-[#F8F3E5] rounded-2xl flex items-center justify-center border border-[#CFC3A7]/30 text-[#95A07A] shrink-0">
                               <Icon size={24} />
                             </div>
                             <div className="min-w-0">
-                              <h4 className="font-bold text-[#FF5900] truncate">{item.vendor}</h4>
-                              <p className="text-xs font-bold text-[#FFAA6E]">{t(`expenses.categories.${item.category.toLowerCase()}`, item.category)} • {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</p>
+                              <h4 className="font-bold text-[#5F714B] truncate">{item.vendor}</h4>
+                              <p className="text-xs font-bold text-[#9BA88D]">{t(`expenses.categories.${item.category.toLowerCase()}`, item.category)} • {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</p>
                             </div>
                           </div>
                           
                           <div className="flex items-center gap-3">
                             {item.imageUrl && (
-                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-[#FFD3A5]/50 shadow-sm shrink-0">
+                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-[#CFC3A7]/50 shadow-sm shrink-0">
                                 <img src={item.imageUrl} alt="Receipt" className="w-full h-full object-cover grayscale-[0.3] hover:grayscale-0 transition-all" />
                               </div>
                             )}
                             <div className="text-right whitespace-nowrap">
-                              <span className="font-black text-lg text-[#FF5900]">₹{item.amount.toLocaleString()}</span>
+                              <span className="font-black text-lg text-[#5F714B]">₹{item.amount.toLocaleString()}</span>
                             </div>
                           </div>
                         </Card>
@@ -382,9 +382,9 @@ export default function ExpenseScreen() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsFormOpen(true)}
-          className="w-16 h-16 rounded-full shadow-[0_8px_25px_rgba(15,42,29,0.4)] bg-[#FF5900] flex items-center justify-center border-2 border-[#FF8237]"
+          className="w-16 h-16 rounded-full shadow-[0_8px_25px_rgba(15,42,29,0.4)] bg-[#5F714B] flex items-center justify-center border-2 border-[#95A07A]"
         >
-          <Plus size={32} className="text-[#FFFBDC]" />
+          <Plus size={32} className="text-[#F8F3E5]" />
         </motion.button>
       </div>
 

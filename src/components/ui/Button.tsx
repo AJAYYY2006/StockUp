@@ -19,13 +19,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           'inline-flex items-center justify-center rounded-2xl text-base font-semibold transition-all duration-300 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 min-h-[48px]',
           {
-            'bg-[#FF5900] text-[#FFFBDC] hover:bg-[#FF5900]/90': variant === 'primary' && !isSuccess,
-            'bg-[#FFFBDC] text-[#FF5900] hover:bg-[#FFFBDC]/90': variant === 'secondary' && !isSuccess,
-            'border-2 border-[#FFD3A5] bg-white text-[#FF5900] hover:bg-gray-50': variant === 'outline' && !isSuccess,
-            'hover:bg-[#FFFBDC] text-[#FF5900]': variant === 'ghost' && !isSuccess,
+            'bg-[#5F714B] text-[#F8F3E5] hover:bg-[#5F714B]/90': variant === 'primary' && !isSuccess,
+            'bg-[#F8F3E5] text-[#5F714B] hover:bg-[#F8F3E5]/90': variant === 'secondary' && !isSuccess,
+            'border-2 border-[#CFC3A7] bg-white text-[#5F714B] hover:bg-gray-50': variant === 'outline' && !isSuccess,
+            'hover:bg-[#F8F3E5] text-[#5F714B]': variant === 'ghost' && !isSuccess,
             
             // Success Overrides globally across all variants
-            'bg-[#FF8237] text-[#FFFBDC] border-transparent shadow-lg': isSuccess,
+            'bg-[#95A07A] text-[#F8F3E5] border-transparent shadow-lg': isSuccess,
 
             'h-12 px-6 py-2': size === 'default',
             'h-10 px-4 text-sm': size === 'sm',

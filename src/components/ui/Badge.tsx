@@ -13,9 +13,9 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         className={cn(
           'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors',
           {
-            'bg-[#FFFBDC] text-[#FF5900] border border-[#FFD3A5]': variant === 'default' || variant === 'free',
-            'bg-[#FF5900] text-[#FFFBDC]': variant === 'pro',
-            'bg-[#FF8237] text-[#FFFBDC]': variant === 'basic',
+            'bg-[#F8F3E5] text-[#5F714B] border border-[#CFC3A7]': variant === 'default' || variant === 'free',
+            'bg-[#5F714B] text-[#F8F3E5]': variant === 'pro',
+            'bg-[#95A07A] text-[#F8F3E5]': variant === 'basic',
             'bg-green-100 text-green-800 border border-green-200': variant === 'success',
             'bg-orange-100 text-orange-800 border border-orange-200': variant === 'warning',
             'bg-red-100 text-red-800 border border-red-200': variant === 'error',

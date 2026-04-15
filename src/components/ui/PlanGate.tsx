@@ -32,12 +32,12 @@ export function PlanGate({
         {children}
       </div>
       
-      <div className="absolute inset-0 z-10 flex items-center justify-center p-4 bg-[#FFFBDC]/40 backdrop-blur-[2px]">
-        <Card className="w-full max-w-sm flex flex-col items-center justify-center text-center gap-4 py-8 px-6 shadow-xl border-[#FFD3A5]">
-          <div className="h-12 w-12 rounded-full bg-[#FFFBDC] flex items-center justify-center text-[#FF5900] mb-2">
+      <div className="absolute inset-0 z-10 flex items-center justify-center p-4 bg-[#F8F3E5]/40 backdrop-blur-[2px]">
+        <Card className="w-full max-w-sm flex flex-col items-center justify-center text-center gap-4 py-8 px-6 shadow-xl border-[#CFC3A7]">
+          <div className="h-12 w-12 rounded-full bg-[#F8F3E5] flex items-center justify-center text-[#5F714B] mb-2">
             <Lock size={24} />
           </div>
-          <p className="text-base font-semibold text-[#FF5900] mb-2">
+          <p className="text-base font-semibold text-[#5F714B] mb-2">
             {requiredFeatureMessage}
           </p>
           <Button onClick={onUpgrade} className="w-full">

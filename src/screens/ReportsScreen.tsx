@@ -124,17 +124,17 @@ export default function ReportsScreen() {
     .slice(0, 5)
     .map(([name, value]) => ({ name, value }));
 
-  // Dynamic Udhar Data
-  const dynamicUdharTotalCredit = customers.reduce((sum, c) => sum + (c.balance > 0 ? c.balance : 0), 0);
-  const dynamicUdharCount = customers.filter(c => c.balance > 0).length;
-  const dynamicUdharOutstanding = dynamicUdharTotalCredit; 
+  // Dynamic Credit Data
+  const dynamicCreditTotal = customers.reduce((sum, c) => sum + (c.balance > 0 ? c.balance : 0), 0);
+  const dynamicCreditCount = customers.filter(c => c.balance > 0).length;
+  const dynamicCreditOutstanding = dynamicCreditTotal; 
 
   const data = {
     ...stats,
-    udharTotalCredit: dynamicUdharTotalCredit,
-    udharCollected: 0, // Not explicitly tracked in simple store yet
-    udharOutstanding: dynamicUdharOutstanding,
-    udharCount: dynamicUdharCount,
+    creditTotal: dynamicCreditTotal,
+    creditCollected: 0, // Not explicitly tracked in simple store yet
+    creditOutstanding: dynamicCreditOutstanding,
+    creditCount: dynamicCreditCount,
   };
 
   // Logic for Slow Moving Items (Stock > 3x threshold and not a top seller)
@@ -161,30 +161,30 @@ export default function ReportsScreen() {
       <div className="flex items-center gap-3">
         {/* Date Picker (Desktop Version) */}
         <div className="relative group mr-2">
-          <Calendar size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#FF8237] z-10" />
+          <Calendar size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#95A07A] z-10" />
           <select 
             value={timeRange} 
             onChange={(e) => setTimeRange(e.target.value as TimeRange)}
-            className="appearance-none bg-white/50 hover:bg-white border border-[#FFD3A5]/40 text-[#FF8237] font-bold text-xs py-2 pl-10 pr-9 rounded-xl outline-none focus:ring-2 focus:ring-[#FF8237]/10 focus:border-[#FF8237]/40 cursor-pointer transition-all"
+            className="appearance-none bg-white/50 hover:bg-white border border-[#CFC3A7]/40 text-[#95A07A] font-bold text-xs py-2 pl-10 pr-9 rounded-xl outline-none focus:ring-2 focus:ring-[#95A07A]/10 focus:border-[#95A07A]/40 cursor-pointer transition-all"
           >
             <option value="Today">{t('time.Today', 'Today')}</option>
             <option value="This Week">{t('time.ThisWeek', 'This Week')}</option>
           </select>
-          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#FF8237] pointer-events-none" />
+          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#95A07A] pointer-events-none" />
         </div>
 
         {/* Export Buttons */}
         <div className="flex items-center gap-2">
           <button 
             onClick={() => handleExport('CSV')}
-            className="flex items-center gap-2 px-3 py-2 bg-white border border-[#FFD3A5]/40 text-[#FF8237] hover:bg-[#FF8237] hover:text-white rounded-xl text-xs font-black transition-all shadow-sm group"
+            className="flex items-center gap-2 px-3 py-2 bg-white border border-[#CFC3A7]/40 text-[#95A07A] hover:bg-[#95A07A] hover:text-white rounded-xl text-xs font-black transition-all shadow-sm group"
           >
             <FileDown size={14} className="group-hover:scale-110 transition-transform" />
             CSV
           </button>
           <button 
             onClick={() => handleExport('JSON')}
-            className="flex items-center gap-2 px-3 py-2 bg-white border border-[#FFD3A5]/40 text-[#FF8237] hover:bg-[#FF8237] hover:text-white rounded-xl text-xs font-black transition-all shadow-sm group"
+            className="flex items-center gap-2 px-3 py-2 bg-white border border-[#CFC3A7]/40 text-[#95A07A] hover:bg-[#95A07A] hover:text-white rounded-xl text-xs font-black transition-all shadow-sm group"
           >
             <FileDown size={14} className="group-hover:scale-110 transition-transform" />
             JSON
@@ -200,26 +200,26 @@ export default function ReportsScreen() {
   }, [timeRange, setHeaderActions]);
 
   return (
-    <PageTransition className="flex flex-col h-full min-h-screen pb-24 p-4 md:p-8 bg-[#FFFBDC] text-[#FF5900] transition-all">
+    <PageTransition className="flex flex-col h-full min-h-screen pb-24 p-4 md:p-8 bg-[#F8F3E5] text-[#5F714B] transition-all">
       
       {/* Mobile Header & Date Range Picker (Hidden on Desktop) */}
       <div className="flex flex-col md:hidden z-10 pt-2 mb-8 gap-4">
         <div className="flex flex-col">
-          <h2 className="text-3xl font-black tracking-tight text-[#FF5900]">{t('reports.title', 'Insights')}</h2>
-          <p className="text-sm font-bold text-[#FFAA6E]">{t('reports.analyticsDesc', "Deep dive into your store's performance")}</p>
+          <h2 className="text-3xl font-black tracking-tight text-[#5F714B]">{t('reports.title', 'Insights')}</h2>
+          <p className="text-sm font-bold text-[#9BA88D]">{t('reports.analyticsDesc', "Deep dive into your store's performance")}</p>
         </div>
         
         <div className="relative group">
-          <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#FF8237] z-10" />
+          <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#95A07A] z-10" />
           <select 
             value={timeRange} 
             onChange={(e) => setTimeRange(e.target.value as TimeRange)}
-            className="appearance-none bg-white border-2 border-[#FFD3A5]/40 text-[#FF8237] font-black py-3 pl-12 pr-12 rounded-[20px] outline-none focus:ring-4 focus:ring-[#FF8237]/5 focus:border-[#FF8237] shadow-sm cursor-pointer transition-all"
+            className="appearance-none bg-white border-2 border-[#CFC3A7]/40 text-[#95A07A] font-black py-3 pl-12 pr-12 rounded-[20px] outline-none focus:ring-4 focus:ring-[#95A07A]/5 focus:border-[#95A07A] shadow-sm cursor-pointer transition-all"
           >
             <option value="Today">{t('time.Today', 'Today')}</option>
             <option value="This Week">{t('time.ThisWeek', 'This Week')}</option>
           </select>
-          <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#FF8237] pointer-events-none" />
+          <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#95A07A] pointer-events-none" />
         </div>
       </div>
 
@@ -231,12 +231,12 @@ export default function ReportsScreen() {
         <div className="flex flex-col gap-6 md:gap-8">
 
         {/* 4 Metric Cards Grid - Fixed 4 column on lg */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 text-[#FF5900]">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 text-[#5F714B]">
           
           {/* Total Revenue */}
           <Card className="p-5 border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white rounded-[24px] flex flex-col justify-between h-32 md:h-36 group hover:shadow-xl transition-all">
             <div className="flex items-center justify-between w-full">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FFFBDC] text-[#FF8237] rounded-2xl flex items-center justify-center">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-[#F8F3E5] text-[#95A07A] rounded-2xl flex items-center justify-center">
                 <TrendingUp size={24} />
               </div>
               <span className={cn(
@@ -248,8 +248,8 @@ export default function ReportsScreen() {
               </span>
             </div>
             <div>
-              <span className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.2em] mb-1 block">{t('reports.totalRevenue', "Total Revenue")}</span>
-              <div className="text-2xl md:text-3xl font-black text-[#FF5900]">
+              <span className="text-[10px] font-black text-[#9BA88D] uppercase tracking-[0.2em] mb-1 block">{t('reports.totalRevenue', "Total Revenue")}</span>
+              <div className="text-2xl md:text-3xl font-black text-[#5F714B]">
                 ₹{data.revenue.toLocaleString()}
               </div>
             </div>
@@ -258,7 +258,7 @@ export default function ReportsScreen() {
           {/* Total Expense */}
           <Card className="p-5 border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white rounded-[24px] flex flex-col justify-between h-32 md:h-36 hover:shadow-xl transition-all font-inter">
             <div className="flex items-center justify-between w-full">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FFD3A5]/20 text-[#FF5900] rounded-2xl flex items-center justify-center">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-[#CFC3A7]/20 text-[#5F714B] rounded-2xl flex items-center justify-center">
                 <TrendingDown size={24} />
               </div>
               <span className={cn(
@@ -270,26 +270,26 @@ export default function ReportsScreen() {
               </span>
             </div>
             <div>
-              <span className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.2em] mb-1 block">{t('reports.totalExpense', "Total Expense")}</span>
-              <div className="text-2xl md:text-3xl font-black text-[#FF5900]">
+              <span className="text-[10px] font-black text-[#9BA88D] uppercase tracking-[0.2em] mb-1 block">{t('reports.totalExpense', "Total Expense")}</span>
+              <div className="text-2xl md:text-3xl font-black text-[#5F714B]">
                 ₹{data.expense.toLocaleString()}
               </div>
             </div>
           </Card>
 
           {/* Net Profit */}
-          <Card className="p-5 border-none shadow-2xl bg-[#FF5900] text-[#FFFBDC] rounded-[24px] flex flex-col justify-between h-32 md:h-36 relative overflow-hidden group hover:scale-[1.02] transition-all">
-            <div className="absolute top-[-20px] right-[-20px] w-24 h-24 bg-[#FF8237] rounded-full blur-3xl opacity-30 group-hover:opacity-60 transition-opacity" />
+          <Card className="p-5 border-none shadow-2xl bg-[#5F714B] text-[#F8F3E5] rounded-[24px] flex flex-col justify-between h-32 md:h-36 relative overflow-hidden group hover:scale-[1.02] transition-all">
+            <div className="absolute top-[-20px] right-[-20px] w-24 h-24 bg-[#95A07A] rounded-full blur-3xl opacity-30 group-hover:opacity-60 transition-opacity" />
             <div className="flex items-center justify-between w-full relative z-10">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FF8237] text-[#FFFBDC] rounded-2xl flex items-center justify-center border border-[#FFD3A5]/10">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-[#95A07A] text-[#F8F3E5] rounded-2xl flex items-center justify-center border border-[#CFC3A7]/10">
                 <IndianRupee size={24} />
               </div>
-              <span className="text-[10px] md:text-xs font-black bg-[#FF8237] text-[#FFD3A5] px-2 py-1 rounded-lg flex items-center gap-0.5">
+              <span className="text-[10px] md:text-xs font-black bg-[#95A07A] text-[#CFC3A7] px-2 py-1 rounded-lg flex items-center gap-0.5">
                 <ArrowUpRight size={10} /> {data.profitChange}%
               </span>
             </div>
             <div className="relative z-10">
-              <span className="text-[10px] font-black text-[#FFD3A5] uppercase tracking-[0.2em] mb-1 block">{t('reports.netProfit', "Net Profit")}</span>
+              <span className="text-[10px] font-black text-[#CFC3A7] uppercase tracking-[0.2em] mb-1 block">{t('reports.netProfit', "Net Profit")}</span>
               <div className="text-2xl md:text-3xl font-black">
                 ₹{data.profit.toLocaleString()}
               </div>
@@ -297,12 +297,12 @@ export default function ReportsScreen() {
           </Card>
 
           {/* Profit Margin */}
-          <Card className="p-5 border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white rounded-[24px] flex flex-col justify-between h-32 md:h-36 hover:shadow-xl transition-all text-[#FF5900]">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FFFBDC] text-[#FFAA6E] rounded-2xl flex items-center justify-center">
+          <Card className="p-5 border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] bg-white rounded-[24px] flex flex-col justify-between h-32 md:h-36 hover:shadow-xl transition-all text-[#5F714B]">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-[#F8F3E5] text-[#9BA88D] rounded-2xl flex items-center justify-center">
               <Percent size={24} />
             </div>
             <div>
-              <span className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.2em] mb-1 block">{t('reports.profitMargin', "Profit Margin")}</span>
+              <span className="text-[10px] font-black text-[#9BA88D] uppercase tracking-[0.2em] mb-1 block">{t('reports.profitMargin', "Profit Margin")}</span>
               <div className="text-2xl md:text-3xl font-black">
                 {data.profitMargin}%
               </div>
@@ -314,51 +314,51 @@ export default function ReportsScreen() {
         {/* Main Analytics Grid - Multi-column on desktop */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 overflow-hidden">
           
-          {/* Udhar / Khata Detailed Summary Card */}
+          {/* Credit / Khata Detailed Summary Card */}
           <motion.div 
-            key={`udhar-detailed-${timeRange}`}
+            key={`credit-detailed-${timeRange}`}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="w-full flex flex-col gap-6"
           >
-             <Card className="p-8 md:p-10 border-none bg-gradient-to-br from-[#FFFBDC] to-white rounded-[32px] shadow-[0_10px_40px_rgba(15,42,29,0.05)] h-full overflow-hidden relative">
+             <Card className="p-8 md:p-10 border-none bg-gradient-to-br from-[#F8F3E5] to-white rounded-[32px] shadow-[0_10px_40px_rgba(15,42,29,0.05)] h-full overflow-hidden relative">
                 <div className="absolute right-[-40px] bottom-[-40px] opacity-[0.03] rotate-12">
-                   <Users size={320} className="text-[#FF8237]" />
+                   <Users size={320} className="text-[#95A07A]" />
                 </div>
                 
                 <div className="flex items-center gap-5 mb-10 md:mb-12">
-                   <div className="w-16 h-16 bg-[#FF8237] text-white rounded-[24px] flex items-center justify-center shadow-xl shadow-[#FF8237]/20 border border-[#FF5900]/10">
+                   <div className="w-16 h-16 bg-[#95A07A] text-white rounded-[24px] flex items-center justify-center shadow-xl shadow-[#95A07A]/20 border border-[#5F714B]/10">
                       <Users size={32} />
                    </div>
                    <div className="flex flex-col">
-                      <h3 className="text-2xl font-black text-[#FF5900]">{t('reports.udharKhata', "Udhar / Khata")}</h3>
-                      <p className="text-xs font-bold text-[#FFAA6E] uppercase tracking-[0.2em]">{data.udharCount} {t('reports.activeAccounts', "active accounts")}</p>
+                      <h3 className="text-2xl font-black text-[#5F714B]">{t('reports.creditKhata', "Credit / Khata")}</h3>
+                      <p className="text-xs font-bold text-[#9BA88D] uppercase tracking-[0.2em]">{data.creditCount} {t('reports.activeAccounts', "active accounts")}</p>
                    </div>
                 </div>
 
                 <div className="flex flex-col gap-8 relative z-10">
                    <div className="grid grid-cols-2 gap-8">
                       <div className="flex flex-col gap-1.5">
-                         <span className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.3em]">{t('reports.totalCredit', "Total Credit")}</span>
-                         <span className="text-2xl font-black text-[#FF5900]">₹{data.udharTotalCredit.toLocaleString()}</span>
+                         <span className="text-[10px] font-black text-[#9BA88D] uppercase tracking-[0.3em]">{t('reports.totalCredit', "Total Credit")}</span>
+                         <span className="text-2xl font-black text-[#5F714B]">₹{data.creditTotal.toLocaleString()}</span>
                       </div>
                       <div className="flex flex-col gap-1.5 text-right">
-                         <span className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.3em]">{t('reports.totalCollected', "Total Collected")}</span>
-                         <span className="text-2xl font-black text-[#FF8237]">₹{data.udharCollected.toLocaleString()}</span>
+                         <span className="text-[10px] font-black text-[#9BA88D] uppercase tracking-[0.3em]">{t('reports.totalCollected', "Total Collected")}</span>
+                         <span className="text-2xl font-black text-[#95A07A]">₹{data.creditCollected.toLocaleString()}</span>
                       </div>
                    </div>
                    
-                   <div className="h-px bg-[#FFD3A5]/30 w-full" />
+                   <div className="h-px bg-[#CFC3A7]/30 w-full" />
                    
                    <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
-                         <span className="text-[10px] font-black text-[#FF8237] uppercase tracking-[0.3em]">{t('reports.outstandingBalance', "Outstanding Balance")}</span>
+                         <span className="text-[10px] font-black text-[#95A07A] uppercase tracking-[0.3em]">{t('reports.outstandingBalance', "Outstanding Balance")}</span>
                          <div className="flex items-center gap-1.5 px-3 py-1 bg-white rounded-full border border-red-100 shadow-sm">
                             <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
                             <span className="text-[10px] font-black text-red-600 uppercase tracking-widest">{t('reports.actionRequired', "Action Required")}</span>
                          </div>
                       </div>
-                      <span className="text-5xl font-black text-[#FF5900] tracking-tight">₹{data.udharOutstanding.toLocaleString()}</span>
+                      <span className="text-5xl font-black text-[#5F714B] tracking-tight">₹{data.creditOutstanding.toLocaleString()}</span>
                    </div>
                 </div>
              </Card>
@@ -368,26 +368,26 @@ export default function ReportsScreen() {
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="w-full bg-white rounded-[32px] border border-[#FFD3A5]/30 p-6 md:p-10 shadow-[0_10px_40px_rgb(15,42,29,0.03)] flex flex-col gap-6"
+            className="w-full bg-white rounded-[32px] border border-[#CFC3A7]/30 p-6 md:p-10 shadow-[0_10px_40px_rgb(15,42,29,0.03)] flex flex-col gap-6"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-xl md:text-2xl font-black text-[#FF5900]">{t('reports.slowMoving', "Slow Moving Items")}</h3>
+              <h3 className="text-xl md:text-2xl font-black text-[#5F714B]">{t('reports.slowMoving', "Slow Moving Items")}</h3>
               <AlertTriangle className="text-orange-400" size={24} />
             </div>
             <div className="flex flex-col gap-3">
               {slowMovingItems.length > 0 ? slowMovingItems.map(item => (
-                <div key={item.id} className="flex items-center justify-between p-4 bg-[#FFFBDC]/30 rounded-2xl border border-[#FFD3A5]/10">
+                <div key={item.id} className="flex items-center justify-between p-4 bg-[#F8F3E5]/30 rounded-2xl border border-[#CFC3A7]/10">
                   <div className="flex flex-col">
-                    <span className="font-bold text-[#FF5900]">{item.name}</span>
-                    <span className="text-[10px] font-bold text-[#FFAA6E] uppercase">{item.category}</span>
+                    <span className="font-bold text-[#5F714B]">{item.name}</span>
+                    <span className="text-[10px] font-bold text-[#9BA88D] uppercase">{item.category}</span>
                   </div>
                   <div className="text-right">
-                    <span className="block text-sm font-black text-[#FF8237]">{item.quantity} {item.unit || 'units'}</span>
+                    <span className="block text-sm font-black text-[#95A07A]">{item.quantity} {item.unit || 'units'}</span>
                     <span className="text-[9px] font-bold text-orange-400 uppercase">High Stock</span>
                   </div>
                 </div>
               )) : (
-                <div className="p-8 text-center text-[#FFAA6E] font-bold italic">
+                <div className="p-8 text-center text-[#9BA88D] font-bold italic">
                   No slow moving items detected. Your inventory is healthy!
                 </div>
               )}
@@ -398,13 +398,13 @@ export default function ReportsScreen() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full bg-white rounded-[32px] border border-[#FFD3A5]/30 p-6 md:p-10 shadow-[0_10px_40px_rgb(15,42,29,0.03)] flex flex-col gap-6"
+            className="w-full bg-white rounded-[32px] border border-[#CFC3A7]/30 p-6 md:p-10 shadow-[0_10px_40px_rgb(15,42,29,0.03)] flex flex-col gap-6"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-xl md:text-2xl font-black text-[#FF5900]">{t('reports.demandForecast', "Demand Forecast")}</h3>
+              <h3 className="text-xl md:text-2xl font-black text-[#5F714B]">{t('reports.demandForecast', "Demand Forecast")}</h3>
               <Zap className="text-yellow-500" size={24} fill="currentColor" />
             </div>
-            <div className="bg-gradient-to-r from-[#FF5900] to-[#FF8237] p-5 rounded-2xl text-white mb-2 shadow-lg">
+            <div className="bg-gradient-to-r from-[#5F714B] to-[#95A07A] p-5 rounded-2xl text-white mb-2 shadow-lg">
               <p className="text-sm font-black mb-1">AI Recommendation:</p>
               <p className="text-xs font-bold opacity-90 leading-relaxed">
                 Based on current sales trends, you should prioritize restocking the following items to avoid stockouts in the next 7 days.
@@ -412,10 +412,10 @@ export default function ReportsScreen() {
             </div>
             <div className="flex flex-col gap-3">
               {forecastItems.map(item => (
-                <div key={item.id} className="flex items-center justify-between p-4 bg-white border border-[#FFD3A5]/30 rounded-2xl shadow-sm">
+                <div key={item.id} className="flex items-center justify-between p-4 bg-white border border-[#CFC3A7]/30 rounded-2xl shadow-sm">
                   <div className="flex flex-col">
-                    <span className="font-bold text-[#FF5900]">{item.name}</span>
-                    <span className="text-[10px] font-bold text-[#FFAA6E]">Restock suggestion: {Math.max(item.lowStockThreshold * 2 - item.quantity, 5)} units</span>
+                    <span className="font-bold text-[#5F714B]">{item.name}</span>
+                    <span className="text-[10px] font-bold text-[#9BA88D]">Restock suggestion: {Math.max(item.lowStockThreshold * 2 - item.quantity, 5)} units</span>
                   </div>
                   <div className="px-3 py-1 bg-red-50 text-red-600 rounded-full border border-red-100 font-black text-[10px] uppercase">
                     Low Stock
@@ -430,27 +430,27 @@ export default function ReportsScreen() {
             key={`products-${timeRange}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full lg:col-span-1 bg-white rounded-[32px] border border-[#FFD3A5]/30 p-6 md:p-10 shadow-[0_10px_40px_rgb(15,42,29,0.03)] flex flex-col gap-8 md:gap-10"
+            className="w-full lg:col-span-1 bg-white rounded-[32px] border border-[#CFC3A7]/30 p-6 md:p-10 shadow-[0_10px_40px_rgb(15,42,29,0.03)] flex flex-col gap-8 md:gap-10"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-xl md:text-2xl font-black text-[#FF5900]">{t('reports.topProducts', "Top Products")}</h3>
+              <h3 className="text-xl md:text-2xl font-black text-[#5F714B]">{t('reports.topProducts', "Top Products")}</h3>
               <div className="flex items-center gap-2">
-                 <div className="w-2 h-2 rounded-full bg-[#FF8237]" />
-                 <span className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">{t('reports.byWeeklyRevenue', "by weekly revenue")}</span>
+                 <div className="w-2 h-2 rounded-full bg-[#95A07A]" />
+                 <span className="text-[10px] font-black text-[#9BA88D] uppercase tracking-widest">{t('reports.byWeeklyRevenue', "by weekly revenue")}</span>
               </div>
             </div>
             
             <div className="flex flex-col gap-4">
               {data.topProducts.map((p, i) => (
-                <div key={p.name} className="flex items-center justify-between p-3 bg-[#FFFBDC]/30 rounded-xl border border-[#FFD3A5]/10">
+                <div key={p.name} className="flex items-center justify-between p-3 bg-[#F8F3E5]/30 rounded-xl border border-[#CFC3A7]/10">
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-lg bg-[#FF8237] text-white flex items-center justify-center text-[10px] font-black">#{i+1}</span>
-                    <span className="font-bold text-[#FF5900]">{p.name}</span>
+                    <span className="w-6 h-6 rounded-lg bg-[#95A07A] text-white flex items-center justify-center text-[10px] font-black">#{i+1}</span>
+                    <span className="font-bold text-[#5F714B]">{p.name}</span>
                   </div>
-                  <span className="font-black text-[#FF8237]">₹{p.value.toLocaleString()}</span>
+                  <span className="font-black text-[#95A07A]">₹{p.value.toLocaleString()}</span>
                 </div>
               ))}
-              <p className="mt-4 text-xs font-bold text-[#FFAA6E] italic text-center">
+              <p className="mt-4 text-xs font-bold text-[#9BA88D] italic text-center">
                 ✨ {t('reports.topProductsDesc', "These are the items your customers love the most! Keep them in stock!")}
               </p>
             </div>

@@ -55,11 +55,11 @@ const InventoryForm = ({
       required
     />
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-bold text-[#FF8237]">{t('inventory.category', "Category *")}</label>
+      <label className="text-sm font-bold text-[#95A07A]">{t('inventory.category', "Category *")}</label>
       <select 
         value={formData.category}
         onChange={(e) => setFormData({...formData, category: e.target.value})}
-        className="w-full px-4 py-3 bg-white border border-[#FFD3A5] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFAA6E] transition-shadow text-[#FF5900] font-medium"
+        className="w-full px-4 py-3 bg-white border border-[#CFC3A7] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#9BA88D] transition-shadow text-[#5F714B] font-medium"
       >
         {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{t(`expenses.categories.${c.toLowerCase()}`, c)}</option>)}
       </select>
@@ -236,20 +236,20 @@ export default function InventoryScreen() {
   return (
     <PageTransition className="flex flex-col h-full min-h-screen pb-20">
       {/* Header Area */}
-      <div className="bg-[#FF5900] rounded-b-3xl p-4 md:p-6 shadow-xl z-20 shrink-0 sticky top-0 md:relative">
+      <div className="bg-[#5F714B] rounded-b-3xl p-4 md:p-6 shadow-xl z-20 shrink-0 sticky top-0 md:relative">
         
-        <div className="flex justify-between items-center mb-4 text-[#FFFBDC]">
+        <div className="flex justify-between items-center mb-4 text-[#F8F3E5]">
           <h2 className="text-xl font-bold flex items-center gap-2">
             <Package size={22} /> Paisa
           </h2>
           <div className="flex-1 max-w-[160px] ml-4">
             <div className="flex justify-between items-center mb-1">
-              <span className="text-[10px] font-bold text-[#FFD3A5] uppercase tracking-wider">{planId} Plan</span>
-              <span className="text-[10px] font-bold text-[#FFFBDC]">{items.length}/{limit === 99999 ? '∞' : limit}</span>
+              <span className="text-[10px] font-bold text-[#CFC3A7] uppercase tracking-wider">{planId} Plan</span>
+              <span className="text-[10px] font-bold text-[#F8F3E5]">{items.length}/{limit === 99999 ? '∞' : limit}</span>
             </div>
-            <div className="h-1.5 w-full bg-[#FF8237] rounded-full overflow-hidden">
+            <div className="h-1.5 w-full bg-[#95A07A] rounded-full overflow-hidden">
               <div 
-                className="h-full bg-[#FFD3A5] rounded-full transition-all duration-500" 
+                className="h-full bg-[#CFC3A7] rounded-full transition-all duration-500" 
                 style={{ width: `${Math.min((items.length / (limit === 99999 ? (items.length || 1) : limit)) * 100, 100)}%` }}
               />
             </div>
@@ -261,12 +261,12 @@ export default function InventoryScreen() {
             placeholder={t('inventory.searchPlaceholder', "Search inventory...")} 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            leftIcon={<Search size={20} className="text-[#FF8237]" />}
-            className="flex-1 bg-[#FFFBDC] text-[#FF5900] border-transparent focus-visible:border-[#FFD3A5] rounded-xl h-12"
+            leftIcon={<Search size={20} className="text-[#95A07A]" />}
+            className="flex-1 bg-[#F8F3E5] text-[#5F714B] border-transparent focus-visible:border-[#CFC3A7] rounded-xl h-12"
           />
           <Button 
             onClick={handleOpenAddForm}
-            className="hidden md:flex items-center gap-2 px-6 h-12 bg-[#FF8237] hover:bg-[#FFAA6E] text-[#FFFBDC] rounded-xl font-bold shadow-lg shrink-0 border-none"
+            className="hidden md:flex items-center gap-2 px-6 h-12 bg-[#95A07A] hover:bg-[#9BA88D] text-[#F8F3E5] rounded-xl font-bold shadow-lg shrink-0 border-none"
           >
             <Plus size={20} strokeWidth={3} />
             {t('inventory.addProduct', "Add Product")}
@@ -284,8 +284,8 @@ export default function InventoryScreen() {
               className={cn(
                 "px-4 py-1.5 rounded-full font-bold text-sm whitespace-nowrap transition-colors border",
                 activeCategory === cat 
-                  ? "bg-[#FF8237] text-[#FFFBDC] border-[#FF8237]" 
-                  : "bg-white text-[#FFAA6E] border-[#FFD3A5]/50 hover:bg-[#FFFBDC]"
+                  ? "bg-[#95A07A] text-[#F8F3E5] border-[#95A07A]" 
+                  : "bg-white text-[#9BA88D] border-[#CFC3A7]/50 hover:bg-[#F8F3E5]"
               )}
             >
               {t(`expenses.categories.${cat.toLowerCase()}`, cat)}
@@ -298,7 +298,7 @@ export default function InventoryScreen() {
       <div className="md:hidden flex-1 p-4 grid grid-cols-3 gap-3 auto-rows-max">
         {loading ? (
           <div className="col-span-full py-20 flex justify-center">
-            <div className="w-10 h-10 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-[#95A07A] border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
           <AnimatePresence>
@@ -310,23 +310,23 @@ export default function InventoryScreen() {
                     onClick={() => handleOpenEditForm(item)}
                     className={cn(
                       "p-2.5 h-full cursor-pointer hover:shadow-md transition-all flex flex-col justify-between border-2 rounded-xl",
-                      isLowStock ? "border-[#FF5900] bg-[#FFFBDC]/50" : "border-[#FFD3A5]/30 bg-white"
+                      isLowStock ? "border-[#5F714B] bg-[#F8F3E5]/50" : "border-[#CFC3A7]/30 bg-white"
                     )}
                   >
                     <div>
                       <div className="flex justify-between items-start mb-1.5">
                         <span className="text-xl">{CATEGORY_EMOJIS[item.category] || '📦'}</span>
-                        {isLowStock && <span className="px-1 py-0.5 text-[7px] bg-[#FF5900] text-[#FFFBDC] rounded-md font-black uppercase">{t('inventory.low', 'Low')}</span>}
+                        {isLowStock && <span className="px-1 py-0.5 text-[7px] bg-[#5F714B] text-[#F8F3E5] rounded-md font-black uppercase">{t('inventory.low', 'Low')}</span>}
                       </div>
-                      <h3 className="font-bold text-[#FF5900] text-[11px] leading-tight line-clamp-2">{item.name}</h3>
-                      <p className="text-[9px] font-bold text-[#FFAA6E] mt-0.5 uppercase tracking-tighter opacity-70">{item.category}</p>
+                      <h3 className="font-bold text-[#5F714B] text-[11px] leading-tight line-clamp-2">{item.name}</h3>
+                      <p className="text-[9px] font-bold text-[#9BA88D] mt-0.5 uppercase tracking-tighter opacity-70">{item.category}</p>
                     </div>
                     <div className="mt-auto pt-3">
                       <div className="flex items-baseline gap-1">
-                        <span className={cn("text-base font-black tracking-tighter", isLowStock ? "text-[#FF5900]" : "text-[#FF8237]")}>{item.quantity}</span>
+                        <span className={cn("text-base font-black tracking-tighter", isLowStock ? "text-[#5F714B]" : "text-[#95A07A]")}>{item.quantity}</span>
                         <span className="text-[9px] font-bold text-gray-400 lowercase">{item.unit || 'pcs'}</span>
                       </div>
-                      <div className="text-[10px] font-black text-[#FF8237]">₹{item.sellPrice}</div>
+                      <div className="text-[10px] font-black text-[#95A07A]">₹{item.sellPrice}</div>
                     </div>
                   </Card>
                 </motion.div>
@@ -345,7 +345,7 @@ export default function InventoryScreen() {
       <div className="hidden md:block flex-1 px-6 pb-8 overflow-x-auto">
         {loading ? (
           <div className="py-20 flex justify-center">
-            <div className="w-10 h-10 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-[#95A07A] border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="py-10">
@@ -354,13 +354,13 @@ export default function InventoryScreen() {
         ) : (
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b-2 border-[#FFD3A5]/40">
-                <th className="text-left py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Product</th>
-                <th className="text-left py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Category</th>
-                <th className="text-right py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Stock</th>
-                <th className="text-right py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Sell ₹</th>
-                <th className="text-right py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Buy ₹</th>
-                <th className="text-center py-3 px-4 text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">Status</th>
+              <tr className="border-b-2 border-[#CFC3A7]/40">
+                <th className="text-left py-3 px-4 text-[10px] font-black text-[#9BA88D] uppercase tracking-widest">Product</th>
+                <th className="text-left py-3 px-4 text-[10px] font-black text-[#9BA88D] uppercase tracking-widest">Category</th>
+                <th className="text-right py-3 px-4 text-[10px] font-black text-[#9BA88D] uppercase tracking-widest">Stock</th>
+                <th className="text-right py-3 px-4 text-[10px] font-black text-[#9BA88D] uppercase tracking-widest">Sell ₹</th>
+                <th className="text-right py-3 px-4 text-[10px] font-black text-[#9BA88D] uppercase tracking-widest">Buy ₹</th>
+                <th className="text-center py-3 px-4 text-[10px] font-black text-[#9BA88D] uppercase tracking-widest">Status</th>
                 <th className="py-3 px-4" />
               </tr>
             </thead>
@@ -377,26 +377,26 @@ export default function InventoryScreen() {
                       transition={{ delay: idx * 0.02 }}
                       onClick={() => handleOpenEditForm(item)}
                       className={cn(
-                        "border-b border-[#FFD3A5]/20 cursor-pointer transition-colors hover:bg-[#FFFBDC]/60 group",
+                        "border-b border-[#CFC3A7]/20 cursor-pointer transition-colors hover:bg-[#F8F3E5]/60 group",
                         isLowStock && "bg-red-50/40"
                       )}
                     >
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
                           <span className="text-xl shrink-0">{CATEGORY_EMOJIS[item.category] || '📦'}</span>
-                          <span className="font-bold text-sm text-[#FF5900] truncate max-w-[180px]">{item.name}</span>
+                          <span className="font-bold text-sm text-[#5F714B] truncate max-w-[180px]">{item.name}</span>
                         </div>
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className="text-xs font-bold text-[#FFAA6E]">{item.category}</span>
+                        <span className="text-xs font-bold text-[#9BA88D]">{item.category}</span>
                       </td>
                       <td className="py-3.5 px-4 text-right">
-                        <span className={cn("text-sm font-black", isLowStock ? "text-red-500" : "text-[#FF5900]")}>
-                          {item.quantity} <span className="text-[10px] font-bold text-[#FFAA6E]">{item.unit || 'pcs'}</span>
+                        <span className={cn("text-sm font-black", isLowStock ? "text-red-500" : "text-[#5F714B]")}>
+                          {item.quantity} <span className="text-[10px] font-bold text-[#9BA88D]">{item.unit || 'pcs'}</span>
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-right font-black text-sm text-[#FF8237]">₹{item.sellPrice}</td>
-                      <td className="py-3.5 px-4 text-right text-sm font-bold text-[#FFAA6E]">₹{item.buyPrice || '—'}</td>
+                      <td className="py-3.5 px-4 text-right font-black text-sm text-[#95A07A]">₹{item.sellPrice}</td>
+                      <td className="py-3.5 px-4 text-right text-sm font-bold text-[#9BA88D]">₹{item.buyPrice || '—'}</td>
                       <td className="py-3.5 px-4 text-center">
                         {isLowStock ? (
                           <span className="px-2 py-1 text-[10px] bg-red-100 text-red-600 rounded-lg font-black uppercase">Low</span>
@@ -405,7 +405,7 @@ export default function InventoryScreen() {
                         )}
                       </td>
                       <td className="py-3.5 px-4 text-right">
-                        <button className="opacity-0 group-hover:opacity-100 transition-opacity px-3 py-1.5 bg-[#FF8237] text-white text-[10px] font-black rounded-lg">
+                        <button className="opacity-0 group-hover:opacity-100 transition-opacity px-3 py-1.5 bg-[#95A07A] text-white text-[10px] font-black rounded-lg">
                           Edit
                         </button>
                       </td>
@@ -422,7 +422,7 @@ export default function InventoryScreen() {
       <div className="px-4 mt-6 mb-20 md:mb-10">
         <button 
           onClick={() => setIsDeadStockOpen(!isDeadStockOpen)}
-          className="flex items-center justify-between w-full p-4 bg-[#FF5900] text-[#FFFBDC] rounded-2xl shadow-md font-bold"
+          className="flex items-center justify-between w-full p-4 bg-[#5F714B] text-[#F8F3E5] rounded-2xl shadow-md font-bold"
         >
           <div className="flex items-center gap-2">
             <span className="text-xl">💤</span> {t('inventory.deadStock', 'Dead Stock (30+ Days)')}
@@ -435,16 +435,16 @@ export default function InventoryScreen() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden bg-white/50 rounded-b-2xl border-x border-b border-[#FFD3A5]"
+              className="overflow-hidden bg-white/50 rounded-b-2xl border-x border-b border-[#CFC3A7]"
             >
               <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                 {items.filter(i => i.id === '6').map(item => (
-                   <Card key={item.id} className="p-3 bg-white/80 border-[#FFD3A5]/50 flex justify-between items-center">
+                   <Card key={item.id} className="p-3 bg-white/80 border-[#CFC3A7]/50 flex justify-between items-center">
                      <div>
-                       <h4 className="font-bold text-sm text-[#FF5900]">{item.name}</h4>
+                       <h4 className="font-bold text-sm text-[#5F714B]">{item.name}</h4>
                        <p className="text-[10px] text-gray-500">{t('inventory.lastSoldNever', 'Last sold: Never')}</p>
                      </div>
-                     <div className="font-black text-[#FF5900]">{item.quantity} {item.unit}</div>
+                     <div className="font-black text-[#5F714B]">{item.quantity} {item.unit}</div>
                    </Card>
                 ))}
                 {items.filter(i => i.id === '6').length === 0 && (
@@ -461,9 +461,9 @@ export default function InventoryScreen() {
         <PlanGate allowedPlans={['pro', 'basic']} currentPlan={user?.plan || 'free'} hideGate={!isLimitReached} requiredFeatureMessage={t('inventory.unlimitedNeedsBasic', 'Unlimited Inventory needs Basic')}>
           <Button 
             onClick={handleOpenAddForm}
-            className="w-14 h-14 rounded-full shadow-[0_10px_25px_rgba(15,42,29,0.3)] bg-[#FF5900] hover:bg-[#FF8237] active:scale-95 transition-transform flex items-center justify-center p-0"
+            className="w-14 h-14 rounded-full shadow-[0_10px_25px_rgba(15,42,29,0.3)] bg-[#5F714B] hover:bg-[#95A07A] active:scale-95 transition-transform flex items-center justify-center p-0"
           >
-            <Plus size={28} className="text-[#FFFBDC]" />
+            <Plus size={28} className="text-[#F8F3E5]" />
           </Button>
         </PlanGate>
       </div>

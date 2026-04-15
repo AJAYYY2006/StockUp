@@ -25,13 +25,13 @@ export function MobileHeader() {
   const totalNotifications = lowStockItems.length + overdueCustomers.length;
 
   return (
-    <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#FF5900] sticky top-0 z-30 shadow-md">
+    <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#5F714B] sticky top-0 z-30 shadow-md">
       {/* Branding */}
       <div className="flex items-center gap-2">
         <div className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden shrink-0">
           <img src={paisaLogo} alt="Paisa Logo" className="w-full h-full object-cover" />
         </div>
-        <span className="text-[#FFD3A5] text-[9px] font-bold uppercase tracking-widest truncate max-w-[100px]">
+        <span className="text-[#CFC3A7] text-[9px] font-bold uppercase tracking-widest truncate max-w-[100px]">
           {user?.storeName || 'My Store'}
         </span>
       </div>
@@ -42,11 +42,11 @@ export function MobileHeader() {
         <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="w-9 h-9 rounded-xl bg-[#FF8237]/60 flex items-center justify-center text-[#FFFBDC] relative"
+            className="w-9 h-9 rounded-xl bg-[#95A07A]/60 flex items-center justify-center text-[#F8F3E5] relative"
           >
             <Bell size={18} />
             {totalNotifications > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-yellow-300 rounded-full border border-[#FF5900]" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-yellow-300 rounded-full border border-[#5F714B]" />
             )}
           </button>
 
@@ -64,14 +64,14 @@ export function MobileHeader() {
                   initial={{ opacity: 0, y: -8, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                  className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-[#FFD3A5]/30 p-3 z-50 max-h-[60vh] overflow-y-auto"
+                  className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-[#CFC3A7]/30 p-3 z-50 max-h-[60vh] overflow-y-auto"
                 >
-                  <h3 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1 mb-2">
+                  <h3 className="text-[10px] font-black text-[#9BA88D] uppercase tracking-widest px-1 mb-2">
                     {t('common.recentAlerts', 'Recent Alerts')}
                   </h3>
 
                   {totalNotifications === 0 && (
-                    <p className="text-xs font-bold text-[#FFAA6E] text-center py-4">
+                    <p className="text-xs font-bold text-[#9BA88D] text-center py-4">
                       {t('common.noAlerts', 'All clear!')}
                     </p>
                   )}
@@ -96,7 +96,7 @@ export function MobileHeader() {
 
                   <button
                     onClick={() => setShowNotifications(false)}
-                    className="w-full py-2 mt-1 bg-[#FFFBDC] text-[#FF8237] font-black text-[10px] uppercase rounded-xl"
+                    className="w-full py-2 mt-1 bg-[#F8F3E5] text-[#95A07A] font-black text-[10px] uppercase rounded-xl"
                   >
                     {t('common.dismissAll', 'Dismiss All')}
                   </button>
@@ -109,7 +109,7 @@ export function MobileHeader() {
         {/* Profile Avatar */}
         <button
           onClick={() => navigate('/settings')}
-          className="w-9 h-9 rounded-xl bg-[#FFFBDC] flex items-center justify-center text-[#FF5900] shadow-sm"
+          className="w-9 h-9 rounded-xl bg-[#F8F3E5] flex items-center justify-center text-[#5F714B] shadow-sm"
         >
           <User size={18} />
         </button>

@@ -63,21 +63,21 @@ export default function DashboardScreen() {
   const totalExpenses = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
   const totalProfit = totalRevenue - totalExpenses; // Simplified net cashflow
 
-  // Total Udhar of Today
-  const todayUdhar = todaySales.reduce((sum, s) => sum + (s.udhar_amount || 0), 0);
-  // Total Revenue Today - Total Udhar Today (Actual Cash Received Today)
+  // Total Credit of Today
+  const todayCredit = todaySales.reduce((sum, s) => sum + (s.udhar_amount || 0), 0);
+  // Total Revenue Today - Total Credit Today (Actual Cash Received Today)
   const todayRevenue = todaySales.reduce((sum, s) => sum + (s.total_amount || 0), 0);
-  const todayCash = todayRevenue - todayUdhar;
+  const todayCash = todayRevenue - todayCredit;
 
   const MAIN_METRICS = [
-    { id: 'rev', labelKey: "dashboard.revenue", amount: `₹${totalRevenue.toLocaleString()}`, icon: TrendingUp, color: "text-[#FF5900]", bg: "bg-[#FFD3A5]/50" },
-    { id: 'exp', labelKey: "dashboard.expense", amount: `₹${totalExpenses.toLocaleString()}`, icon: TrendingDown, color: "text-[#FF8237]", bg: "bg-[#FFFBDC]" },
-    { id: 'prf', labelKey: "dashboard.profit", amount: `₹${totalProfit.toLocaleString()}`, icon: IndianRupee, color: "text-[#FFFBDC]", bg: "bg-[#FF8237]", cardBg: "bg-[#FF8237]" },
+    { id: 'rev', labelKey: "dashboard.revenue", amount: `₹${totalRevenue.toLocaleString()}`, icon: TrendingUp, color: "text-[#5F714B]", bg: "bg-[#CFC3A7]/50" },
+    { id: 'exp', labelKey: "dashboard.expense", amount: `₹${totalExpenses.toLocaleString()}`, icon: TrendingDown, color: "text-[#95A07A]", bg: "bg-[#F8F3E5]" },
+    { id: 'prf', labelKey: "dashboard.profit", amount: `₹${totalProfit.toLocaleString()}`, icon: IndianRupee, color: "text-[#F8F3E5]", bg: "bg-[#95A07A]", cardBg: "bg-[#95A07A]" },
   ];
 
   const SECONDARY_METRICS = [
-    { id: 'tcs', labelKey: "Today's Cash", amount: `₹${todayCash.toLocaleString()}`, icon: TrendingUp, color: "text-[#FF5900]", bg: "bg-white", isDynamic: true },
-    { id: 'tud', labelKey: "Today's Udhar", amount: `₹${todayUdhar.toLocaleString()}`, icon: Users, color: "text-[#FF5900]", bg: "bg-white", isDynamic: true },
+    { id: 'tcs', labelKey: "Today's Cash", amount: `₹${todayCash.toLocaleString()}`, icon: TrendingUp, color: "text-[#5F714B]", bg: "bg-white", isDynamic: true },
+    { id: 'tud', labelKey: "Today's Credit", amount: `₹${todayCredit.toLocaleString()}`, icon: Users, color: "text-[#5F714B]", bg: "bg-white", isDynamic: true },
   ];
 
   // Combine Recent Transactions
@@ -105,7 +105,7 @@ export default function DashboardScreen() {
   const lowStockItems = inventory.filter(item => item.quantity <= item.lowStockThreshold);
 
   return (
-    <PageTransition className="flex flex-col h-full bg-[#FFFBDC] text-[#FF5900] p-4 md:p-8 lg:p-12 gap-6 pb-24 font-plus-jakarta overflow-x-hidden">
+    <PageTransition className="flex flex-col h-full bg-[#F8F3E5] text-[#5F714B] p-4 md:p-8 lg:p-12 gap-6 pb-24 font-plus-jakarta overflow-x-hidden">
       
       {/* Header Container */}
       <div className="flex items-start justify-between w-full">
@@ -113,16 +113,16 @@ export default function DashboardScreen() {
           <motion.h1 
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-2xl md:text-3xl font-black tracking-tight text-[#FF5900]"
+            className="text-2xl md:text-3xl font-black tracking-tight text-[#5F714B]"
           >
             {greetingText}, {user?.ownerName?.split(' ')[0] || user?.email?.split('@')[0] || t('common.user', 'User')}! 🌿
           </motion.h1>
-          <p className="text-xs md:text-sm font-bold text-[#FFAA6E] mt-1 flex items-center gap-1.5 opacity-80">
+          <p className="text-xs md:text-sm font-bold text-[#9BA88D] mt-1 flex items-center gap-1.5 opacity-80">
             <Store size={14} /> {user?.storeName || 'My Store'}
           </p>
         </div>
         <div className="pt-1">
-          <Badge variant="pro" className="bg-gradient-to-r from-[#FF5900] to-[#FF8237] text-white px-3 py-1 text-[10px] font-black border-none shadow-premium italic tracking-widest leading-none">
+          <Badge variant="pro" className="bg-gradient-to-r from-[#5F714B] to-[#95A07A] text-white px-3 py-1 text-[10px] font-black border-none shadow-premium italic tracking-widest leading-none">
             PRO
           </Badge>
         </div>
@@ -135,8 +135,8 @@ export default function DashboardScreen() {
           
           <div className="flex flex-col gap-4">
              <div className="flex items-center justify-between px-1">
-               <h2 className="text-[#FF5900] font-black text-xl tracking-tighter">{t('dashboard.energyToday')}</h2>
-               <span className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-[0.2em]">{t('dashboard.realtimeStatus')}</span>
+               <h2 className="text-[#5F714B] font-black text-xl tracking-tighter">{t('dashboard.energyToday')}</h2>
+               <span className="text-[10px] font-black text-[#9BA88D] uppercase tracking-[0.2em]">{t('dashboard.realtimeStatus')}</span>
              </div>
              
              {/* Horizontal/Stacked Metric Cards */}
@@ -154,17 +154,17 @@ export default function DashboardScreen() {
                       key={metric.id} 
                       className={cn(
                         "flex-1 p-6 shadow-[0_4px_20px_rgba(15,42,29,0.04)] rounded-[24px] border-none flex items-center justify-between transition-all active:scale-[0.98]",
-                        isProfit ? "bg-[#FF8237] text-white h-32" : "bg-white h-28"
+                        isProfit ? "bg-[#95A07A] text-white h-32" : "bg-white h-28"
                       )}
                     >
                       <div className="flex flex-col justify-center h-full">
                         <span className={cn(
                             "text-[10px] font-black uppercase tracking-widest leading-none mb-2",
-                            isProfit ? "text-[#FFD3A5]" : "text-[#FFAA6E]"
+                            isProfit ? "text-[#CFC3A7]" : "text-[#9BA88D]"
                         )}>{'isDynamic' in metric && metric.isDynamic ? metric.labelKey : t(metric.labelKey)}</span>
                         <p className={cn(
                           "text-2xl md:text-3xl font-black tracking-tighter leading-none",
-                          isProfit ? "text-[#FFFBDC]" : "text-[#FF5900]"
+                          isProfit ? "text-[#F8F3E5]" : "text-[#5F714B]"
                         )}>
                           {loading ? '...' : metric.amount}
                         </p>
@@ -185,13 +185,13 @@ export default function DashboardScreen() {
           <div className="flex gap-4">
             <Button
               onClick={() => navigate('/billing')}
-              className="flex-1 bg-[#FF8237] hover:bg-[#FF5900] text-white font-black text-xs rounded-2xl h-16 border-none shadow-sm transition-all flex items-center justify-center gap-3"
+              className="flex-1 bg-[#95A07A] hover:bg-[#5F714B] text-white font-black text-xs rounded-2xl h-16 border-none shadow-sm transition-all flex items-center justify-center gap-3"
             >
               <Plus size={20} /> {t('dashboard.newBill')}
             </Button>
             <Button
               onClick={() => navigate('/expenses')}
-              className="flex-1 bg-white hover:bg-[#FFFBDC]/50 text-[#FF5900] font-black text-xs rounded-2xl h-16 border-2 border-[#FFD3A5]/30 shadow-none transition-all flex items-center justify-center gap-3"
+              className="flex-1 bg-white hover:bg-[#F8F3E5]/50 text-[#5F714B] font-black text-xs rounded-2xl h-16 border-2 border-[#CFC3A7]/30 shadow-none transition-all flex items-center justify-center gap-3"
             >
               <Plus size={20} /> {t('dashboard.addExpense')}
             </Button>
@@ -225,10 +225,10 @@ export default function DashboardScreen() {
           {/* Recent Transactions List */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex flex-col gap-4">
             <div className="flex items-center justify-between px-1">
-              <h2 className="text-[#FF5900] font-black text-xl tracking-tighter">{t('dashboard.recentEnergy')}</h2>
+              <h2 className="text-[#5F714B] font-black text-xl tracking-tighter">{t('dashboard.recentEnergy')}</h2>
               <button
                 onClick={() => navigate('/reports')}
-                className="text-[#FF8237] text-[10px] font-black uppercase tracking-[0.2em] flex items-center hover:opacity-70 transition-opacity"
+                className="text-[#95A07A] text-[10px] font-black uppercase tracking-[0.2em] flex items-center hover:opacity-70 transition-opacity"
               >
                 {t('common.viewAll')} <ArrowRight size={14} className="ml-1.5" />
               </button>
@@ -239,43 +239,43 @@ export default function DashboardScreen() {
               className="p-3 bg-white rounded-[28px] border-none shadow-[0_4px_20px_rgba(15,42,29,0.04)] flex flex-col gap-1 cursor-pointer hover:shadow-lg transition-shadow active:scale-[0.99]"
             >
               {loading ? (
-                <div className="p-8 text-center text-[#FFAA6E] font-bold">Loading transactions...</div>
+                <div className="p-8 text-center text-[#9BA88D] font-bold">Loading transactions...</div>
               ) : combinedRecentTXNs.length > 0 ? (
                 combinedRecentTXNs.map((txn, i) => (
                   <div 
                     key={txn.id} 
                     className={cn(
-                      "flex items-center justify-between p-4 rounded-2xl transition-colors hover:bg-[#FFFBDC]/20",
+                      "flex items-center justify-between p-4 rounded-2xl transition-colors hover:bg-[#F8F3E5]/20",
                       i !== combinedRecentTXNs.length - 1 ? 'border-b border-transparent' : ''
                     )}
                   >
                     <div className="flex items-center gap-4">
                       <div className={cn(
                           "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
-                          txn.type === 'IN' ? 'bg-[#FFD3A5]/20 text-[#FF8237]' : 'bg-[#fceded] text-[#d63a3a]'
+                          txn.type === 'IN' ? 'bg-[#CFC3A7]/20 text-[#95A07A]' : 'bg-[#fceded] text-[#d63a3a]'
                       )}>
                         {txn.type === 'IN' ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
                       </div>
                       <div className="flex flex-col">
-                        <p className="text-sm font-black text-[#FF5900] leading-none mb-1.5">{txn.title}</p>
-                        <p className="text-[9px] font-black text-[#FFAA6E] uppercase tracking-widest">{txn.time}</p>
+                        <p className="text-sm font-black text-[#5F714B] leading-none mb-1.5">{txn.title}</p>
+                        <p className="text-[9px] font-black text-[#9BA88D] uppercase tracking-widest">{txn.time}</p>
                       </div>
                     </div>
                     <span className={cn(
                         "text-sm font-black tracking-tighter",
-                        txn.type === 'IN' ? "text-[#FF8237]" : "text-[#FF5900]"
+                        txn.type === 'IN' ? "text-[#95A07A]" : "text-[#5F714B]"
                     )}>
                       {txn.amount}
                     </span>
                   </div>
                 ))
               ) : (
-                <div className="p-8 text-center text-[#FFAA6E] font-bold">No recent transactions</div>
+                <div className="p-8 text-center text-[#9BA88D] font-bold">No recent transactions</div>
               )}
             </Card>
           </motion.div>
 
-          {/* SECONDARY METRICS: Cash & Udhar Today */}
+          {/* SECONDARY METRICS: Cash & Credit Today */}
           <div className="grid grid-cols-2 gap-4">
              {SECONDARY_METRICS.map((metric) => {
                const Icon = metric.icon;
@@ -285,12 +285,12 @@ export default function DashboardScreen() {
                     className="p-5 shadow-[0_4px_20px_rgba(15,42,29,0.04)] rounded-[24px] border-none flex items-center justify-between bg-white h-24 hover:shadow-md transition-all active:scale-[0.98]"
                   >
                     <div className="flex flex-col justify-center">
-                      <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1.5 text-[#FFAA6E]">{metric.labelKey}</span>
-                      <p className="text-xl font-black tracking-tighter leading-none text-[#FF5900] truncate">
+                      <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1.5 text-[#9BA88D]">{metric.labelKey}</span>
+                      <p className="text-xl font-black tracking-tighter leading-none text-[#5F714B] truncate">
                         {loading ? '...' : metric.amount}
                       </p>
                     </div>
-                    <div className="p-2.5 bg-[#FFFBDC] text-[#FF8237] rounded-xl">
+                    <div className="p-2.5 bg-[#F8F3E5] text-[#95A07A] rounded-xl">
                       <Icon size={18} strokeWidth={3} />
                     </div>
                   </Card>
@@ -309,29 +309,29 @@ export default function DashboardScreen() {
                 <div key={item.id} className="flex items-center justify-between p-4 bg-[#fceded]/50 rounded-2xl border border-[#f5c6c6]/30">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                      <Package size={20} className="text-[#FF8237]" />
+                      <Package size={20} className="text-[#95A07A]" />
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-sm font-black text-[#FF5900] leading-none mb-1">{item.name}</p>
-                      <p className="text-[10px] font-bold text-[#FFAA6E] uppercase tracking-wider">{item.category}</p>
+                      <p className="text-sm font-black text-[#5F714B] leading-none mb-1">{item.name}</p>
+                      <p className="text-[10px] font-bold text-[#9BA88D] uppercase tracking-wider">{item.category}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-black text-[#d63a3a]">{item.quantity} {item.unit || 'units'} {t('dashboard.unitsLeft')}</p>
-                    <p className="text-[10px] font-bold text-[#FFAA6E] uppercase tracking-widest">{t('dashboard.min')} {item.lowStockThreshold}</p>
+                    <p className="text-[10px] font-bold text-[#9BA88D] uppercase tracking-widest">{t('dashboard.min')} {item.lowStockThreshold}</p>
                   </div>
                 </div>
               ))}
               <Button
                 onClick={() => { setShowLowStockModal(false); navigate('/inventory'); }}
-                className="mt-4 bg-[#FF8237] hover:bg-[#FF5900] text-white rounded-xl"
+                className="mt-4 bg-[#95A07A] hover:bg-[#5F714B] text-white rounded-xl"
               >
                 {t('dashboard.goToInventory')}
               </Button>
             </div>
           ) : (
-            <div className="py-8 text-center bg-[#FFFBDC]/30 rounded-2xl">
-              <p className="text-[#FF8237] font-bold">{t('dashboard.allHealthy')}</p>
+            <div className="py-8 text-center bg-[#F8F3E5]/30 rounded-2xl">
+              <p className="text-[#95A07A] font-bold">{t('dashboard.allHealthy')}</p>
             </div>
           )}
         </div>

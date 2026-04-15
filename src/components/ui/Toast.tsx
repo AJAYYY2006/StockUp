@@ -19,18 +19,18 @@ export function ToastContainer() {
             className={cn(
               "pointer-events-auto flex items-center justify-between w-full max-w-sm p-4 rounded-2xl shadow-lg border",
               {
-                'bg-white border-[#FFD3A5]': !toast.type || toast.type === 'info',
-                'bg-[#FFFBDC] border-[#FFAA6E]': toast.type === 'success',
+                'bg-white border-[#CFC3A7]': !toast.type || toast.type === 'info',
+                'bg-[#F8F3E5] border-[#9BA88D]': toast.type === 'success',
                 'bg-red-50 border-red-200': toast.type === 'error',
               }
             )}
           >
             <div className="flex items-center gap-3">
-              {toast.type === 'success' && <CheckCircle2 className="text-[#FF8237]" size={20} />}
+              {toast.type === 'success' && <CheckCircle2 className="text-[#95A07A]" size={20} />}
               {toast.type === 'error' && <AlertCircle className="text-red-500" size={20} />}
-              {(!toast.type || toast.type === 'info') && <Info className="text-[#FF5900]" size={20} />}
+              {(!toast.type || toast.type === 'info') && <Info className="text-[#5F714B]" size={20} />}
               
-              <span className="text-[#FF5900] font-medium text-sm">
+              <span className="text-[#5F714B] font-medium text-sm">
                 {toast.message}
               </span>
             </div>

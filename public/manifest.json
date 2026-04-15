@@ -3,8 +3,8 @@
   "short_name": "Paisa",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFFBDC",
-  "theme_color": "#FF5900",
+  "background_color": "#F8F3E5",
+  "theme_color": "#5F714B",
   "description": "Kirana Store Management",
   "icons": [
     {

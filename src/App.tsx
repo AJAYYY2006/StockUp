@@ -20,8 +20,8 @@ function ProtectedRoute({ children, requireOnboarded = true }: { children: React
   
   if (loading) {
     return (
-      <div className="h-screen w-screen bg-[#FFFBDC] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
+      <div className="h-screen w-screen bg-[#F8F3E5] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#95A07A] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -47,8 +47,8 @@ function MainRoutes() {
   
   if (loading) {
      return (
-        <div className="h-screen w-screen bg-[#FFFBDC] flex items-center justify-center">
-          <div className="w-12 h-12 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
+        <div className="h-screen w-screen bg-[#F8F3E5] flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-[#95A07A] border-t-transparent rounded-full animate-spin"></div>
         </div>
       );
   }

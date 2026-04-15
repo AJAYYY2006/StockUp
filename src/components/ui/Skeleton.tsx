@@ -15,7 +15,7 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
         duration: 1,
         ease: "easeInOut"
       }}
-      className={cn("rounded-2xl bg-[#FFD3A5]/30", className)}
+      className={cn("rounded-2xl bg-[#CFC3A7]/30", className)}
       {...props as any}
     />
   );

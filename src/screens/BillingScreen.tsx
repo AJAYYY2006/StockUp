@@ -334,35 +334,35 @@ export default function BillingScreen() {
   };
 
   return (
-    <PageTransition className="flex flex-col md:flex-row gap-4 md:gap-6 p-2 md:p-6 h-[calc(100vh-80px)] md:h-[calc(100vh-56px)] bg-[#FFFBDC] overflow-hidden">
+    <PageTransition className="flex flex-col md:flex-row gap-4 md:gap-6 p-2 md:p-6 h-[calc(100vh-80px)] md:h-[calc(100vh-56px)] bg-[#F8F3E5] overflow-hidden">
 
       {/* ── LEFT COLUMN: Catalog ── */}
-      <div className="flex flex-col flex-1 min-w-0 bg-white rounded-[32px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#FFD3A5]/30">
+      <div className="flex flex-col flex-1 min-w-0 bg-white rounded-[32px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#CFC3A7]/30">
 
       {/* Top Header & Search */}
-      <div className="bg-gradient-to-r from-[#FF5900] to-[#FF8237] p-4 md:p-5 shadow-sm z-20 shrink-0 sticky top-0 md:relative border-b border-[#FFD3A5]/20">
+      <div className="bg-gradient-to-r from-[#5F714B] to-[#95A07A] p-4 md:p-5 shadow-sm z-20 shrink-0 sticky top-0 md:relative border-b border-[#CFC3A7]/20">
         <div className="flex items-center gap-3 w-full relative">
           <Input
             placeholder={t('billing.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            leftIcon={<Search size={20} className="text-[#FF8237]" />}
-            className="w-full bg-[#FFFBDC] text-[#FF5900] border-transparent focus-visible:border-[#FFD3A5] pl-11 pr-12 rounded-xl"
+            leftIcon={<Search size={20} className="text-[#95A07A]" />}
+            className="w-full bg-[#F8F3E5] text-[#5F714B] border-transparent focus-visible:border-[#CFC3A7] pl-11 pr-12 rounded-xl"
           />
-          <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-[#FFD3A5]/20 rounded-lg text-[#FF8237] hover:bg-[#FFD3A5]/40 transition-colors">
+          <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-[#CFC3A7]/20 rounded-lg text-[#95A07A] hover:bg-[#CFC3A7]/40 transition-colors">
             <Mic size={18} />
           </button>
         </div>
         <div className="flex justify-end mt-3 gap-3">
           <button
             onClick={() => setIsQuickBillOpen(true)}
-            className="flex items-center gap-1.5 bg-[#FFFBDC]/20 hover:bg-[#FFFBDC]/30 text-[#FFFBDC] px-3 py-1.5 rounded-lg text-xs font-black transition-all active:scale-95"
+            className="flex items-center gap-1.5 bg-[#F8F3E5]/20 hover:bg-[#F8F3E5]/30 text-[#F8F3E5] px-3 py-1.5 rounded-lg text-xs font-black transition-all active:scale-95"
           >
             <Zap size={14} /> {t('billing.quickBill')}
           </button>
           <button
             onClick={() => addToast({ message: "Voice Billing coming soon!", type: 'info' })}
-            className="flex items-center gap-1.5 bg-[#FFFBDC]/20 hover:bg-[#FFFBDC]/30 text-[#FFFBDC] px-3 py-1.5 rounded-lg text-xs font-black transition-all active:scale-95"
+            className="flex items-center gap-1.5 bg-[#F8F3E5]/20 hover:bg-[#F8F3E5]/30 text-[#F8F3E5] px-3 py-1.5 rounded-lg text-xs font-black transition-all active:scale-95"
           >
             <Mic size={14} /> Voice Bill
           </button>
@@ -379,8 +379,8 @@ export default function BillingScreen() {
               className={cn(
                 "px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-colors border",
                 activeCategory === cat
-                  ? "bg-[#FF8237] text-[#FFFBDC] border-[#FF8237]"
-                  : "bg-white text-[#FFAA6E] border-[#FFD3A5]/50 hover:bg-[#FFFBDC]"
+                  ? "bg-[#95A07A] text-[#F8F3E5] border-[#95A07A]"
+                  : "bg-white text-[#9BA88D] border-[#CFC3A7]/50 hover:bg-[#F8F3E5]"
               )}
             >
               {t(`expenses.categories.${cat.toLowerCase()}`, cat)}
@@ -408,18 +408,18 @@ export default function BillingScreen() {
                 <Card 
                   onClick={(e) => !cartItem && handleAddWithAnimation(e, product)}
                   className={cn(
-                    "flex flex-col h-full border-[#FFD3A5] p-2 shadow-sm hover:shadow-md transition-all rounded-xl cursor-pointer active:scale-95 relative",
-                    cartItem ? "ring-2 ring-[#FF8237] bg-[#FFFBDC]/30" : "bg-white"
+                    "flex flex-col h-full border-[#CFC3A7] p-2 shadow-sm hover:shadow-md transition-all rounded-xl cursor-pointer active:scale-95 relative",
+                    cartItem ? "ring-2 ring-[#95A07A] bg-[#F8F3E5]/30" : "bg-white"
                   )}
                 >
-                  <div className="w-full aspect-square bg-[#FFFBDC] rounded-lg flex items-center justify-center mb-2 text-2xl">
+                  <div className="w-full aspect-square bg-[#F8F3E5] rounded-lg flex items-center justify-center mb-2 text-2xl">
                     {product.name.charAt(0)}
                   </div>
                   <div className="flex flex-col flex-1 min-w-0">
-                    <p className="text-[9px] font-black text-[#FFAA6E] uppercase tracking-tighter truncate opacity-70">{product.category}</p>
-                    <h3 className="text-[11px] font-bold text-[#FF5900] line-clamp-2 leading-tight mt-0.5">{product.name}</h3>
+                    <p className="text-[9px] font-black text-[#9BA88D] uppercase tracking-tighter truncate opacity-70">{product.category}</p>
+                    <h3 className="text-[11px] font-bold text-[#5F714B] line-clamp-2 leading-tight mt-0.5">{product.name}</h3>
                     <div className="flex items-center justify-between mt-auto pt-2">
-                       <p className="text-sm font-black text-[#FF5900]">₹{product.price}</p>
+                       <p className="text-sm font-black text-[#5F714B]">₹{product.price}</p>
                     </div>
                   </div>
                   
@@ -429,16 +429,16 @@ export default function BillingScreen() {
                       <>
                         <button 
                           onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, cartItem.quantity + 1); }}
-                          className="w-7 h-7 bg-[#FF8237] text-white rounded-lg flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+                          className="w-7 h-7 bg-[#95A07A] text-white rounded-lg flex items-center justify-center shadow-lg active:scale-90 transition-transform"
                         >
                           <Plus size={16} strokeWidth={3} />
                         </button>
-                        <div className="bg-white border border-[#FF8237]/30 rounded-lg h-7 flex items-center justify-center shadow-sm">
-                          <span className="text-[11px] font-black text-[#FF5900]">{cartItem.quantity}</span>
+                        <div className="bg-white border border-[#95A07A]/30 rounded-lg h-7 flex items-center justify-center shadow-sm">
+                          <span className="text-[11px] font-black text-[#5F714B]">{cartItem.quantity}</span>
                         </div>
                         <button 
                           onClick={(e) => { e.stopPropagation(); updateQuantity(product.id, cartItem.quantity - 1); }}
-                          className="w-7 h-7 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-lg flex items-center justify-center shadow-lg active:scale-90 transition-transform"
+                          className="w-7 h-7 bg-white border-2 border-[#95A07A] text-[#95A07A] rounded-lg flex items-center justify-center shadow-lg active:scale-90 transition-transform"
                         >
                           <Minus size={16} strokeWidth={3} />
                         </button>
@@ -446,7 +446,7 @@ export default function BillingScreen() {
                     ) : (
                       <button 
                         onClick={(e) => { e.stopPropagation(); handleAddWithAnimation(e, product); }}
-                        className="w-7 h-7 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-lg flex items-center justify-center hover:bg-[#FF8237] hover:text-white transition-all active:scale-90 shadow-sm"
+                        className="w-7 h-7 bg-white border-2 border-[#95A07A] text-[#95A07A] rounded-lg flex items-center justify-center hover:bg-[#95A07A] hover:text-white transition-all active:scale-90 shadow-sm"
                       >
                         <Plus size={16} strokeWidth={3} />
                       </button>
@@ -472,8 +472,8 @@ export default function BillingScreen() {
               placeholder={t('billing.searchPlaceholder')}
               value={quickBillSearch}
               onChange={(e) => setQuickBillSearch(e.target.value)}
-              leftIcon={<Search size={18} className="text-[#FF8237]" />}
-              className="bg-[#FFFBDC] border-transparent"
+              leftIcon={<Search size={18} className="text-[#95A07A]" />}
+              className="bg-[#F8F3E5] border-transparent"
             />
 
             {/* Categories */}
@@ -486,8 +486,8 @@ export default function BillingScreen() {
                     className={cn(
                       "px-4 py-1.5 rounded-full font-bold text-xs whitespace-nowrap transition-colors border",
                       quickBillCategory === cat
-                        ? "bg-[#FF8237] text-[#FFFBDC] border-[#FF8237]"
-                        : "bg-white text-[#FFAA6E] border-[#FFD3A5]/50 hover:bg-[#FFFBDC]"
+                        ? "bg-[#95A07A] text-[#F8F3E5] border-[#95A07A]"
+                        : "bg-white text-[#9BA88D] border-[#CFC3A7]/50 hover:bg-[#F8F3E5]"
                     )}
                   >
                     {t(`expenses.categories.${cat.toLowerCase()}`, cat)}
@@ -512,29 +512,29 @@ export default function BillingScreen() {
                       onClick={() => !qbItem && quickBillAddItem(product)}
                       className={cn(
                         "relative flex flex-col rounded-xl border p-2 cursor-pointer active:scale-95 transition-all",
-                        qbItem ? "ring-2 ring-[#FF8237] bg-[#FFFBDC]/30 border-[#FF8237]" : "bg-white border-[#FFD3A5]"
+                        qbItem ? "ring-2 ring-[#95A07A] bg-[#F8F3E5]/30 border-[#95A07A]" : "bg-white border-[#CFC3A7]"
                       )}
                     >
-                      <div className="w-full aspect-square bg-[#FFFBDC] rounded-lg flex items-center justify-center mb-1 text-xl">
+                      <div className="w-full aspect-square bg-[#F8F3E5] rounded-lg flex items-center justify-center mb-1 text-xl">
                         {product.name.charAt(0)}
                       </div>
-                      <h3 className="text-[10px] font-bold text-[#FF5900] line-clamp-2 leading-tight">{product.name}</h3>
-                      <p className="text-xs font-black text-[#FF5900] mt-0.5">₹{product.price}</p>
+                      <h3 className="text-[10px] font-bold text-[#5F714B] line-clamp-2 leading-tight">{product.name}</h3>
+                      <p className="text-xs font-black text-[#5F714B] mt-0.5">₹{product.price}</p>
                       <div className="absolute top-1 right-1 flex flex-col gap-1 z-10">
                         {qbItem ? (
                           <>
-                            <button onClick={(e) => { e.stopPropagation(); quickBillUpdateQty(product.id, qbItem.quantity + 1); }} className="w-6 h-6 bg-[#FF8237] text-white rounded-md flex items-center justify-center active:scale-90 transition-transform">
+                            <button onClick={(e) => { e.stopPropagation(); quickBillUpdateQty(product.id, qbItem.quantity + 1); }} className="w-6 h-6 bg-[#95A07A] text-white rounded-md flex items-center justify-center active:scale-90 transition-transform">
                               <Plus size={12} strokeWidth={3} />
                             </button>
-                            <div className="bg-white border border-[#FF8237]/30 rounded-md h-6 flex items-center justify-center">
-                              <span className="text-[10px] font-black text-[#FF5900]">{qbItem.quantity}</span>
+                            <div className="bg-white border border-[#95A07A]/30 rounded-md h-6 flex items-center justify-center">
+                              <span className="text-[10px] font-black text-[#5F714B]">{qbItem.quantity}</span>
                             </div>
-                            <button onClick={(e) => { e.stopPropagation(); quickBillUpdateQty(product.id, qbItem.quantity - 1); }} className="w-6 h-6 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-md flex items-center justify-center active:scale-90 transition-transform">
+                            <button onClick={(e) => { e.stopPropagation(); quickBillUpdateQty(product.id, qbItem.quantity - 1); }} className="w-6 h-6 bg-white border-2 border-[#95A07A] text-[#95A07A] rounded-md flex items-center justify-center active:scale-90 transition-transform">
                               <Minus size={12} strokeWidth={3} />
                             </button>
                           </>
                         ) : (
-                          <button onClick={(e) => { e.stopPropagation(); quickBillAddItem(product); }} className="w-6 h-6 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-md flex items-center justify-center hover:bg-[#FF8237] hover:text-white transition-all active:scale-90">
+                          <button onClick={(e) => { e.stopPropagation(); quickBillAddItem(product); }} className="w-6 h-6 bg-white border-2 border-[#95A07A] text-[#95A07A] rounded-md flex items-center justify-center hover:bg-[#95A07A] hover:text-white transition-all active:scale-90">
                             <Plus size={12} strokeWidth={3} />
                           </button>
                         )}
@@ -546,30 +546,30 @@ export default function BillingScreen() {
             </div>
 
             {/* Cart Summary — PAID + UDHAR */}
-            <div className="flex flex-col gap-2 pt-3 border-t border-[#FFD3A5]/40">
+            <div className="flex flex-col gap-2 pt-3 border-t border-[#CFC3A7]/40">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-[#FFAA6E]">{quickBillItems.reduce((s, i) => s + i.quantity, 0)} {t('billing.items')}</p>
-                  <p className="text-2xl font-black text-[#FF5900]">₹{quickBillGetTotal()}</p>
+                  <p className="text-xs font-bold text-[#9BA88D]">{quickBillItems.reduce((s, i) => s + i.quantity, 0)} {t('billing.items')}</p>
+                  <p className="text-2xl font-black text-[#5F714B]">₹{quickBillGetTotal()}</p>
                 </div>
                 <div className="flex gap-2">
                   <Button
                     onClick={() => setQbView('udhar')}
                     disabled={quickBillItems.length === 0 || isProcessing}
-                    className="bg-orange-600 hover:bg-orange-700 text-white rounded-xl h-12 px-4 font-black"
+                    className="bg-[#95A07A] hover:bg-[#5F714B] text-white rounded-xl h-12 px-4 font-black"
                   >
                     {t('billing.udhar')}
                   </Button>
                   <Button
                     onClick={processQuickBill}
                     disabled={quickBillItems.length === 0 || isProcessing}
-                    className="bg-[#FF8237] hover:bg-[#FF5900] text-white rounded-xl h-12 px-4 font-black"
+                    className="bg-[#95A07A] hover:bg-[#5F714B] text-white rounded-xl h-12 px-4 font-black"
                   >
                     {isProcessing ? '...' : t('billing.paid')}
                   </Button>
                 </div>
               </div>
-              <p className="text-[10px] text-center text-[#FFAA6E] font-bold">{t('billing.quickBillNote')}</p>
+              <p className="text-[10px] text-center text-[#9BA88D] font-bold">{t('billing.quickBillNote')}</p>
             </div>
           </div>
         ) : (
@@ -577,49 +577,49 @@ export default function BillingScreen() {
           <div className="flex flex-col gap-4">
             <button
               onClick={() => setQbView('products')}
-              className="flex items-center gap-1 text-[#FF8237] text-sm font-bold hover:opacity-70 transition-opacity self-start"
+              className="flex items-center gap-1 text-[#95A07A] text-sm font-bold hover:opacity-70 transition-opacity self-start"
             >
               {t('billing.backToProducts')}
             </button>
 
             {/* Existing / New tabs */}
-            <div className="flex p-1 bg-[#FFFBDC] rounded-xl">
+            <div className="flex p-1 bg-[#F8F3E5] rounded-xl">
               <button
                 onClick={() => setQbCustomerMode('existing')}
                 className={cn("flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-black text-sm transition-all",
-                  qbCustomerMode === 'existing' ? "bg-white text-[#FF8237] shadow-sm" : "text-[#FFAA6E]")}
+                  qbCustomerMode === 'existing' ? "bg-white text-[#95A07A] shadow-sm" : "text-[#9BA88D]")}
               >
                 <Users size={16} /> {t('common.existing')}
               </button>
               <button
                 onClick={() => setQbCustomerMode('new')}
                 className={cn("flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-black text-sm transition-all",
-                  qbCustomerMode === 'new' ? "bg-white text-[#FF8237] shadow-sm" : "text-[#FFAA6E]")}
+                  qbCustomerMode === 'new' ? "bg-white text-[#95A07A] shadow-sm" : "text-[#9BA88D]")}
               >
                 <UserPlus size={16} /> {t('common.new')}
               </button>
             </div>
 
             {/* Partial payment */}
-            <div className="bg-[#FFFBDC]/50 p-4 rounded-2xl border border-[#FFD3A5]/30">
-              <h5 className="text-[10px] font-black text-[#FF8237] uppercase tracking-[0.2em] mb-3">{t('billing.partialPaymentInfo')}</h5>
+            <div className="bg-[#F8F3E5]/50 p-4 rounded-2xl border border-[#CFC3A7]/30">
+              <h5 className="text-[10px] font-black text-[#95A07A] uppercase tracking-[0.2em] mb-3">{t('billing.partialPaymentInfo')}</h5>
               <div className="flex flex-col gap-4">
-                <div className="flex justify-between items-center bg-white px-4 py-3 rounded-xl border border-[#FFD3A5]/30">
-                  <span className="text-xs font-bold text-[#FFAA6E]">{t('billing.billAmount')}</span>
-                  <span className="text-sm font-black text-[#FF5900]">₹{quickBillGetTotal()}</span>
+                <div className="flex justify-between items-center bg-white px-4 py-3 rounded-xl border border-[#CFC3A7]/30">
+                  <span className="text-xs font-bold text-[#9BA88D]">{t('billing.billAmount')}</span>
+                  <span className="text-sm font-black text-[#5F714B]">₹{quickBillGetTotal()}</span>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[9px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.amountReceived')}</label>
+                  <label className="text-[9px] font-black text-[#9BA88D] uppercase tracking-widest px-1">{t('billing.amountReceived')}</label>
                   <Input
                     type="number"
                     placeholder="0.00"
                     value={qbPartialPayment}
                     onChange={(e) => setQbPartialPayment(e.target.value)}
-                    className="bg-white border-2 border-[#FF8237]/20 focus:border-[#FF8237]"
+                    className="bg-white border-2 border-[#95A07A]/20 focus:border-[#95A07A]"
                   />
                 </div>
-                <div className="flex justify-between items-center bg-[#FF5900] px-4 py-3 rounded-xl shadow-lg">
-                  <span className="text-xs font-bold text-[#FFD3A5]">{t('billing.remainingUdhar')}</span>
+                <div className="flex justify-between items-center bg-[#5F714B] px-4 py-3 rounded-xl shadow-lg">
+                  <span className="text-xs font-bold text-[#CFC3A7]">{t('billing.remainingUdhar')}</span>
                   <span className="text-lg font-black text-white">₹{Math.max(quickBillGetTotal() - (parseFloat(qbPartialPayment) || 0), 0)}</span>
                 </div>
               </div>
@@ -640,18 +640,18 @@ export default function BillingScreen() {
                       key={c.id}
                       onClick={() => processQuickBillUdhar(c.id)}
                       disabled={isProcessing}
-                      className="flex items-center justify-between p-4 bg-white border border-[#FFD3A5]/30 rounded-2xl hover:bg-[#FFFBDC]/30 transition-all text-left"
+                      className="flex items-center justify-between p-4 bg-white border border-[#CFC3A7]/30 rounded-2xl hover:bg-[#F8F3E5]/30 transition-all text-left"
                     >
                       <div className="flex flex-col">
-                        <span className="font-black text-[#FF5900]">{c.name}</span>
-                        <span className="text-[10px] font-bold text-[#FFAA6E] tracking-widest">{c.phone}</span>
+                        <span className="font-black text-[#5F714B]">{c.name}</span>
+                        <span className="text-[10px] font-bold text-[#9BA88D] tracking-widest">{c.phone}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="text-right">
-                          <span className="text-[9px] font-black text-[#FFAA6E] uppercase block">{t('common.balance')}</span>
-                          <span className="font-black text-orange-600">₹{c.balance}</span>
+                          <span className="text-[9px] font-black text-[#9BA88D] uppercase block">{t('common.balance')}</span>
+                          <span className="font-black text-[#5F714B]">₹{c.balance}</span>
                         </div>
-                        <ArrowRight size={18} className="text-[#FFD3A5]" />
+                        <ArrowRight size={18} className="text-[#CFC3A7]" />
                       </div>
                     </button>
                   ))}
@@ -660,7 +660,7 @@ export default function BillingScreen() {
             ) : (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.customerName')}</label>
+                  <label className="text-[10px] font-black text-[#9BA88D] uppercase tracking-widest px-1">{t('billing.customerName')}</label>
                   <Input
                     placeholder="e.g. Ramesh Kumar"
                     value={qbNewCustomer.name}
@@ -669,7 +669,7 @@ export default function BillingScreen() {
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.phoneNumber')}</label>
+                  <label className="text-[10px] font-black text-[#9BA88D] uppercase tracking-widest px-1">{t('billing.phoneNumber')}</label>
                   <Input
                     placeholder="+91 00000 00000"
                     value={qbNewCustomer.phone}
@@ -680,7 +680,7 @@ export default function BillingScreen() {
                 <Button
                   onClick={handleQbCreateAndCheckout}
                   disabled={isProcessing}
-                  className="mt-2 bg-[#FF8237] hover:bg-[#FF5900] text-white rounded-xl h-14 font-black"
+                  className="mt-2 bg-[#95A07A] hover:bg-[#5F714B] text-white rounded-xl h-14 font-black"
                 >
                   {isProcessing ? 'Processing...' : t('billing.createAndAddUdhar')}
                 </Button>
@@ -697,42 +697,42 @@ export default function BillingScreen() {
         title={t('billing.udharSelection')}
       >
         <div className="flex flex-col gap-6">
-          <div className="flex p-1 bg-[#FFFBDC] rounded-xl">
+          <div className="flex p-1 bg-[#F8F3E5] rounded-xl">
             <button
               onClick={() => setCustomerMode('existing')}
               className={cn("flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-black text-sm transition-all",
-                customerMode === 'existing' ? "bg-white text-[#FF8237] shadow-sm" : "text-[#FFAA6E]")}
+                customerMode === 'existing' ? "bg-white text-[#95A07A] shadow-sm" : "text-[#9BA88D]")}
             >
               <Users size={16} /> {t('common.existing')}
             </button>
             <button
               onClick={() => setCustomerMode('new')}
               className={cn("flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-black text-sm transition-all",
-                customerMode === 'new' ? "bg-white text-[#FF8237] shadow-sm" : "text-[#FFAA6E]")}
+                customerMode === 'new' ? "bg-white text-[#95A07A] shadow-sm" : "text-[#9BA88D]")}
             >
               <UserPlus size={16} /> {t('common.new')}
             </button>
           </div>
 
-          <div className="bg-[#FFFBDC]/50 p-4 rounded-2xl border border-[#FFD3A5]/30">
-            <h5 className="text-[10px] font-black text-[#FF8237] uppercase tracking-[0.2em] mb-3">{t('billing.partialPaymentInfo')}</h5>
+          <div className="bg-[#F8F3E5]/50 p-4 rounded-2xl border border-[#CFC3A7]/30">
+            <h5 className="text-[10px] font-black text-[#95A07A] uppercase tracking-[0.2em] mb-3">{t('billing.partialPaymentInfo')}</h5>
             <div className="flex flex-col gap-4">
-              <div className="flex justify-between items-center bg-white px-4 py-3 rounded-xl border border-[#FFD3A5]/30">
-                <span className="text-xs font-bold text-[#FFAA6E]">{t('billing.billAmount')}</span>
-                <span className="text-sm font-black text-[#FF5900]">₹{getTotal()}</span>
+              <div className="flex justify-between items-center bg-white px-4 py-3 rounded-xl border border-[#CFC3A7]/30">
+                <span className="text-xs font-bold text-[#9BA88D]">{t('billing.billAmount')}</span>
+                <span className="text-sm font-black text-[#5F714B]">₹{getTotal()}</span>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[9px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.amountReceived')}</label>
+                <label className="text-[9px] font-black text-[#9BA88D] uppercase tracking-widest px-1">{t('billing.amountReceived')}</label>
                 <Input
                   type="number"
                   placeholder="0.00"
                   value={partialPayment}
                   onChange={(e) => setPartialPayment(e.target.value)}
-                  className="bg-white border-2 border-[#FF8237]/20 focus:border-[#FF8237]"
+                  className="bg-white border-2 border-[#95A07A]/20 focus:border-[#95A07A]"
                 />
               </div>
-              <div className="flex justify-between items-center bg-[#FF5900] px-4 py-3 rounded-xl shadow-lg">
-                <span className="text-xs font-bold text-[#FFD3A5]">{t('billing.remainingUdhar')}</span>
+              <div className="flex justify-between items-center bg-[#5F714B] px-4 py-3 rounded-xl shadow-lg">
+                <span className="text-xs font-bold text-[#CFC3A7]">{t('billing.remainingUdhar')}</span>
                 <span className="text-lg font-black text-white">₹{Math.max(getTotal() - (parseFloat(partialPayment) || 0), 0)}</span>
               </div>
             </div>
@@ -753,18 +753,18 @@ export default function BillingScreen() {
                     key={c.id}
                     onClick={() => processUdharCheckout(c.id)}
                     disabled={isProcessing}
-                    className="flex items-center justify-between p-4 bg-white border border-[#FFD3A5]/30 rounded-2xl hover:bg-[#FFFBDC]/30 transition-all text-left"
+                    className="flex items-center justify-between p-4 bg-white border border-[#CFC3A7]/30 rounded-2xl hover:bg-[#F8F3E5]/30 transition-all text-left"
                   >
                     <div className="flex flex-col">
-                      <span className="font-black text-[#FF5900]">{c.name}</span>
-                      <span className="text-[10px] font-bold text-[#FFAA6E] tracking-widest">{c.phone}</span>
+                      <span className="font-black text-[#5F714B]">{c.name}</span>
+                      <span className="text-[10px] font-bold text-[#9BA88D] tracking-widest">{c.phone}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="text-right">
-                        <span className="text-[9px] font-black text-[#FFAA6E] uppercase block">{t('common.balance')}</span>
-                        <span className="font-black text-orange-600">₹{c.balance}</span>
+                        <span className="text-[9px] font-black text-[#9BA88D] uppercase block">{t('common.balance')}</span>
+                        <span className="font-black text-[#5F714B]">₹{c.balance}</span>
                       </div>
-                      <ArrowRight size={18} className="text-[#FFD3A5]" />
+                      <ArrowRight size={18} className="text-[#CFC3A7]" />
                     </div>
                   </button>
                 ))}
@@ -773,7 +773,7 @@ export default function BillingScreen() {
           ) : (
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.customerName')}</label>
+                <label className="text-[10px] font-black text-[#9BA88D] uppercase tracking-widest px-1">{t('billing.customerName')}</label>
                 <Input
                   placeholder={t('onboarding.ownerPlaceholder', "Enter full name")}
                   value={newCustomer.name}
@@ -782,7 +782,7 @@ export default function BillingScreen() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('billing.phoneNumber')}</label>
+                <label className="text-[10px] font-black text-[#9BA88D] uppercase tracking-widest px-1">{t('billing.phoneNumber')}</label>
                 <Input
                   placeholder={t('common.phonePlaceholder', "+91 00000 00000")}
                   value={newCustomer.phone}
@@ -793,7 +793,7 @@ export default function BillingScreen() {
               <Button
                 onClick={handleCreateAndCheckout}
                 disabled={isProcessing}
-                className="mt-4 bg-[#FF8237] hover:bg-[#FF5900] text-white rounded-xl h-14 font-black"
+                className="mt-4 bg-[#95A07A] hover:bg-[#5F714B] text-white rounded-xl h-14 font-black"
               >
                 {t('billing.createAndAddUdhar')}
               </Button>
@@ -810,17 +810,17 @@ export default function BillingScreen() {
             initial={{ x: dot.x, y: dot.y, scale: 1 }}
             animate={{ x: cartTargetPos.x, y: cartTargetPos.y, scale: 0.2, opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="absolute w-8 h-8 rounded-full bg-[#FF8237] z-50"
+            className="absolute w-8 h-8 rounded-full bg-[#95A07A] z-50"
           />
         ))}
       </div>
 
       {/* Mobile-only sticky bottom bill bar */}
-      <div className="md:hidden absolute bottom-24 left-4 right-4 bg-white rounded-3xl shadow-[0_-10px_40px_rgba(15,42,29,0.1)] border-2 border-[#FFD3A5] p-4 z-40 flex flex-col gap-3">
+      <div className="md:hidden absolute bottom-24 left-4 right-4 bg-white rounded-3xl shadow-[0_-10px_40px_rgba(15,42,29,0.1)] border-2 border-[#CFC3A7] p-4 z-40 flex flex-col gap-3">
         <div className="flex items-center justify-between px-2">
           <div ref={cartIconRef} className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#FFFBDC] rounded-full flex items-center justify-center relative shadow-inner">
-              <CheckCircle2 size={20} className="text-[#FF8237]" />
+            <div className="w-10 h-10 bg-[#F8F3E5] rounded-full flex items-center justify-center relative shadow-inner">
+              <CheckCircle2 size={20} className="text-[#95A07A]" />
               {cartItems.length > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
                   {cartItems.reduce((acc, i) => acc + i.quantity, 0)}
@@ -828,24 +828,24 @@ export default function BillingScreen() {
               )}
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-bold text-[#FF5900]">{t('billing.totalBill')}</span>
-              <span className="text-[11px] font-semibold text-[#FFAA6E]">{cartItems.length} {t('billing.items')}</span>
+              <span className="text-sm font-bold text-[#5F714B]">{t('billing.totalBill')}</span>
+              <span className="text-[11px] font-semibold text-[#9BA88D]">{cartItems.length} {t('billing.items')}</span>
             </div>
           </div>
-          <p className="text-2xl font-black text-[#FF5900]">₹{getTotal()}</p>
+          <p className="text-2xl font-black text-[#5F714B]">₹{getTotal()}</p>
         </div>
         <div className="flex gap-4">
           <Button
-            onClick={processQuickBill}
-            disabled={quickBillItems.length === 0 || isProcessing}
-            className="flex-1 bg-[#FF8237] hover:bg-[#FF5900] text-white rounded-xl h-12 font-black"
+            onClick={processPaidCheckout}
+            disabled={cartItems.length === 0 || isProcessing}
+            className="flex-1 bg-[#95A07A] hover:bg-[#5F714B] text-white rounded-xl h-12 font-black"
           >
             {isProcessing ? '...' : t('billing.paid')}
           </Button>
           <Button
-            onClick={() => setQbView('udhar')}
-            disabled={quickBillItems.length === 0 || isProcessing}
-            className="flex-1 bg-orange-600 hover:bg-orange-700 text-white rounded-xl h-12 font-black"
+            onClick={() => setIsUdharModalOpen(true)}
+            disabled={cartItems.length === 0 || isProcessing}
+            className="flex-1 bg-[#95A07A] hover:bg-[#5F714B] text-white rounded-xl h-12 font-black"
           >
             {t('billing.udhar')}
           </Button>
@@ -855,17 +855,17 @@ export default function BillingScreen() {
       </div>{/* end left column */}
 
       {/* ── RIGHT COLUMN: Active Bill (desktop only) ── */}
-      <div className="hidden md:flex flex-col w-[360px] shrink-0 bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#FFD3A5]/40 p-5 gap-4 overflow-y-auto no-scrollbar">
+      <div className="hidden md:flex flex-col w-[360px] shrink-0 bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#CFC3A7]/40 p-5 gap-4 overflow-y-auto no-scrollbar">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-black text-[#FF5900] tracking-tight">{t('billing.totalBill')}</h2>
-            <p className="text-[11px] font-bold text-[#FFAA6E] uppercase tracking-widest">
+            <h2 className="text-lg font-black text-[#5F714B] tracking-tight">{t('billing.totalBill')}</h2>
+            <p className="text-[11px] font-bold text-[#9BA88D] uppercase tracking-widest">
               {cartItems.reduce((acc, i) => acc + i.quantity, 0)} {t('billing.items')}
             </p>
           </div>
-          <div ref={cartIconRef} className="w-10 h-10 bg-[#FFFBDC] rounded-full flex items-center justify-center relative shadow-inner">
-            <CheckCircle2 size={20} className="text-[#FF8237]" />
+          <div ref={cartIconRef} className="w-10 h-10 bg-[#F8F3E5] rounded-full flex items-center justify-center relative shadow-inner">
+            <CheckCircle2 size={20} className="text-[#95A07A]" />
             {cartItems.length > 0 && (
               <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
                 {cartItems.reduce((acc, i) => acc + i.quantity, 0)}
@@ -878,45 +878,45 @@ export default function BillingScreen() {
         <div className="flex-1 flex flex-col gap-2 overflow-y-auto no-scrollbar">
           {cartItems.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-16 h-16 bg-[#FFFBDC] rounded-2xl flex items-center justify-center mb-3">
-                <CheckCircle2 size={28} className="text-[#FFD3A5]" />
+              <div className="w-16 h-16 bg-[#F8F3E5] rounded-2xl flex items-center justify-center mb-3">
+                <CheckCircle2 size={28} className="text-[#CFC3A7]" />
               </div>
-              <p className="text-sm font-black text-[#FFAA6E]">Cart is empty</p>
-              <p className="text-xs text-[#FFD3A5] font-bold mt-1">Add products from the catalog</p>
+              <p className="text-sm font-black text-[#9BA88D]">Cart is empty</p>
+              <p className="text-xs text-[#CFC3A7] font-bold mt-1">Add products from the catalog</p>
             </div>
           ) : (
             cartItems.map(item => (
-              <div key={item.id} className="flex items-center justify-between p-3 bg-[#FFFBDC]/60 rounded-2xl border border-[#FFD3A5]/30">
+              <div key={item.id} className="flex items-center justify-between p-3 bg-[#F8F3E5]/60 rounded-2xl border border-[#CFC3A7]/30">
                 <div className="flex flex-col flex-1 min-w-0 mr-2">
-                  <p className="text-sm font-black text-[#FF5900] truncate">{item.name}</p>
-                  <p className="text-xs font-bold text-[#FFAA6E]">₹{item.price} × {item.quantity}</p>
+                  <p className="text-sm font-black text-[#5F714B] truncate">{item.name}</p>
+                  <p className="text-xs font-bold text-[#9BA88D]">₹{item.price} × {item.quantity}</p>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
-                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-7 h-7 bg-white border-2 border-[#FF8237] text-[#FF8237] rounded-lg flex items-center justify-center active:scale-90 transition-transform">
+                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-7 h-7 bg-white border-2 border-[#95A07A] text-[#95A07A] rounded-lg flex items-center justify-center active:scale-90 transition-transform">
                     <Minus size={14} strokeWidth={3} />
                   </button>
-                  <span className="text-sm font-black text-[#FF5900] w-5 text-center">{item.quantity}</span>
-                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 bg-[#FF8237] text-white rounded-lg flex items-center justify-center active:scale-90 transition-transform">
+                  <span className="text-sm font-black text-[#5F714B] w-5 text-center">{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 bg-[#95A07A] text-white rounded-lg flex items-center justify-center active:scale-90 transition-transform">
                     <Plus size={14} strokeWidth={3} />
                   </button>
                 </div>
-                <p className="text-sm font-black text-[#FF5900] ml-3 shrink-0">₹{item.price * item.quantity}</p>
+                <p className="text-sm font-black text-[#5F714B] ml-3 shrink-0">₹{item.price * item.quantity}</p>
               </div>
             ))
           )}
         </div>
 
         {/* Total + Checkout */}
-        <div className="flex flex-col gap-3 pt-4 border-t border-[#FFD3A5]/40 shrink-0">
+        <div className="flex flex-col gap-3 pt-4 border-t border-[#CFC3A7]/40 shrink-0">
           <div className="flex justify-between items-center px-1">
-            <span className="text-sm font-bold text-[#FFAA6E]">Total</span>
-            <span className="text-3xl font-black text-[#FF5900]">₹{getTotal()}</span>
+            <span className="text-sm font-bold text-[#9BA88D]">Total</span>
+            <span className="text-3xl font-black text-[#5F714B]">₹{getTotal()}</span>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="primary" className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-xl h-12 font-black" onClick={() => setIsUdharModalOpen(true)} disabled={cartItems.length === 0 || isProcessing}>
+            <Button variant="primary" className="w-full bg-[#95A07A] hover:bg-[#5F714B] text-white rounded-xl h-12 font-black" onClick={() => setIsUdharModalOpen(true)} disabled={cartItems.length === 0 || isProcessing}>
               {t('billing.udhar')}
             </Button>
-            <Button variant="primary" className="w-full bg-[#FF8237] hover:bg-[#FF5900] text-[#FFFBDC] rounded-xl h-12 font-black" onClick={processPaidCheckout} disabled={cartItems.length === 0 || isProcessing}>
+            <Button variant="primary" className="w-full bg-[#95A07A] hover:bg-[#5F714B] text-[#F8F3E5] rounded-xl h-12 font-black" onClick={processPaidCheckout} disabled={cartItems.length === 0 || isProcessing}>
               {isProcessing ? 'Processing...' : t('billing.paid')}
             </Button>
           </div>

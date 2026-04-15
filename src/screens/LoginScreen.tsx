@@ -59,11 +59,11 @@ export default function LoginScreen() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#FF5900]">
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#5F714B]">
       
       {/* Left Side: Branding */}
       <div className="flex-1 flex flex-col justify-center p-8 md:p-16 lg:p-24 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-[#FF8237] rounded-full blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-0 left-0 w-64 h-64 bg-[#95A07A] rounded-full blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2" />
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -74,7 +74,7 @@ export default function LoginScreen() {
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden shrink-0">
               <img src={paisaLogo} alt="Paisa Logo" className="w-full h-full object-cover" />
             </div>
-            <h1 className="text-4xl font-black tracking-tighter text-[#FFFBDC] uppercase italic">Paisa</h1>
+            <h1 className="text-4xl font-black tracking-tighter text-[#F8F3E5] uppercase italic">Paisa</h1>
           </div>
 
           <motion.h2 
@@ -92,17 +92,17 @@ export default function LoginScreen() {
             transition={{ delay: 0.4 }}
             className="flex flex-wrap gap-2 mb-12"
           >
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF8237]/60 rounded-full border border-[#FFAA6E]/30">
-              <ShieldCheck size={14} className="text-[#FFD3A5]" />
-              <span className="text-xs font-semibold text-[#FFFBDC]">{t('auth.features.free')}</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#95A07A]/60 rounded-full border border-[#9BA88D]/30">
+              <ShieldCheck size={14} className="text-[#CFC3A7]" />
+              <span className="text-xs font-semibold text-[#F8F3E5]">{t('auth.features.free')}</span>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF8237]/60 rounded-full border border-[#FFAA6E]/30">
-              <WifiOff size={14} className="text-[#FFD3A5]" />
-              <span className="text-xs font-semibold text-[#FFFBDC]">{t('auth.features.offline')}</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#95A07A]/60 rounded-full border border-[#9BA88D]/30">
+              <WifiOff size={14} className="text-[#CFC3A7]" />
+              <span className="text-xs font-semibold text-[#F8F3E5]">{t('auth.features.offline')}</span>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF8237]/60 rounded-full border border-[#FFAA6E]/30">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#95A07A]/60 rounded-full border border-[#9BA88D]/30">
               <Sparkles size={14} className="text-yellow-400" />
-              <span className="text-xs font-semibold text-[#FFFBDC]">{t('auth.features.ai')}</span>
+              <span className="text-xs font-semibold text-[#F8F3E5]">{t('auth.features.ai')}</span>
             </div>
           </motion.div>
 
@@ -113,8 +113,8 @@ export default function LoginScreen() {
                 onClick={() => setLanguage(lang.code)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   language === lang.code 
-                    ? 'bg-[#FFFBDC] text-[#FF5900] shadow-md' 
-                    : 'bg-[#FF8237]/40 text-[#FFD3A5] hover:bg-[#FFAA6E]/40 border border-transparent hover:border-[#FFD3A5]/30'
+                    ? 'bg-[#F8F3E5] text-[#5F714B] shadow-md' 
+                    : 'bg-[#95A07A]/40 text-[#CFC3A7] hover:bg-[#9BA88D]/40 border border-transparent hover:border-[#CFC3A7]/30'
                 }`}
               >
                 {lang.label}
@@ -125,18 +125,18 @@ export default function LoginScreen() {
       </div>
 
       {/* Right Side: Auth Form */}
-      <div className="md:w-1/2 md:bg-[#FFFBDC] flex items-center justify-center p-4 md:p-8 shrink-0">
+      <div className="md:w-1/2 md:bg-[#F8F3E5] flex items-center justify-center p-4 md:p-8 shrink-0">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="w-full max-w-md bg-white rounded-[32px] p-6 md:p-10 shadow-2xl flex flex-col border border-[#FFD3A5]/30"
+          className="w-full max-w-md bg-white rounded-[32px] p-6 md:p-10 shadow-2xl flex flex-col border border-[#CFC3A7]/30"
         >
           <div className="mb-8 text-center md:text-left">
-            <h3 className="text-2xl font-bold text-[#FF5900] mb-2">
+            <h3 className="text-2xl font-bold text-[#5F714B] mb-2">
               {authMode === 'login' ? t('auth.welcomeBack', 'Welcome Back') : t('auth.createAccount', 'Create Account')}
             </h3>
-            <p className="text-[#FFAA6E] text-sm font-medium">
+            <p className="text-[#9BA88D] text-sm font-medium">
               {authMode === 'login' ? t('auth.loginSubtitle', 'Sign in to manage your store') : t('auth.signupSubtitle', 'Start your digital journey with Paisa')}
             </p>
           </div>
@@ -165,7 +165,7 @@ export default function LoginScreen() {
             
             <Button 
               type="submit" 
-              className="w-full h-14 mt-2 shadow-md shadow-[#FF5900]/10"
+              className="w-full h-14 mt-2 shadow-md shadow-[#5F714B]/10"
               isLoading={isLoading}
             >
               {authMode === 'login' ? t('auth.loginBtn', 'Login') : t('auth.signupBtn', 'Sign Up')}
@@ -174,7 +174,7 @@ export default function LoginScreen() {
             <button
               type="button"
               onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
-              className="text-center text-sm font-bold text-[#FF8237] hover:underline"
+              className="text-center text-sm font-bold text-[#95A07A] hover:underline"
             >
               {authMode === 'login' 
                 ? t('auth.needAccount', "Don't have an account? Sign Up") 
@@ -194,7 +194,7 @@ export default function LoginScreen() {
                 onClick={() => setLanguage(lang.code)}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition-colors border ${
                   language === lang.code 
-                    ? 'bg-[#FF8237] text-[#FFFBDC] border-[#FF8237]' 
+                    ? 'bg-[#95A07A] text-[#F8F3E5] border-[#95A07A]' 
                     : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
                 }`}
               >

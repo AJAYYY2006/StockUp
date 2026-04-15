@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-darkest: #FF5900;
-  --color-dark: #FF8237;
-  --color-mid: #FFAA6E;
-  --color-light: #FFD3A5;
-  --color-pale: #FFFBDC;
+  --color-darkest: #5F714B;
+  --color-dark: #95A07A;
+  --color-mid: #9BA88D;
+  --color-light: #CFC3A7;
+  --color-pale: #F8F3E5;
 
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 
-  --shadow-premium: 0 8px 32px rgba(255, 89, 0, 0.12), 0 2px 8px rgba(255, 89, 0, 0.06);
-  --shadow-card: 0 4px 20px rgba(15, 42, 29, 0.04);
-  --shadow-elevated: 0 20px 50px rgba(15, 42, 29, 0.12);
+  --shadow-premium: 0 8px 32px rgba(95, 113, 75, 0.15), 0 2px 8px rgba(95, 113, 75, 0.08);
+  --shadow-card: 0 4px 20px rgba(95, 113, 75, 0.06);
+  --shadow-elevated: 0 20px 50px rgba(95, 113, 75, 0.14);
 }
 
 @layer base {
@@ -49,15 +49,15 @@
   .glass {
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    background: rgba(255, 251, 220, 0.72);
-    border: 1px solid rgba(255, 211, 165, 0.3);
+    background: rgba(248, 243, 229, 0.80);
+    border: 1px solid rgba(207, 195, 167, 0.35);
   }
 
-  .glass-orange {
+  .glass-green {
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    background: rgba(255, 89, 0, 0.85);
-    border: 1px solid rgba(255, 170, 110, 0.3);
+    background: rgba(95, 113, 75, 0.88);
+    border: 1px solid rgba(155, 168, 141, 0.35);
   }
 
   /* Safe area padding for mobile */

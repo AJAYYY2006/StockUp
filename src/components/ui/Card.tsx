@@ -18,7 +18,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <Component
         ref={ref}
         className={cn(
-          'bg-white border-2 border-[#FFD3A5] rounded-[16px] p-4 shadow-sm overflow-hidden',
+          'bg-white border-2 border-[#CFC3A7] rounded-[16px] p-4 shadow-sm overflow-hidden',
           className
         )}
         {...animationProps}

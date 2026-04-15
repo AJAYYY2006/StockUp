@@ -22,7 +22,7 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-[#FF5900]/40 backdrop-blur-sm"
+            className="fixed inset-0 bg-[#5F714B]/40 backdrop-blur-sm"
           />
           
           {/* Modal Container */}
@@ -38,11 +38,11 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
           >
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between px-6 py-5 border-b border-[#FFFBDC]">
-                <h3 className="text-xl font-bold text-[#FF5900]">{title}</h3>
+              <div className="flex items-center justify-between px-6 py-5 border-b border-[#F8F3E5]">
+                <h3 className="text-xl font-bold text-[#5F714B]">{title}</h3>
                 <button 
                   onClick={onClose}
-                  className="p-2 -mr-2 text-[#FFAA6E] hover:bg-[#FFFBDC] rounded-full transition-colors"
+                  className="p-2 -mr-2 text-[#9BA88D] hover:bg-[#F8F3E5] rounded-full transition-colors"
                 >
                   <X size={22} />
                 </button>

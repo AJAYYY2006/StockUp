@@ -87,7 +87,7 @@ export default function CustomersScreen() {
     }
   }, [items]);
 
-  const totalUdhar = items.reduce((sum, item) => sum + item.balance, 0);
+  const totalCredit = items.reduce((sum, item) => sum + item.balance, 0);
 
   const filteredCustomers = items.filter(
     c => c.name.toLowerCase().includes(searchQuery.toLowerCase()) || c.phone.includes(searchQuery)
@@ -106,7 +106,7 @@ export default function CustomersScreen() {
         lastTransactionDate: new Date().toISOString()
       });
 
-      addToast({ message: t('customers.customerAdded', 'Customer added to Udhar Book'), type: 'success' });
+      addToast({ message: t('customers.customerAdded', 'Customer added to Credit Book'), type: 'success' });
       setIsFormOpen(false);
       setFormData({ name: '', phone: '', balance: '' });
     } catch (error) {
@@ -146,38 +146,38 @@ export default function CustomersScreen() {
   const CustomerDetail = () => {
     if (!selectedCustomer) return (
       <div className="flex-1 flex flex-col items-center justify-center py-20 text-center">
-        <div className="w-20 h-20 bg-[#FFFBDC] rounded-3xl flex items-center justify-center mb-4">
-          <Users size={32} className="text-[#FFD3A5]" />
+        <div className="w-20 h-20 bg-[#F8F3E5] rounded-3xl flex items-center justify-center mb-4">
+          <Users size={32} className="text-[#CFC3A7]" />
         </div>
-        <p className="text-sm font-black text-[#FFAA6E]">Select a customer</p>
-        <p className="text-xs font-bold text-[#FFD3A5] mt-1">to view details & history</p>
+        <p className="text-sm font-black text-[#9BA88D]">Select a customer</p>
+        <p className="text-xs font-bold text-[#CFC3A7] mt-1">to view details & history</p>
       </div>
     );
 
     return (
       <div className="flex flex-col gap-4 h-full overflow-y-auto no-scrollbar">
         {/* Customer Card */}
-        <div className="flex items-center gap-4 p-4 bg-[#FF5900] rounded-2xl text-[#FFFBDC]">
-          <div className="w-14 h-14 bg-[#FF8237] rounded-2xl flex items-center justify-center font-black text-2xl shrink-0">
+        <div className="flex items-center gap-4 p-4 bg-[#5F714B] rounded-2xl text-[#F8F3E5]">
+          <div className="w-14 h-14 bg-[#95A07A] rounded-2xl flex items-center justify-center font-black text-2xl shrink-0">
             {selectedCustomer.name.charAt(0)}
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-black text-lg leading-tight truncate">{selectedCustomer.name}</h3>
-            <p className="text-[11px] font-bold text-[#FFD3A5] flex items-center gap-1 mt-0.5"><Phone size={10} /> {selectedCustomer.phone}</p>
+            <p className="text-[11px] font-bold text-[#CFC3A7] flex items-center gap-1 mt-0.5"><Phone size={10} /> {selectedCustomer.phone}</p>
           </div>
           <div className="text-right shrink-0">
             <span className={cn("font-black text-xl block", selectedCustomer.balance > 0 ? "text-yellow-200" : "text-green-300")}>
               ₹{selectedCustomer.balance.toLocaleString('en-IN')}
             </span>
-            <span className="text-[10px] font-bold text-[#FFD3A5] uppercase tracking-wider">
+            <span className="text-[10px] font-bold text-[#CFC3A7] uppercase tracking-wider">
               {selectedCustomer.balance > 0 ? 'Unpaid' : 'Settled'}
             </span>
           </div>
         </div>
 
         {/* Payment Section */}
-        <div className="p-4 bg-white rounded-2xl border border-[#FFD3A5]/30 flex flex-col gap-3">
-          <h4 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest">{t('customers.collectPayment', 'Collect Payment')}</h4>
+        <div className="p-4 bg-white rounded-2xl border border-[#CFC3A7]/30 flex flex-col gap-3">
+          <h4 className="text-[10px] font-black text-[#9BA88D] uppercase tracking-widest">{t('customers.collectPayment', 'Collect Payment')}</h4>
           <div className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100">
             <span className="text-xs font-bold text-red-400">Remaining After Payment</span>
             <span className="text-base font-black text-red-600">
@@ -189,16 +189,16 @@ export default function CustomersScreen() {
             placeholder="Amount (₹)"
             value={paymentAmount}
             onChange={(e) => setPaymentAmount(e.target.value)}
-            className="bg-[#FFFBDC] border-[#FFD3A5]/40"
+            className="bg-[#F8F3E5] border-[#CFC3A7]/40"
           />
           <Input
             placeholder="Note (e.g. Cash payment)"
             value={paymentDescription}
             onChange={(e) => setPaymentDescription(e.target.value)}
-            className="bg-[#FFFBDC] border-[#FFD3A5]/40"
+            className="bg-[#F8F3E5] border-[#CFC3A7]/40"
           />
           <Button
-            className="w-full h-12 font-black bg-[#FF5900] hover:bg-[#FF8237] text-white"
+            className="w-full h-12 font-black bg-[#5F714B] hover:bg-[#95A07A] text-white"
             onClick={handleCollectPayment}
             disabled={isSaving || !paymentAmount}
           >
@@ -208,11 +208,11 @@ export default function CustomersScreen() {
 
         {/* Transaction History */}
         <div className="flex flex-col gap-3">
-          <h4 className="text-[10px] font-black text-[#FFAA6E] uppercase tracking-widest px-1">{t('customers.transactions', 'Transactions')}</h4>
+          <h4 className="text-[10px] font-black text-[#9BA88D] uppercase tracking-widest px-1">{t('customers.transactions', 'Transactions')}</h4>
           <div className="flex flex-col gap-2">
             {selectedCustomer.transactions && selectedCustomer.transactions.length > 0 ? (
               selectedCustomer.transactions.map((trx) => (
-                <div key={trx.id} className="p-3 bg-white border border-[#FFD3A5]/20 rounded-2xl flex items-center justify-between">
+                <div key={trx.id} className="p-3 bg-white border border-[#CFC3A7]/20 rounded-2xl flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center border shrink-0",
                       trx.type === 'debit' ? "bg-red-50 border-red-100 text-red-500" : "bg-green-50 border-green-100 text-green-500"
@@ -220,8 +220,8 @@ export default function CustomersScreen() {
                       {trx.type === 'debit' ? <ArrowRightLeft size={15} /> : <History size={15} />}
                     </div>
                     <div>
-                      <p className="text-xs font-black text-[#FF5900]">{trx.description}</p>
-                      <p className="text-[9px] font-bold text-[#FFAA6E]">{new Date(trx.date).toLocaleDateString()}</p>
+                      <p className="text-xs font-black text-[#5F714B]">{trx.description}</p>
+                      <p className="text-[9px] font-bold text-[#9BA88D]">{new Date(trx.date).toLocaleDateString()}</p>
                     </div>
                   </div>
                   <span className={cn("text-sm font-black shrink-0", trx.type === 'debit' ? "text-red-500" : "text-green-500")}>
@@ -230,7 +230,7 @@ export default function CustomersScreen() {
                 </div>
               ))
             ) : (
-              <div className="py-8 text-center text-[#FFAA6E]">
+              <div className="py-8 text-center text-[#9BA88D]">
                 <History size={28} className="mx-auto mb-2 opacity-30" />
                 <p className="text-xs font-bold">{t('customers.noHistory', 'No transaction history')}</p>
               </div>
@@ -242,32 +242,32 @@ export default function CustomersScreen() {
   };
 
   return (
-    <PageTransition className="flex flex-col md:flex-row gap-4 md:gap-6 p-2 md:p-6 h-full min-h-screen bg-[#FFFBDC] text-[#FF5900] overflow-hidden">
+    <PageTransition className="flex flex-col md:flex-row gap-4 md:gap-6 p-2 md:p-6 h-full min-h-screen bg-[#F8F3E5] text-[#5F714B] overflow-hidden">
 
       {/* ── LEFT: List Panel (now right) ── */}
-      <div className="flex flex-col flex-1 min-w-0 bg-white rounded-[32px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#FFD3A5]/30">
+      <div className="flex flex-col flex-1 min-w-0 bg-white rounded-[32px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#CFC3A7]/30">
 
       {/* Header Area */}
-      <div className="bg-gradient-to-r from-[#FF5900] to-[#FF8237] p-4 md:p-6 shadow-md z-20 border-b border-[#FFD3A5]/20 shrink-0 sticky top-0 md:relative text-[#FFFBDC]">
+      <div className="bg-gradient-to-r from-[#5F714B] to-[#95A07A] p-4 md:p-6 shadow-md z-20 border-b border-[#CFC3A7]/20 shrink-0 sticky top-0 md:relative text-[#F8F3E5]">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <Users size={22} /> {t('customers.udharBook', 'Udhar Book')}
+            <Users size={22} /> {t('customers.udharBook', 'Credit Book')}
           </h2>
           <Button
             onClick={() => setIsFormOpen(true)}
-            className="hidden md:flex items-center gap-2 bg-[#FF8237] hover:bg-[#FFAA6E] border-none text-xs h-9 px-4"
+            className="hidden md:flex items-center gap-2 bg-[#95A07A] hover:bg-[#9BA88D] border-none text-xs h-9 px-4"
           >
             <Plus size={16} /> {t('customers.addNew', 'Add Customer')}
           </Button>
         </div>
 
-        <div className="bg-[#FF8237] p-3 rounded-2xl border border-[#FFD3A5]/20 shadow-inner mb-3 flex justify-between items-center">
+        <div className="bg-[#95A07A] p-3 rounded-2xl border border-[#CFC3A7]/20 shadow-inner mb-3 flex justify-between items-center">
           <div>
-            <p className="text-[10px] uppercase font-black text-[#FFD3A5] tracking-widest">{t('customers.totalReceivable', 'Total Receivable')}</p>
-            <h3 className="text-2xl font-black text-[#FFFBDC]">₹{totalUdhar.toLocaleString('en-IN')}</h3>
+            <p className="text-[10px] uppercase font-black text-[#CFC3A7] tracking-widest">{t('customers.totalReceivable', 'Total Receivable')}</p>
+            <h3 className="text-2xl font-black text-[#F8F3E5]">₹{totalCredit.toLocaleString('en-IN')}</h3>
           </div>
-          <div className="bg-[#FF5900] px-3 py-1.5 rounded-xl">
-            <p className="text-[10px] font-bold text-[#FFD3A5] text-center">{items.filter(i => i.balance > 0).length} {t('customers.customersCount', 'Customers')}</p>
+          <div className="bg-[#5F714B] px-3 py-1.5 rounded-xl">
+            <p className="text-[10px] font-bold text-[#CFC3A7] text-center">{items.filter(i => i.balance > 0).length} {t('customers.customersCount', 'Customers')}</p>
           </div>
         </div>
 
@@ -275,8 +275,8 @@ export default function CustomersScreen() {
           placeholder={t('customers.searchCustomers', 'Search by name or phone...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          leftIcon={<Search size={20} className="text-[#FF8237]" />}
-          className="w-full bg-[#FFFBDC] text-[#FF5900] border-transparent focus-visible:border-[#FFD3A5] rounded-xl"
+          leftIcon={<Search size={20} className="text-[#95A07A]" />}
+          className="w-full bg-[#F8F3E5] text-[#5F714B] border-transparent focus-visible:border-[#CFC3A7] rounded-xl"
         />
       </div>
 
@@ -284,12 +284,12 @@ export default function CustomersScreen() {
         <PlanGate
           allowedPlans={['pro', 'basic']}
           currentPlan={user?.plan || 'free'}
-          requiredFeatureMessage={t('customers.unlockUdhar', 'Unlock the Udhar Book by upgrading to Basic or Pro.')}
+          requiredFeatureMessage={t('customers.unlockUdhar', 'Unlock the Credit Book by upgrading to Basic or Pro.')}
         >
           <div className="p-4 flex flex-col gap-3 pb-24 md:pb-4">
             {loading ? (
               <div className="py-20 flex justify-center">
-                <div className="w-10 h-10 border-4 border-[#FF8237] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-[#95A07A] border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : (
               <AnimatePresence>
@@ -309,16 +309,16 @@ export default function CustomersScreen() {
                   >
                     <Card className={cn(
                       "flex flex-col shadow-sm hover:shadow-md border cursor-pointer group transition-all bg-white overflow-hidden",
-                      selectedCustomer?.id === customer.id ? "border-[#FF8237] ring-2 ring-[#FF8237]/20" : "border-[#FFD3A5]/30"
+                      selectedCustomer?.id === customer.id ? "border-[#95A07A] ring-2 ring-[#95A07A]/20" : "border-[#CFC3A7]/30"
                     )}>
                       <div className="p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-11 h-11 bg-[#FFFBDC] text-[#FF8237] rounded-2xl flex items-center justify-center border border-[#FFD3A5] shrink-0 font-black text-lg">
+                          <div className="w-11 h-11 bg-[#F8F3E5] text-[#95A07A] rounded-2xl flex items-center justify-center border border-[#CFC3A7] shrink-0 font-black text-lg">
                             {customer.name.charAt(0)}
                           </div>
                           <div>
-                            <h4 className="font-black text-[#FF5900] leading-tight">{customer.name}</h4>
-                            <p className="text-[11px] font-bold text-[#FFAA6E] flex items-center gap-1 mt-0.5">
+                            <h4 className="font-black text-[#5F714B] leading-tight">{customer.name}</h4>
+                            <p className="text-[11px] font-bold text-[#9BA88D] flex items-center gap-1 mt-0.5">
                               <Phone size={10} /> {customer.phone}
                             </p>
                           </div>
@@ -330,17 +330,17 @@ export default function CustomersScreen() {
                             </span>
                             {customer.balance > 0 && <span className="text-[9px] uppercase font-black text-red-400 tracking-wider">Unpaid</span>}
                           </div>
-                          <ChevronRight size={18} className="text-[#FFD3A5] group-hover:text-[#FF8237] transition-colors" />
+                          <ChevronRight size={18} className="text-[#CFC3A7] group-hover:text-[#95A07A] transition-colors" />
                         </div>
                       </div>
                       <div
-                        className="px-4 py-2 bg-[#FFFBDC]/30 border-t border-[#FFFBDC] flex justify-between items-center hover:bg-[#FFFBDC]/60 transition-colors"
+                        className="px-4 py-2 bg-[#F8F3E5]/30 border-t border-[#F8F3E5] flex justify-between items-center hover:bg-[#F8F3E5]/60 transition-colors"
                         onClick={(e) => { e.stopPropagation(); setSelectedCustomer(customer); setPaymentAmount(''); setIsHistoryModalOpen(true); }}
                       >
                         <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">
                           {t('customers.lastTrx', 'Last Trx:')} {customer.lastTransactionDate ? new Date(customer.lastTransactionDate).toLocaleDateString() : 'N/A'}
                         </p>
-                        <button className="text-[10px] font-black text-[#FF8237] flex items-center gap-1">
+                        <button className="text-[10px] font-black text-[#95A07A] flex items-center gap-1">
                           <History size={11} /> {t('customers.viewHistory', 'History →')}
                         </button>
                       </div>
@@ -364,8 +364,8 @@ export default function CustomersScreen() {
       {/* FAB - mobile only */}
       <div className="fixed md:hidden bottom-[88px] right-4 z-30">
         <PlanGate allowedPlans={['pro', 'basic']} currentPlan={user?.plan || 'free'} hideGate={!items.length} requiredFeatureMessage={t('customers.unlimitedNeedsBasic', 'Unlimited Customers needs Basic')}>
-          <Button onClick={() => setIsFormOpen(true)} className="w-14 h-14 rounded-full shadow-xl bg-[#FF5900] hover:bg-[#FF8237] active:scale-95 transition-transform flex items-center justify-center p-0">
-            <Plus size={28} className="text-[#FFFBDC]" />
+          <Button onClick={() => setIsFormOpen(true)} className="w-14 h-14 rounded-full shadow-xl bg-[#5F714B] hover:bg-[#95A07A] active:scale-95 transition-transform flex items-center justify-center p-0">
+            <Plus size={28} className="text-[#F8F3E5]" />
           </Button>
         </PlanGate>
       </div>
@@ -373,7 +373,7 @@ export default function CustomersScreen() {
       </div>{/* end left column */}
 
       {/* ── RIGHT: Detail Panel (desktop only, now left) ── */}
-      <div className="hidden md:flex flex-col w-[380px] shrink-0 bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#FFD3A5]/40 p-5 overflow-y-auto no-scrollbar">
+      <div className="hidden md:flex flex-col w-[380px] shrink-0 bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#CFC3A7]/40 p-5 overflow-y-auto no-scrollbar">
         <CustomerDetail />
       </div>
 

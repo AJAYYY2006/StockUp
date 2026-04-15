@@ -22,7 +22,7 @@ export function BottomSheet({ isOpen, onClose, children, title, className }: Bot
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-40 bg-[#FF5900]/40 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-[#5F714B]/40 backdrop-blur-sm"
           />
           
           {/* Sheet */}
@@ -44,16 +44,16 @@ export function BottomSheet({ isOpen, onClose, children, title, className }: Bot
           >
             {/* Drag Handle */}
             <div className="w-full flex justify-center py-3 cursor-grab active:cursor-grabbing">
-              <div className="w-12 h-1.5 rounded-full bg-[#FFD3A5]" />
+              <div className="w-12 h-1.5 rounded-full bg-[#CFC3A7]" />
             </div>
 
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between px-6 pb-4 border-b border-[#FFFBDC]">
-                <h3 className="text-lg font-bold text-[#FF5900]">{title}</h3>
+              <div className="flex items-center justify-between px-6 pb-4 border-b border-[#F8F3E5]">
+                <h3 className="text-lg font-bold text-[#5F714B]">{title}</h3>
                 <button 
                   onClick={onClose}
-                  className="p-2 -mr-2 text-[#FFAA6E] hover:bg-[#FFFBDC] rounded-full transition-colors"
+                  className="p-2 -mr-2 text-[#9BA88D] hover:bg-[#F8F3E5] rounded-full transition-colors"
                 >
                   <X size={20} />
                 </button>

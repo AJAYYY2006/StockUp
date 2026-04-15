@@ -49,9 +49,9 @@ export function BottomNav() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-[80px] inset-x-4 bg-[#FFFBDC] rounded-3xl p-4 shadow-2xl z-40 md:hidden flex flex-col gap-2 border border-[#FFD3A5]"
+              className="fixed bottom-[80px] inset-x-4 bg-[#F8F3E5] rounded-3xl p-4 shadow-2xl z-40 md:hidden flex flex-col gap-2 border border-[#CFC3A7]"
             >
-              <h3 className="text-[#FF5900] font-bold px-2 mb-2">{t('nav.moreOptions', 'More Options')}</h3>
+              <h3 className="text-[#5F714B] font-bold px-2 mb-2">{t('nav.moreOptions', 'More Options')}</h3>
               <div className="grid grid-cols-3 gap-2">
                 {MORE_ITEMS.map((item) => {
                   const Icon = item.icon;
@@ -61,7 +61,7 @@ export function BottomNav() {
                       to={item.path}
                       className={({ isActive }) => cn(
                         "flex flex-col items-center justify-center p-3 rounded-2xl transition-all",
-                        isActive ? "bg-[#FF8237] text-[#FFFBDC]" : "bg-white text-[#FF5900] shadow-sm hover:!bg-[#FFD3A5]"
+                        isActive ? "bg-[#95A07A] text-[#F8F3E5]" : "bg-white text-[#5F714B] shadow-sm hover:!bg-[#CFC3A7]"
                       )}
                     >
                       <Icon size={24} className="mb-2" />
@@ -75,7 +75,7 @@ export function BottomNav() {
         )}
       </AnimatePresence>
 
-      <div className="fixed bottom-0 inset-x-0 bg-[#FF5900] flex items-center justify-around px-2 pb-safe pt-2 rounded-t-3xl shadow-2xl z-40 md:hidden">
+      <div className="fixed bottom-0 inset-x-0 bg-[#5F714B] flex items-center justify-around px-2 pb-safe pt-2 rounded-t-3xl shadow-2xl z-40 md:hidden">
         {MAIN_ITEMS.map((item) => {
           const Icon = item.icon;
           return (
@@ -84,14 +84,14 @@ export function BottomNav() {
               to={item.path}
               className={({ isActive }) => cn(
                 "flex flex-col items-center justify-center w-[20%] h-14 rounded-2xl transition-all",
-                isActive ? "text-[#FFFBDC]" : "text-[#FFAA6E]"
+                isActive ? "text-[#F8F3E5]" : "text-[#9BA88D]"
               )}
             >
               {({ isActive }) => (
                 <>
                   <div className={cn(
                     "p-1.5 rounded-full transition-all",
-                    isActive && "bg-[#FF8237]"
+                    isActive && "bg-[#95A07A]"
                   )}>
                     <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
                   </div>
@@ -107,12 +107,12 @@ export function BottomNav() {
           onClick={() => setShowMore(!showMore)}
           className={cn(
             "flex flex-col items-center justify-center w-[20%] h-14 rounded-2xl transition-all",
-            (isMoreActive || showMore) ? "text-[#FFFBDC]" : "text-[#FFAA6E]"
+            (isMoreActive || showMore) ? "text-[#F8F3E5]" : "text-[#9BA88D]"
           )}
         >
           <div className={cn(
             "p-1.5 rounded-full transition-all",
-            (isMoreActive || showMore) && "bg-[#FF8237]"
+            (isMoreActive || showMore) && "bg-[#95A07A]"
           )}>
             {showMore ? <X size={22} strokeWidth={2.5} /> : <Menu size={22} strokeWidth={isMoreActive ? 2.5 : 2} />}
           </div>

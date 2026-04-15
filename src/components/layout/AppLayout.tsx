@@ -41,7 +41,7 @@ export function AppLayout({ children, fab }: AppLayoutProps) {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#FFFBDC] text-[#FF5900] w-full">
+    <div className="flex min-h-screen bg-[#F8F3E5] text-[#5F714B] w-full">
       <ToastContainer />
 
       {/* Desktop Sidebar — hidden on mobile */}
@@ -58,7 +58,7 @@ export function AppLayout({ children, fab }: AppLayoutProps) {
         <main className="flex-1 w-full max-w-[960px] mx-auto pb-24 md:pb-8 pt-safe md:pt-2 overflow-y-auto no-scrollbar relative min-h-screen">
           {/* Offline Banner */}
           {isOffline && (
-            <div className="bg-[#FF5900] text-[#FFFBDC] text-xs font-bold text-center py-2 px-4 shadow-md z-50 sticky top-0 md:rounded-b-2xl mx-auto w-full md:w-11/12 max-w-sm mb-2">
+            <div className="bg-[#5F714B] text-[#F8F3E5] text-xs font-bold text-center py-2 px-4 shadow-md z-50 sticky top-0 md:rounded-b-2xl mx-auto w-full md:w-11/12 max-w-sm mb-2">
               You are currently offline. Some features may be limited.
             </div>
           )}

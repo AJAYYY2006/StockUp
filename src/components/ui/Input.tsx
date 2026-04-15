@@ -15,13 +15,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="flex flex-col gap-1.5 w-full">
         {label && (
-          <label htmlFor={inputId} className="text-[#FF5900] font-semibold text-sm">
+          <label htmlFor={inputId} className="text-[#5F714B] font-semibold text-sm">
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-4 text-[#FFAA6E]">
+            <div className="absolute left-4 text-[#9BA88D]">
               {leftIcon}
             </div>
           )}
@@ -29,7 +29,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={cn(
-              'flex h-12 w-full rounded-2xl border-2 border-[#FFD3A5] bg-white px-4 py-2 text-base ring-offset-white placeholder:text-[#FFD3A5] focus-visible:outline-none focus-visible:border-[#FF8237] disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
+              'flex h-12 w-full rounded-2xl border-2 border-[#CFC3A7] bg-white px-4 py-2 text-base ring-offset-white placeholder:text-[#CFC3A7] focus-visible:outline-none focus-visible:border-[#95A07A] disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
               leftIcon && 'pl-11',
               error && 'border-red-500 focus-visible:border-red-500',
               className

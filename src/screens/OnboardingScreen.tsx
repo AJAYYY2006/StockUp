@@ -17,11 +17,24 @@ const LANGUAGES = [
   { code: 'ta', label: 'Tamil', native: 'தமிழ்' },
 ];
 
-const PLANS = [
-  { id: 'free', name: 'Free', price: '₹0 / mo', features: ['100 Bills per month', 'Basic Inventory'] },
-  { id: 'basic', name: 'Basic', price: '₹299 / mo', features: ['Unlimited Bills', 'Offline Mode', 'WhatsApp Sync'], popular: true },
-  { id: 'pro', name: 'Pro', price: '₹999 / mo', features: ['Voice AI Billing', 'Multiple Staff', 'GST Reports'] },
-];
+const PLAN = {
+  id: 'pro',
+  name: 'Pro Merchant',
+  price: '₹599 / mo',
+  features: [
+    'Unlimited Bills',
+    'Advanced Inventory Management',
+    'Offline Mode',
+    'WhatsApp Sync',
+    'Voice AI Billing',
+    'Credit Book (Khata)',
+    'Multiple Staff Accounts',
+    'GST Reports',
+    'Low Stock Alerts',
+    'Advanced Analytics & Insights',
+    'Data Export (CSV / JSON)',
+  ],
+};
 
 const step2Schema = z.object({
   storeName: z.string().min(3, 'Store name must be at least 3 characters'),
@@ -40,7 +53,7 @@ export default function OnboardingScreen() {
   const [errors, setErrors] = useState<{ storeName?: string; ownerName?: string }>({});
   
   // Step 3 State
-  const [selectedPlan, setSelectedPlan] = useState('basic');
+  const [selectedPlan, setSelectedPlan] = useState('pro');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNext = () => {
@@ -84,8 +97,8 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <PageTransition className="min-h-screen bg-[#FFFBDC] flex flex-col items-center justify-center p-6 text-[#FF5900]">
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden min-h-[500px] flex flex-col border border-[#FFD3A5]">
+    <PageTransition className="min-h-screen bg-[#F8F3E5] flex flex-col items-center justify-center p-6 text-[#5F714B]">
+      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden min-h-[500px] flex flex-col border border-[#CFC3A7]">
         {/* Header Progress */}
         <div className="pt-8 px-8 flex flex-col items-center">
           <div className="w-full flex items-center justify-center gap-2 mb-4">
@@ -93,7 +106,7 @@ export default function OnboardingScreen() {
               <div 
                 key={i} 
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  i === step ? 'w-8 bg-[#FF5900]' : i < step ? 'w-4 bg-[#FF8237]' : 'w-4 bg-[#FFFBDC]'
+                  i === step ? 'w-8 bg-[#5F714B]' : i < step ? 'w-4 bg-[#95A07A]' : 'w-4 bg-[#F8F3E5]'
                 }`} 
               />
             ))}
@@ -123,12 +136,12 @@ export default function OnboardingScreen() {
                       animated
                       onClick={() => setLanguage(lang.code)}
                       className={`cursor-pointer flex flex-col items-center justify-center gap-2 h-32 border-2 transition-all ${
-                        language === lang.code ? 'border-[#FF5900] bg-[#FFFBDC]' : 'border-[#FFD3A5] hover:border-[#FFAA6E]'
+                        language === lang.code ? 'border-[#5F714B] bg-[#F8F3E5]' : 'border-[#CFC3A7] hover:border-[#9BA88D]'
                       }`}
                     >
                       <span className="text-3xl font-bold">{lang.native}</span>
                       <span className="text-sm font-medium text-gray-600">{lang.label}</span>
-                      {language === lang.code && <Check className="absolute top-3 right-3 text-[#FF5900]" size={20} />}
+                      {language === lang.code && <Check className="absolute top-3 right-3 text-[#5F714B]" size={20} />}
                     </Card>
                   ))}
                 </div>
@@ -185,36 +198,45 @@ export default function OnboardingScreen() {
                 transition={{ duration: 0.3 }}
                 className="w-full p-8 flex flex-col gap-4 absolute inset-0 overflow-y-auto no-scrollbar"
               >
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
-                  {PLANS.map((plan) => (
-                    <Card 
-                      key={plan.id}
-                      animated
-                      onClick={() => setSelectedPlan(plan.id)}
-                      className={`cursor-pointer flex flex-col relative transition-all border-2 ${
-                        selectedPlan === plan.id ? 'border-[#FF5900] shadow-md bg-[#FFFBDC]/30' : 'border-[#FFD3A5] hover:border-[#FFAA6E]'
-                      }`}
+                <div className="flex flex-col items-center gap-4">
+                  {/* Single Plan Card */}
+                  <div className="w-full max-w-sm mx-auto">
+                    <Card
+                      className="cursor-default flex flex-col relative border-2 border-[#5F714B] shadow-lg bg-[#F8F3E5]/40 p-6 rounded-3xl"
                     >
-                      {plan.popular && (
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                          <Badge variant="pro">{t('common.mostPopular')}</Badge>
-                        </div>
-                      )}
-                      <div className="mb-4 pt-4">
-                        <h3 className="font-bold text-lg">{plan.name}</h3>
-                        <p className="text-2xl font-black text-[#FF8237]">{plan.price}</p>
+                      {/* Popular Badge */}
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <Badge variant="pro">Best Value</Badge>
                       </div>
-                      <ul className="flex-1 flex flex-col gap-2 mb-4">
-                        {plan.features.map((f, i) => (
-                          <li key={i} className="flex items-center text-sm font-medium text-gray-700">
-                            <Check size={16} className="text-[#FF8237] mr-2 shrink-0" />
+
+                      {/* Plan Header */}
+                      <div className="mb-5 pt-3 text-center">
+                        <h3 className="font-black text-xl text-[#5F714B]">{PLAN.name}</h3>
+                        <p className="text-4xl font-black text-[#95A07A] mt-1">{PLAN.price}</p>
+                        <p className="text-xs text-[#9BA88D] font-semibold mt-1">Everything you need to run your store</p>
+                      </div>
+
+                      {/* Divider */}
+                      <div className="h-px bg-[#CFC3A7]/50 mb-4" />
+
+                      {/* Features List */}
+                      <ul className="flex flex-col gap-2.5">
+                        {PLAN.features.map((f, i) => (
+                          <li key={i} className="flex items-center text-sm font-medium text-[#5F714B]">
+                            <div className="w-5 h-5 bg-[#5F714B] rounded-full flex items-center justify-center mr-3 shrink-0">
+                              <Check size={11} className="text-white" strokeWidth={3} />
+                            </div>
                             {f}
                           </li>
                         ))}
                       </ul>
-                      {selectedPlan === plan.id && <div className="absolute top-4 right-4"><Check className="text-[#FF5900]" size={24} /></div>}
+
+                      {/* Always-selected indicator */}
+                      <div className="absolute top-4 right-4">
+                        <Check className="text-[#5F714B]" size={22} />
+                      </div>
                     </Card>
-                  ))}
+                  </div>
                 </div>
                 <div className="mt-4 flex gap-3 shrink-0">
                   <Button variant="outline" onClick={handleBack} className="flex-1">{t('common.back')}</Button>

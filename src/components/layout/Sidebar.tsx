@@ -23,14 +23,14 @@ export function Sidebar() {
   const { t } = useTranslation();
 
   return (
-    <aside className="hidden md:flex flex-col w-[240px] bg-[#FF5900] h-screen fixed top-0 left-0 text-[#FFFBDC] py-6 px-4 shrink-0 shadow-lg z-40">
+    <aside className="hidden md:flex flex-col w-[240px] bg-[#5F714B] h-screen fixed top-0 left-0 text-[#F8F3E5] py-6 px-4 shrink-0 shadow-lg z-40">
       <div className="flex items-center gap-3 px-2 mb-10">
         <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden shrink-0">
           <img src={paisaLogo} alt="Paisa Logo" className="w-full h-full object-cover" />
         </div>
         <div>
           <h2 className="text-xl font-bold tracking-tight text-white mb-0.5">Paisa</h2>
-          <p className="text-[#FFD3A5] text-[10px] font-black uppercase tracking-widest leading-none">{t('nav.storePos')}</p>
+          <p className="text-[#CFC3A7] text-[10px] font-black uppercase tracking-widest leading-none">{t('nav.storePos')}</p>
         </div>
       </div>
 
@@ -44,8 +44,8 @@ export function Sidebar() {
               className={({ isActive }) => cn(
                 "flex items-center gap-3 px-4 py-3 rounded-2xl transition-colors font-medium text-sm shrink-0",
                 isActive 
-                  ? "bg-[#FF8237] text-[#FFFBDC]" 
-                  : "text-[#FFD3A5] hover:bg-[#FF8237]/50 hover:text-[#FFFBDC]"
+                  ? "bg-[#95A07A] text-[#F8F3E5]" 
+                  : "text-[#CFC3A7] hover:bg-[#95A07A]/50 hover:text-[#F8F3E5]"
               )}
             >
               <Icon size={20} />
@@ -56,22 +56,22 @@ export function Sidebar() {
       </nav>
 
       <div className="mt-auto px-2 pb-4">
-        <div className="bg-gradient-to-br from-[#FF8237] to-[#FF5900] p-5 rounded-[24px] flex flex-col gap-4 border border-[#FFAA6E]/20 shadow-xl">
+        <div className="bg-gradient-to-br from-[#95A07A] to-[#5F714B] p-5 rounded-[24px] flex flex-col gap-4 border border-[#9BA88D]/20 shadow-xl">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-[#FFD3A5] uppercase tracking-wider mb-1">{t('plan.currentPlan')}</span>
+              <span className="text-xs font-bold text-[#CFC3A7] uppercase tracking-wider mb-1">{t('plan.currentPlan')}</span>
               <span className="text-sm font-black text-white truncate">
                 {user?.plan === 'pro' ? t('plan.proMerchant') : (user?.phone || t('plan.storeUser'))}
               </span>
             </div>
-            <div className="bg-[#FFFBDC] text-[#FF5900] text-[10px] font-black px-2.5 py-1 rounded-lg shadow-sm">
+            <div className="bg-[#F8F3E5] text-[#5F714B] text-[10px] font-black px-2.5 py-1 rounded-lg shadow-sm">
               PRO
             </div>
           </div>
-          <div className="h-1.5 bg-[#FF5900]/50 rounded-full overflow-hidden">
-            <div className="h-full bg-[#FFD3A5] w-[85%] rounded-full shadow-[0_0_8px_rgba(174,195,176,0.4)]" />
+          <div className="h-1.5 bg-[#5F714B]/50 rounded-full overflow-hidden">
+            <div className="h-full bg-[#CFC3A7] w-[85%] rounded-full shadow-[0_0_8px_rgba(174,195,176,0.4)]" />
           </div>
-          <p className="text-[10px] text-[#FFD3A5] font-medium leading-relaxed">{t('plan.storage')}</p>
+          <p className="text-[10px] text-[#CFC3A7] font-medium leading-relaxed">{t('plan.storage')}</p>
         </div>
       </div>
     </aside>
